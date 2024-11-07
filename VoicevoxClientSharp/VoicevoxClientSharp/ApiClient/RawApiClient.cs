@@ -66,8 +66,27 @@ namespace VoicevoxClientSharp.ApiClient
             if ((int)response.StatusCode == 422)
             {
                 var errorJson = await response.Content.ReadAsStringAsync();
-                var error = JsonConvert.DeserializeObject<HttpValidationError>(errorJson);
-                throw new VoicevoxHttpValidationErrorException("HTTP Validation Error", error!);
+                throw new VoicevoxHttpValidationErrorException("HTTP Validation Error",
+                    new HttpValidationError(errorJson));
+            }
+
+            var responseJson = await response.Content.ReadAsStringAsync();
+            if (responseJson == null) throw new VoicevoxClientException("Response was empty");
+            return JsonConvert.DeserializeObject<TResult>(responseJson)!;
+        }
+
+        internal async ValueTask<TResult> PostAsync<TResult, TRuquest>(
+            string url,
+            TRuquest request,
+            CancellationToken cancellationToken = default)
+        {
+            var requestJson = JsonConvert.SerializeObject(request);
+            var response = await _httpClient.PostAsync(url, new StringContent(requestJson), cancellationToken);
+            if ((int)response.StatusCode == 422)
+            {
+                var errorJson = await response.Content.ReadAsStringAsync();
+                throw new VoicevoxHttpValidationErrorException("HTTP Validation Error",
+                    new HttpValidationError(errorJson));
             }
 
             var responseJson = await response.Content.ReadAsStringAsync();
