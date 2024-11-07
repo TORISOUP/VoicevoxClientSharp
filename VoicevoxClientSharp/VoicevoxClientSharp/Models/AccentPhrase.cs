@@ -1,7 +1,9 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using Newtonsoft.Json;
-using VoicevoxClient.Generated.Model;
 
 namespace VoicevoxClientSharp.Models
 {
@@ -19,8 +21,8 @@ namespace VoicevoxClientSharp.Models
         /// <param name="pauseMora">pauseMora.</param>
         /// <param name="isInterrogative">疑問系かどうか (default to false).</param>
         public AccentPhrase(List<Mora> moras,
-            int accent = default,
-            Mora? pauseMora = default,
+            int accent,
+            Mora? pauseMora,
             bool isInterrogative = false)
         {
             Moras = moras;
@@ -55,6 +57,22 @@ namespace VoicevoxClientSharp.Models
         [DataMember(Name = "is_interrogative", EmitDefaultValue = true)]
         public bool? IsInterrogative { get; set; }
 
+        public bool Equals(AccentPhrase? other)
+        {
+            if (other is null)
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
+            return Moras.SequenceEqual(other.Moras) && Accent == other.Accent && Equals(PauseMora, other.PauseMora) &&
+                   IsInterrogative == other.IsInterrogative;
+        }
+
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -79,22 +97,6 @@ namespace VoicevoxClientSharp.Models
         public string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
-
-        public bool Equals(AccentPhrase? other)
-        {
-            if (other is null)
-            {
-                return false;
-            }
-
-            if (ReferenceEquals(this, other))
-            {
-                return true;
-            }
-
-            return Moras.SequenceEqual(other.Moras) && Accent == other.Accent && Equals(PauseMora, other.PauseMora) &&
-                   IsInterrogative == other.IsInterrogative;
         }
     }
 }

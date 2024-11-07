@@ -8,33 +8,26 @@
  */
 
 
+using System;
 using System.Runtime.Serialization;
 using System.Text;
 using Newtonsoft.Json;
 
-namespace VoicevoxClient.Generated.Model
+namespace VoicevoxClientSharp.Models
 {
     /// <summary>
     /// 対応しているデバイスの情報
     /// </summary>
     [DataContract(Name = "SupportedDevicesInfo")]
-    public class SupportedDevicesInfo : IEquatable<SupportedDevicesInfo>
+    public sealed class SupportedDevicesInfo : IEquatable<SupportedDevicesInfo>
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SupportedDevicesInfo" /> class.
-        /// </summary>
-        [JsonConstructorAttribute]
-        protected SupportedDevicesInfo()
-        {
-        }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="SupportedDevicesInfo" /> class.
         /// </summary>
         /// <param name="cpu">CPUに対応しているか (required).</param>
         /// <param name="cuda">CUDA(Nvidia GPU)に対応しているか (required).</param>
         /// <param name="dml">DirectML(Nvidia GPU/Radeon GPU等)に対応しているか (required).</param>
-        public SupportedDevicesInfo(bool cpu = default, bool cuda = default, bool dml = default)
+        public SupportedDevicesInfo(bool cpu, bool cuda, bool dml)
         {
             Cpu = cpu;
             Cuda = cuda;
@@ -67,7 +60,7 @@ namespace VoicevoxClient.Generated.Model
         /// </summary>
         /// <param name="input">Instance of SupportedDevicesInfo to be compared</param>
         /// <returns>Boolean</returns>
-        public bool Equals(SupportedDevicesInfo input)
+        public bool Equals(SupportedDevicesInfo? input)
         {
             if (input == null)
             {
@@ -108,7 +101,7 @@ namespace VoicevoxClient.Generated.Model
         /// Returns the JSON string presentation of the object
         /// </summary>
         /// <returns>JSON string presentation of the object</returns>
-        public virtual string ToJson()
+        public string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
@@ -118,7 +111,7 @@ namespace VoicevoxClient.Generated.Model
         /// </summary>
         /// <param name="input">Object to be compared</param>
         /// <returns>Boolean</returns>
-        public override bool Equals(object input)
+        public override bool Equals(object? input)
         {
             return Equals(input as SupportedDevicesInfo);
         }

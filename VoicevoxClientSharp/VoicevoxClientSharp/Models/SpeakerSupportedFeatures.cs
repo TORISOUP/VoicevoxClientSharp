@@ -8,18 +8,19 @@
  */
 
 
+using System;
 using System.Runtime.Serialization;
 using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace VoicevoxClient.Generated.Model
+namespace VoicevoxClientSharp.Models
 {
     /// <summary>
     /// キャラクターの対応機能の情報
     /// </summary>
     [DataContract(Name = "SpeakerSupportedFeatures")]
-    public class SpeakerSupportedFeatures : IEquatable<SpeakerSupportedFeatures>
+    public sealed class SpeakerSupportedFeatures : IEquatable<SpeakerSupportedFeatures>
     {
         /// <summary>
         /// モーフィング機能への対応。&#39;ALL&#39; は「全て許可」、&#39;SELF_ONLY&#39; は「同じキャラクター内でのみ許可」、&#39;NOTHING&#39; は「全て禁止」
@@ -70,7 +71,7 @@ namespace VoicevoxClient.Generated.Model
         /// </summary>
         /// <param name="input">Instance of SpeakerSupportedFeatures to be compared</param>
         /// <returns>Boolean</returns>
-        public bool Equals(SpeakerSupportedFeatures input)
+        public bool Equals(SpeakerSupportedFeatures? input)
         {
             if (input == null)
             {
@@ -99,7 +100,7 @@ namespace VoicevoxClient.Generated.Model
         /// Returns the JSON string presentation of the object
         /// </summary>
         /// <returns>JSON string presentation of the object</returns>
-        public virtual string ToJson()
+        public string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
@@ -109,7 +110,7 @@ namespace VoicevoxClient.Generated.Model
         /// </summary>
         /// <param name="input">Object to be compared</param>
         /// <returns>Boolean</returns>
-        public override bool Equals(object input)
+        public override bool Equals(object? input)
         {
             return Equals(input as SpeakerSupportedFeatures);
         }
