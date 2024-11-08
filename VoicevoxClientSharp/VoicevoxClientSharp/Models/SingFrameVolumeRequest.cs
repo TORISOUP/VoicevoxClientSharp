@@ -1,22 +1,13 @@
 using System;
 using System.Runtime.Serialization;
 using System.Text;
-
+using System.Text.Json.Serialization;
 
 namespace VoicevoxClientSharp.Models
 {
-    /// <summary>
-    /// BodySingFrameVolumeSingFrameVolumePost
-    /// </summary>
-    [DataContract(Name = "Body_sing_frame_volume_sing_frame_volume_post")]
-    public sealed class BodySingFrameVolumeSingFrameVolumePost : IEquatable<BodySingFrameVolumeSingFrameVolumePost>
+    public sealed class SingFrameVolumeRequest : IEquatable<SingFrameVolumeRequest>
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="BodySingFrameVolumeSingFrameVolumePost" /> class.
-        /// </summary>
-        /// <param name="score">score (required).</param>
-        /// <param name="frameAudioQuery">frameAudioQuery (required).</param>
-        public BodySingFrameVolumeSingFrameVolumePost(Score score, FrameAudioQuery frameAudioQuery)
+        public SingFrameVolumeRequest(Score score, FrameAudioQuery frameAudioQuery)
         {
             Score = score;
             FrameAudioQuery = frameAudioQuery;
@@ -26,12 +17,14 @@ namespace VoicevoxClientSharp.Models
         /// Gets or Sets Score
         /// </summary>
         [DataMember(Name = "score", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("score")]
         public Score Score { get; set; }
 
         /// <summary>
         /// Gets or Sets FrameAudioQuery
         /// </summary>
         [DataMember(Name = "frame_audio_query", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("frame_audio_query")]
         public FrameAudioQuery FrameAudioQuery { get; set; }
 
         /// <summary>
@@ -39,7 +32,7 @@ namespace VoicevoxClientSharp.Models
         /// </summary>
         /// <param name="input">Instance of BodySingFrameVolumeSingFrameVolumePost to be compared</param>
         /// <returns>Boolean</returns>
-        public bool Equals(BodySingFrameVolumeSingFrameVolumePost? input)
+        public bool Equals(SingFrameVolumeRequest? input)
         {
             return
                 input != null &&
@@ -76,7 +69,7 @@ namespace VoicevoxClientSharp.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object? input)
         {
-            return Equals(input as BodySingFrameVolumeSingFrameVolumePost);
+            return Equals(input as SingFrameVolumeRequest);
         }
 
         /// <summary>

@@ -26,7 +26,7 @@ namespace VoicevoxClientSharp.ApiClient
         /// <summary>
         /// 歌唱音声合成用のクエリを作成する
         /// </summary>
-        ValueTask<FrameAudioQuery> PostSingFrameAudioQueryAsync(Notes notes,
+        ValueTask<FrameAudioQuery> PostSingFrameAudioQueryAsync(Score score,
             int speakerId,
             string? coreVersion = "",
             CancellationToken ct = default);
@@ -70,9 +70,10 @@ namespace VoicevoxClientSharp.ApiClient
         /// <summary>
         /// 楽譜・歌唱音声合成用のクエリからフレームごとの音量を得る
         /// </summary>
-        ValueTask<AccentPhrase[]> PostSingFrameVolumeAsync(
+        ValueTask<decimal[]> PostSingFrameVolumeAsync(
             int speakerId,
-            AccentPhrase[] accentPhrases,
+            Score score,
+            FrameAudioQuery frameAudioQuery,
             string? coreVersion = "",
             CancellationToken ct = default);
     }
@@ -117,7 +118,7 @@ namespace VoicevoxClientSharp.ApiClient
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
-        public ValueTask<FrameAudioQuery> PostSingFrameAudioQueryAsync(Notes notes,
+        public ValueTask<FrameAudioQuery> PostSingFrameAudioQueryAsync(Score score,
             int speakerId,
             string? coreVersion = "",
             CancellationToken ct = default)
@@ -128,9 +129,12 @@ namespace VoicevoxClientSharp.ApiClient
             );
 
             var url = $"{_baseUrl}/sing_frame_audio_query?{queryString}";
-            return PostAsync<FrameAudioQuery, Notes>(url, notes, ct);
+            return PostAsync<FrameAudioQuery, Score>(url, score, ct);
         }
 
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public ValueTask<AccentPhrase[]> PostAccentPhraseAsync(string text,
             int speakerId,
             bool? isKana,
@@ -149,6 +153,9 @@ namespace VoicevoxClientSharp.ApiClient
             return PostAsync<AccentPhrase[]>(url, ct);
         }
 
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public ValueTask<AccentPhrase[]> PostMoraDataAsync(int speakerId,
             AccentPhrase[] accentPhrases,
             string? coreVersion = "",
@@ -158,33 +165,62 @@ namespace VoicevoxClientSharp.ApiClient
                 ("speaker", speakerId.ToString()),
                 ("core_version", coreVersion)
             );
-            
+
             var url = $"{_baseUrl}/mora_data?{queryString}";
             return PostAsync<AccentPhrase[], AccentPhrase[]>(url, accentPhrases, ct);
         }
 
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public ValueTask<AccentPhrase[]> PostMoraLengthAsync(int speakerId,
             AccentPhrase[] accentPhrases,
             string? coreVersion = "",
             CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            var queryString = QueryString(
+                ("speaker", speakerId.ToString()),
+                ("core_version", coreVersion)
+            );
+
+            var url = $"{_baseUrl}/mora_length?{queryString}";
+            return PostAsync<AccentPhrase[], AccentPhrase[]>(url, accentPhrases, ct);
         }
 
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public ValueTask<AccentPhrase[]> PostMoraPitchAsync(int speakerId,
             AccentPhrase[] accentPhrases,
             string? coreVersion = "",
             CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            var queryString = QueryString(
+                ("speaker", speakerId.ToString()),
+                ("core_version", coreVersion)
+            );
+
+            var url = $"{_baseUrl}/mora_pitch?{queryString}";
+            return PostAsync<AccentPhrase[], AccentPhrase[]>(url, accentPhrases, ct);
         }
 
-        public ValueTask<AccentPhrase[]> PostSingFrameVolumeAsync(int speakerId,
-            AccentPhrase[] accentPhrases,
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        public ValueTask<decimal[]> PostSingFrameVolumeAsync(int speakerId,
+            Score score,
+            FrameAudioQuery frameAudioQuery,
             string? coreVersion = "",
             CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            var request = new SingFrameVolumeRequest(score, frameAudioQuery);
+            var queryString = QueryString(
+                ("speaker", speakerId.ToString()),
+                ("core_version", coreVersion)
+            );
+
+            var url = $"{_baseUrl}/sing_frame_volume?{queryString}";
+            return PostAsync<decimal[], SingFrameVolumeRequest>(url, request, ct);
         }
     }
 }

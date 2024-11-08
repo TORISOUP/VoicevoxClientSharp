@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Text.Json.Serialization;
 
 
 namespace VoicevoxClientSharp.Models
@@ -13,14 +14,9 @@ namespace VoicevoxClientSharp.Models
     [DataContract(Name = "FrameAudioQuery")]
     public sealed class FrameAudioQuery : IEquatable<FrameAudioQuery>
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FrameAudioQuery" /> class.
-        /// </summary>
-        private FrameAudioQuery(List<decimal> f0, List<decimal> volume, List<FramePhoneme> phonemes)
+        [JsonConstructor]
+        public FrameAudioQuery()
         {
-            F0 = f0;
-            Volume = volume;
-            Phonemes = phonemes;
         }
 
         /// <summary>
@@ -32,9 +28,10 @@ namespace VoicevoxClientSharp.Models
         /// <param name="volumeScale">全体の音量 (required).</param>
         /// <param name="outputSamplingRate">音声データの出力サンプリングレート (required).</param>
         /// <param name="outputStereo">音声データをステレオ出力するか否か (required).</param>
-        public FrameAudioQuery(List<decimal> f0,
-            List<decimal> volume,
-            List<FramePhoneme> phonemes,
+        public FrameAudioQuery(
+            decimal[] f0,
+            decimal[] volume,
+            FramePhoneme[] phonemes,
             decimal volumeScale,
             int outputSamplingRate,
             bool outputStereo)
@@ -47,43 +44,40 @@ namespace VoicevoxClientSharp.Models
             OutputStereo = outputStereo;
         }
 
-        /// <summary>
-        /// Gets or Sets F0
-        /// </summary>
-        [DataMember(Name = "f0", IsRequired = true, EmitDefaultValue = false)]
-        public List<decimal> F0 { get; set; }
+
+        [JsonPropertyName("f0")] public decimal[] F0 { get; set; } = Array.Empty<decimal>();
 
         /// <summary>
         /// Gets or Sets Volume
         /// </summary>
-        [DataMember(Name = "volume", IsRequired = true, EmitDefaultValue = false)]
-        public List<decimal> Volume { get; set; }
+        [JsonPropertyName("volume")]
+        public decimal[] Volume { get; set; } = Array.Empty<decimal>();
 
         /// <summary>
         /// Gets or Sets Phonemes
         /// </summary>
-        [DataMember(Name = "phonemes", IsRequired = true, EmitDefaultValue = false)]
-        public List<FramePhoneme> Phonemes { get; set; }
+        [JsonPropertyName("phonemes")]
+        public FramePhoneme[] Phonemes { get; set; } = Array.Empty<FramePhoneme>();
 
         /// <summary>
         /// 全体の音量
         /// </summary>
         /// <value>全体の音量</value>
-        [DataMember(Name = "volumeScale", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("volumeScale")]
         public decimal VolumeScale { get; set; }
 
         /// <summary>
         /// 音声データの出力サンプリングレート
         /// </summary>
         /// <value>音声データの出力サンプリングレート</value>
-        [DataMember(Name = "outputSamplingRate", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("outputSamplingRate")]
         public int OutputSamplingRate { get; set; }
 
         /// <summary>
         /// 音声データをステレオ出力するか否か
         /// </summary>
         /// <value>音声データをステレオ出力するか否か</value>
-        [DataMember(Name = "outputStereo", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("outputStereo")]
         public bool OutputStereo { get; set; }
 
         /// <summary>
@@ -142,7 +136,6 @@ namespace VoicevoxClientSharp.Models
             sb.Append("}\n");
             return sb.ToString();
         }
-
 
 
         /// <summary>

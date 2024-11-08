@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Text.Json.Serialization;
 
 
 namespace VoicevoxClientSharp.Models
@@ -11,6 +12,11 @@ namespace VoicevoxClientSharp.Models
     [DataContract(Name = "FramePhoneme")]
     public sealed class FramePhoneme : IEquatable<FramePhoneme>
     {
+        [JsonConstructor]
+        public FramePhoneme()
+        {
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="FramePhoneme" /> class.
         /// </summary>
@@ -28,20 +34,17 @@ namespace VoicevoxClientSharp.Models
         /// 音素
         /// </summary>
         /// <value>音素</value>
-        [DataMember(Name = "phoneme", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("phoneme")]
         public string Phoneme { get; set; }
 
         /// <summary>
         /// 音素のフレーム長
         /// </summary>
         /// <value>音素のフレーム長</value>
-        [DataMember(Name = "frame_length", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("frame_length")]
         public int FrameLength { get; set; }
 
-        /// <summary>
-        /// Gets or Sets NoteId
-        /// </summary>
-        [DataMember(Name = "note_id", EmitDefaultValue = true)]
+        [JsonPropertyName("note_id")] 
         public string? NoteId { get; set; }
 
         /// <summary>
@@ -87,7 +90,6 @@ namespace VoicevoxClientSharp.Models
             sb.Append("}\n");
             return sb.ToString();
         }
-
 
 
         /// <summary>

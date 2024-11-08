@@ -6,49 +6,6 @@ using System.Text.Json.Serialization;
 
 namespace VoicevoxClientSharp.Models
 {
-    [DataContract(Name = "Notes")]
-    public sealed class Notes : IEquatable<Notes>
-    {
-        [JsonConstructor]
-        public Notes()
-        {
-        }
-        
-        public Notes(params Note[] notesArray)
-        {
-            NotesArray = notesArray;
-        }
-
-
-        [JsonPropertyName("notes")]
-        public Note[] NotesArray { get; set; }
-
-        public bool Equals(Notes other)
-        {
-            if (other is null)
-            {
-                return false;
-            }
-
-            if (ReferenceEquals(this, other))
-            {
-                return true;
-            }
-
-            return Equals(NotesArray, other.NotesArray);
-        }
-
-        public override bool Equals(object obj)
-        {
-            return ReferenceEquals(this, obj) || obj is Notes other && Equals(other);
-        }
-
-        public override int GetHashCode()
-        {
-            return NotesArray != null ? NotesArray.GetHashCode() : 0;
-        }
-    }
-
     /// <summary>
     /// 音符ごとの情報
     /// </summary>

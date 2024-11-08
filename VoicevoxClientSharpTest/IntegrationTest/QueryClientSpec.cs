@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Newtonsoft.Json.Linq;
 using VoicevoxClientSharp.ApiClient;
 using VoicevoxClientSharp.Models;
@@ -47,13 +48,13 @@ public class QueryClientSpec
     [Test, Timeout(15000)]
     public async Task PostSingFrameAudioQueryAsyncTest()
     {
-        var notes = new Notes(
+        var score = new Score(
             new Note(key: null, frameLength: 15, lyric: "", id: null),
             new Note(key: 60, frameLength: 45, lyric: "ド", id: null),
             new Note(key: 62, frameLength: 45, lyric: "レ", id: null),
             new Note(key: null, frameLength: 15, lyric: "", id: null)
         );
-        var result = await _queryClient.PostSingFrameAudioQueryAsync(notes, 6000);
+        var result = await _queryClient.PostSingFrameAudioQueryAsync(score, 6000);
         Assert.IsNotNull(result);
     }
 
@@ -75,6 +76,38 @@ public class QueryClientSpec
         {
             var result = await _queryClient.PostMoraDataAsync(0, accentPhrases);
             Assert.IsNotNull(result);
+            Assert.That(result.Length, Is.GreaterThan(0));
+            Assert.IsNotNull(result[0].Moras);
         }
+        {
+            var result = await _queryClient.PostMoraLengthAsync(0, accentPhrases);
+            Assert.IsNotNull(result);
+            Assert.That(result.Length, Is.GreaterThan(0));
+            Assert.IsNotNull(result[0].Moras);
+        }
+        {
+            var result = await _queryClient.PostMoraPitchAsync(0, accentPhrases);
+            Assert.IsNotNull(result);
+            Assert.That(result.Length, Is.GreaterThan(0));
+            Assert.IsNotNull(result[0].Moras);
+        }
+    }
+
+
+    [Test, Timeout(10000)]
+    public async Task PostSingFrameVolumeAsyncTest()
+    {
+        var score = new Score(
+            new Note(key: null, frameLength: 15, lyric: "", id: null),
+            new Note(key: 60, frameLength: 45, lyric: "ド", id: null),
+            new Note(key: 62, frameLength: 45, lyric: "レ", id: null),
+            new Note(key: null, frameLength: 15, lyric: "", id: null)
+        );
+
+        // ここで得た結果を使ってテストを続ける
+        var frameAudioQuery = await _queryClient.PostSingFrameAudioQueryAsync(score, 6000);
+        var result = await _queryClient.PostSingFrameVolumeAsync(6000, score, frameAudioQuery);
+        Assert.IsNotNull(result);
+        Assert.That(result.Length, Is.GreaterThan(0));
     }
 }

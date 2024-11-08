@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Text.Json.Serialization;
 
 
 namespace VoicevoxClientSharp.Models
@@ -17,16 +18,13 @@ namespace VoicevoxClientSharp.Models
         /// Initializes a new instance of the <see cref="Score" /> class.
         /// </summary>
         /// <param name="notes">notes (required).</param>
-        public Score(List<Note> notes)
+        public Score(params Note[] notes)
         {
             Notes = notes;
         }
-
-        /// <summary>
-        /// Gets or Sets Notes
-        /// </summary>
-        [DataMember(Name = "notes", IsRequired = true, EmitDefaultValue = false)]
-        public List<Note> Notes { get; set; }
+        
+        [JsonPropertyName("notes")]
+        public Note[] Notes { get; set; }
 
         /// <summary>
         /// Returns true if Score instances are equal
