@@ -1,6 +1,4 @@
 using System.Runtime.Serialization;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 
 namespace VoicevoxClientSharp.Models
 {
@@ -8,7 +6,6 @@ namespace VoicevoxClientSharp.Models
     /// CORSの許可モード
     /// </summary>
     /// <value>CORSの許可モード</value>
-    [JsonConverter(typeof(StringEnumConverter))]
     public enum CorsPolicyMode
     {
         /// <summary>

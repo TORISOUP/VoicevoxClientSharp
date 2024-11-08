@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
-using Newtonsoft.Json;
+
 
 namespace VoicevoxClientSharp.Models
 {
@@ -93,14 +93,7 @@ namespace VoicevoxClientSharp.Models
             return sb.ToString();
         }
 
-        /// <summary>
-        /// Returns the JSON string presentation of the object
-        /// </summary>
-        /// <returns>JSON string presentation of the object</returns>
-        public string ToJson()
-        {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
+
 
         public override bool Equals(object? obj)
         {

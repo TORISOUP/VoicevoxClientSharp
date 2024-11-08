@@ -1,6 +1,4 @@
 using System.Runtime.Serialization;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 
 namespace VoicevoxClientSharp.Models
 {
@@ -8,32 +6,31 @@ namespace VoicevoxClientSharp.Models
     /// 品詞
     /// </summary>
     /// <value>品詞</value>
-    [JsonConverter(typeof(StringEnumConverter))]
     public enum WordTypes
     {
         /// <summary>
         /// Enum PROPERNOUN for value: PROPER_NOUN
         /// </summary>
-        [EnumMember(Value = "PROPER_NOUN")] PROPERNOUN = 1,
+        [EnumMember(Value = "PROPER_NOUN")] Propernoun = 1,
 
         /// <summary>
         /// Enum COMMONNOUN for value: COMMON_NOUN
         /// </summary>
-        [EnumMember(Value = "COMMON_NOUN")] COMMONNOUN = 2,
+        [EnumMember(Value = "COMMON_NOUN")] Commonnoun = 2,
 
         /// <summary>
         /// Enum VERB for value: VERB
         /// </summary>
-        [EnumMember(Value = "VERB")] VERB = 3,
+        [EnumMember(Value = "VERB")] Verb = 3,
 
         /// <summary>
         /// Enum ADJECTIVE for value: ADJECTIVE
         /// </summary>
-        [EnumMember(Value = "ADJECTIVE")] ADJECTIVE = 4,
+        [EnumMember(Value = "ADJECTIVE")] Adjective = 4,
 
         /// <summary>
         /// Enum SUFFIX for value: SUFFIX
         /// </summary>
-        [EnumMember(Value = "SUFFIX")] SUFFIX = 5
+        [EnumMember(Value = "SUFFIX")] Suffix = 5
     }
 }

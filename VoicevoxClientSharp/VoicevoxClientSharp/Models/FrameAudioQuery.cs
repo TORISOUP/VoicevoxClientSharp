@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
-using Newtonsoft.Json;
+
 
 namespace VoicevoxClientSharp.Models
 {
@@ -16,7 +16,6 @@ namespace VoicevoxClientSharp.Models
         /// <summary>
         /// Initializes a new instance of the <see cref="FrameAudioQuery" /> class.
         /// </summary>
-        [JsonConstructor]
         private FrameAudioQuery(List<decimal> f0, List<decimal> volume, List<FramePhoneme> phonemes)
         {
             F0 = f0;
@@ -144,14 +143,7 @@ namespace VoicevoxClientSharp.Models
             return sb.ToString();
         }
 
-        /// <summary>
-        /// Returns the JSON string presentation of the object
-        /// </summary>
-        /// <returns>JSON string presentation of the object</returns>
-        public string ToJson()
-        {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
+
 
         /// <summary>
         /// Returns true if objects are equal

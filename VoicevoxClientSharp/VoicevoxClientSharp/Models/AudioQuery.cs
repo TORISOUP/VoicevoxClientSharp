@@ -3,138 +3,84 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
+
 
 namespace VoicevoxClientSharp.Models
 {
     /// <summary>
     /// 音声合成用のクエリ
     /// </summary>
-    [DataContract(Name = "AudioQuery")]
     public sealed class AudioQuery : IEquatable<AudioQuery>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="AudioQuery" /> class.
+        /// AccentPhrases
         /// </summary>
-        /// <param name="accentPhrases">accentPhrases (required).</param>
-        /// <param name="speedScale">全体の話速 (required).</param>
-        /// <param name="pitchScale">全体の音高 (required).</param>
-        /// <param name="intonationScale">全体の抑揚 (required).</param>
-        /// <param name="volumeScale">全体の音量 (required).</param>
-        /// <param name="prePhonemeLength">音声の前の無音時間 (required).</param>
-        /// <param name="postPhonemeLength">音声の後の無音時間 (required).</param>
-        /// <param name="pauseLength">pauseLength.</param>
-        /// <param name="pauseLengthScale">句読点などの無音時間（倍率）。デフォルト値は1 (default to 1M).</param>
-        /// <param name="outputSamplingRate">音声データの出力サンプリングレート (required).</param>
-        /// <param name="outputStereo">音声データをステレオ出力するか否か (required).</param>
-        /// <param name="kana">[読み取り専用]AquesTalk 風記法によるテキスト。音声合成用のクエリとしては無視される.</param>
-        public AudioQuery(List<AccentPhrase> accentPhrases,
-            decimal speedScale,
-            decimal pitchScale,
-            decimal intonationScale,
-            decimal volumeScale,
-            decimal prePhonemeLength,
-            decimal postPhonemeLength,
-            int outputSamplingRate,
-            bool outputStereo,
-            string? kana,
-            decimal? pauseLength,
-            decimal pauseLengthScale = 1M)
-        {
-            AccentPhrases = accentPhrases;
-            SpeedScale = speedScale;
-            PitchScale = pitchScale;
-            IntonationScale = intonationScale;
-            VolumeScale = volumeScale;
-            PrePhonemeLength = prePhonemeLength;
-            PostPhonemeLength = postPhonemeLength;
-            OutputSamplingRate = outputSamplingRate;
-            OutputStereo = outputStereo;
-            PauseLength = pauseLength;
-            PauseLengthScale = pauseLengthScale;
-            Kana = kana;
-        }
-
-        /// <summary>
-        /// Gets or Sets AccentPhrases
-        /// </summary>
-        [DataMember(Name = "accent_phrases", IsRequired = true, EmitDefaultValue = false)]
         public List<AccentPhrase> AccentPhrases { get; set; }
 
         /// <summary>
         /// 全体の話速
         /// </summary>
         /// <value>全体の話速</value>
-        [DataMember(Name = "speedScale", IsRequired = true, EmitDefaultValue = false)]
         public decimal SpeedScale { get; set; }
 
         /// <summary>
         /// 全体の音高
         /// </summary>
         /// <value>全体の音高</value>
-        [DataMember(Name = "pitchScale", IsRequired = true, EmitDefaultValue = false)]
         public decimal PitchScale { get; set; }
 
         /// <summary>
         /// 全体の抑揚
         /// </summary>
         /// <value>全体の抑揚</value>
-        [DataMember(Name = "intonationScale", IsRequired = true, EmitDefaultValue = false)]
         public decimal IntonationScale { get; set; }
 
         /// <summary>
         /// 全体の音量
         /// </summary>
         /// <value>全体の音量</value>
-        [DataMember(Name = "volumeScale", IsRequired = true, EmitDefaultValue = false)]
         public decimal VolumeScale { get; set; }
 
         /// <summary>
         /// 音声の前の無音時間
         /// </summary>
         /// <value>音声の前の無音時間</value>
-        [DataMember(Name = "prePhonemeLength", IsRequired = true, EmitDefaultValue = false)]
         public decimal PrePhonemeLength { get; set; }
 
         /// <summary>
         /// 音声の後の無音時間
         /// </summary>
         /// <value>音声の後の無音時間</value>
-        [DataMember(Name = "postPhonemeLength", IsRequired = true, EmitDefaultValue = false)]
         public decimal PostPhonemeLength { get; set; }
 
         /// <summary>
         /// Gets or Sets PauseLength
         /// </summary>
-        [DataMember(Name = "pauseLength", EmitDefaultValue = true)]
         public decimal? PauseLength { get; set; }
 
         /// <summary>
         /// 句読点などの無音時間（倍率）。デフォルト値は1
         /// </summary>
         /// <value>句読点などの無音時間（倍率）。デフォルト値は1</value>
-        [DataMember(Name = "pauseLengthScale", EmitDefaultValue = false)]
-        public decimal? PauseLengthScale { get; set; }
+        public decimal? PauseLengthScale { get; set; } = 1M;
 
         /// <summary>
         /// 音声データの出力サンプリングレート
         /// </summary>
         /// <value>音声データの出力サンプリングレート</value>
-        [DataMember(Name = "outputSamplingRate", IsRequired = true, EmitDefaultValue = false)]
         public int OutputSamplingRate { get; set; }
 
         /// <summary>
         /// 音声データをステレオ出力するか否か
         /// </summary>
         /// <value>音声データをステレオ出力するか否か</value>
-        [DataMember(Name = "outputStereo", IsRequired = true, EmitDefaultValue = false)]
         public bool OutputStereo { get; set; }
 
         /// <summary>
         /// [読み取り専用]AquesTalk 風記法によるテキスト。音声合成用のクエリとしては無視される
         /// </summary>
         /// <value>[読み取り専用]AquesTalk 風記法によるテキスト。音声合成用のクエリとしては無視される</value>
-        [DataMember(Name = "kana", EmitDefaultValue = true)]
         public string? Kana { get; set; }
 
         /// <summary>
@@ -226,14 +172,6 @@ namespace VoicevoxClientSharp.Models
             return sb.ToString();
         }
 
-        /// <summary>
-        /// Returns the JSON string presentation of the object
-        /// </summary>
-        /// <returns>JSON string presentation of the object</returns>
-        public string ToJson()
-        {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
 
         /// <summary>
         /// Returns true if objects are equal

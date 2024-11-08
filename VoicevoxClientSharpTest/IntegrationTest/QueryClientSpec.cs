@@ -56,4 +56,24 @@ public class QueryClientSpec
         var result = await _queryClient.PostSingFrameAudioQueryAsync(notes, 6000);
         Assert.IsNotNull(result);
     }
+
+    [Test, Timeout(5000)]
+    public async Task PostAccentPhraseAsyncTest()
+    {
+        var result = await _queryClient.PostAccentPhraseAsync("こんにちは、世界！", 0);
+        Assert.IsNotNull(result);
+    }
+
+    [Test, Timeout(20000)]
+    public async Task PostMoraAsyncTests()
+    {
+        // ここで得た結果を使ってテストを続ける
+        var accentPhrases = await _queryClient.PostAccentPhraseAsync("こんにちは、世界！", 0);
+        Assert.IsNotNull(accentPhrases);
+
+        {
+            var result = await _queryClient.PostMoraDataAsync(0, accentPhrases);
+            Assert.IsNotNull(result);
+        }
+    }
 }

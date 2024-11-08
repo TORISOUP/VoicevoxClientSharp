@@ -1,10 +1,11 @@
 using System;
 using System.Net.Http;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using VoicevoxClientSharp.Models;
+
 
 namespace VoicevoxClientSharp.ApiClient
 {
@@ -15,6 +16,12 @@ namespace VoicevoxClientSharp.ApiClient
     {
         private readonly string _baseUrl = "http://localhost:50021";
         private readonly HttpClient _httpClient;
+
+        private readonly JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions()
+        {
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        };
+
 
         // HttpClientを自前で生成した場合はtrue
         private readonly bool _handleHttpClient = false;
@@ -56,7 +63,7 @@ namespace VoicevoxClientSharp.ApiClient
             response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
             if (json == null) throw new VoicevoxClientException("Response was empty");
-            return JsonConvert.DeserializeObject<TResult>(json!)!;
+            return JsonSerializer.Deserialize<TResult>(json)!;
         }
 
         internal async ValueTask<TResult> PostAsync<TResult>(
@@ -72,7 +79,7 @@ namespace VoicevoxClientSharp.ApiClient
 
             var responseJson = await response.Content.ReadAsStringAsync();
             if (responseJson == null) throw new VoicevoxClientException("Response was empty");
-            return JsonConvert.DeserializeObject<TResult>(responseJson)!;
+            return JsonSerializer.Deserialize<TResult>(responseJson)!;
         }
 
         internal async ValueTask<TResult> PostAsync<TResult, TRuquest>(
@@ -80,7 +87,7 @@ namespace VoicevoxClientSharp.ApiClient
             TRuquest request,
             CancellationToken cancellationToken = default)
         {
-            var requestJson = JsonConvert.SerializeObject(request);
+            var requestJson = JsonSerializer.Serialize(request, _jsonSerializerOptions);
             var content = new StringContent(requestJson, Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync(url, content, cancellationToken);
             if ((int)response.StatusCode >= 400)
@@ -91,7 +98,20 @@ namespace VoicevoxClientSharp.ApiClient
 
             var responseJson = await response.Content.ReadAsStringAsync();
             if (responseJson == null) throw new VoicevoxClientException("Response was empty");
-            return JsonConvert.DeserializeObject<TResult>(responseJson)!;
+            return JsonSerializer.Deserialize<TResult>(responseJson)!;
+        }
+
+        internal string QueryString(params (string key, string? value)[] query)
+        {
+            var sb = new StringBuilder();
+            foreach (var (key, value) in query)
+            {
+                if (value == null) continue;
+                if (sb.Length > 0) sb.Append("&");
+                sb.Append($"{key}={Uri.EscapeDataString(value)}");
+            }
+
+            return sb.ToString();
         }
 
         #endregion

@@ -1,19 +1,26 @@
 using System;
 using System.Runtime.Serialization;
 using System.Text;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
+
 
 namespace VoicevoxClientSharp.Models
 {
     [DataContract(Name = "Notes")]
     public sealed class Notes : IEquatable<Notes>
     {
-        public Notes(params Note[] notes)
+        [JsonConstructor]
+        public Notes()
         {
-            NotesArray = notes;
+        }
+        
+        public Notes(params Note[] notesArray)
+        {
+            NotesArray = notesArray;
         }
 
-        [DataMember(Name = "notes", IsRequired = true, EmitDefaultValue = false)]
+
+        [JsonPropertyName("notes")]
         public Note[] NotesArray { get; set; }
 
         public bool Equals(Notes other)
@@ -48,6 +55,12 @@ namespace VoicevoxClientSharp.Models
     [DataContract(Name = "Note")]
     public sealed class Note : IEquatable<Note>
     {
+        [JsonConstructor]
+        public Note()
+        {
+            
+        }
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="Note" /> class.
         /// </summary>
@@ -66,28 +79,28 @@ namespace VoicevoxClientSharp.Models
         /// <summary>
         /// Gets or Sets Id
         /// </summary>
-        [DataMember(Name = "id", EmitDefaultValue = true)]
+        [JsonPropertyName("id")]
         public string? Id { get; set; }
 
         /// <summary>
         /// 音階
         /// </summary>
         /// <value>音階</value>
-        [DataMember(Name = "key", EmitDefaultValue = false)]
+        [JsonPropertyName("key")]
         public int? Key { get; set; }
 
         /// <summary>
         /// 音符のフレーム長
         /// </summary>
         /// <value>音符のフレーム長</value>
-        [DataMember(Name = "frame_length", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("frame_length")]
         public int FrameLength { get; set; }
 
         /// <summary>
         /// 音符の歌詞
         /// </summary>
         /// <value>音符の歌詞</value>
-        [DataMember(Name = "lyric", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("lyric")]
         public string Lyric { get; set; }
 
         public bool Equals(Note? other)
@@ -121,14 +134,7 @@ namespace VoicevoxClientSharp.Models
             return sb.ToString();
         }
 
-        /// <summary>
-        /// Returns the JSON string presentation of the object
-        /// </summary>
-        /// <returns>JSON string presentation of the object</returns>
-        public string ToJson()
-        {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
+
 
         public override bool Equals(object? obj)
         {

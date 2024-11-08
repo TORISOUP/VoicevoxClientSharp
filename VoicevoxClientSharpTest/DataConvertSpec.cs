@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+
 using VoicevoxClientSharp.Models;
 
 namespace VoicevoxClientSharpTest;
