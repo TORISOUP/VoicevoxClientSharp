@@ -16,36 +16,42 @@ namespace VoicevoxClientSharp.Models
         /// 文字
         /// </summary>
         /// <value>文字</value>
+        [JsonPropertyName("text")]
         public string Text { get; set; }
 
         /// <summary>
         /// 子音の音素
         /// </summary>
         /// <value>子音の音素</value>
+        [JsonPropertyName("consonant")]
         public string? Consonant { get; set; }
 
         /// <summary>
         /// 子音の音長
         /// </summary>
         /// <value>子音の音長</value>
+        [JsonPropertyName("consonant_length")]
         public decimal? ConsonantLength { get; set; }
 
         /// <summary>
         /// 母音の音素
         /// </summary>
         /// <value>母音の音素</value>
+        [JsonPropertyName("vowel")]
         public string Vowel { get; set; }
 
         /// <summary>
         /// 母音の音長
         /// </summary>
         /// <value>母音の音長</value>
+        [JsonPropertyName("vowel_length")]
         public decimal VowelLength { get; set; }
 
         /// <summary>
         /// 音高
         /// </summary>
         /// <value>音高</value>
+        [JsonPropertyName("pitch")]
         public decimal Pitch { get; set; }
 
         public bool Equals(Mora? other)

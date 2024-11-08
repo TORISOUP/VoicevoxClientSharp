@@ -70,6 +70,7 @@ public class QueryClientSpec
         // ここで得た結果を使ってテストを続ける
         var accentPhrases = await _queryClient.PostAccentPhraseAsync("こんにちは、世界！", 0);
         Assert.IsNotNull(accentPhrases);
+        Assert.IsNotNull(accentPhrases[0].Moras);
 
         {
             var result = await _queryClient.PostMoraDataAsync(0, accentPhrases);

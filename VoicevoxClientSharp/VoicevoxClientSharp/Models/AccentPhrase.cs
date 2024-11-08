@@ -17,23 +17,27 @@ namespace VoicevoxClientSharp.Models
         /// <summary>
         /// Moras
         /// </summary>
+        [JsonPropertyName("moras")]
         public List<Mora> Moras { get; set; }
 
         /// <summary>
         /// アクセント箇所
         /// </summary>
         /// <value>アクセント箇所</value>
+        [JsonPropertyName("accent")]
         public int Accent { get; set; }
 
         /// <summary>
         /// Gets or Sets PauseMora
         /// </summary>
+        [JsonPropertyName("pause_mora")]
         public Mora? PauseMora { get; set; }
 
         /// <summary>
         /// 疑問系かどうか
         /// </summary>
         /// <value>疑問系かどうか</value>
+        [JsonPropertyName("is_interrogative")]
         public bool? IsInterrogative { get; set; }
 
         public bool Equals(AccentPhrase? other)
