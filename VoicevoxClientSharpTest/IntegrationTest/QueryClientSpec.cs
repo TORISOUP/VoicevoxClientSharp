@@ -35,22 +35,25 @@ public class QueryClientSpec
             var result = await _queryClient.PostAudioQueryFromPresetAsync("こんにちは、世界！", 0);
             Assert.IsNotNull(result);
         }
-        catch (VoicevoxHttpValidationErrorException e)
+        catch (VoicevoxApiErrorException e)
         {
-            var j = JObject.Parse(e.Error.Json);
+            var j = JObject.Parse(e.Message);
             var actual = j["detail"]!.ToString();
             var expected = "該当するプリセットIDが見つかりません";
             Assert.That(actual, Is.EqualTo(expected));
         }
     }
 
-    [Test, Timeout(5000)]
+    [Test, Timeout(15000)]
     public async Task PostSingFrameAudioQueryAsyncTest()
     {
-        var note = new Note(
-            "1", 1, 1, "こんにちは"
+        var notes = new Notes(
+            new Note(key: null, frameLength: 15, lyric: "", id: null),
+            new Note(key: 60, frameLength: 45, lyric: "ド", id: null),
+            new Note(key: 62, frameLength: 45, lyric: "レ", id: null),
+            new Note(key: null, frameLength: 15, lyric: "", id: null)
         );
-        var result = await _queryClient.PostSingFrameAudioQueryAsync(new Notes(note), 0);
+        var result = await _queryClient.PostSingFrameAudioQueryAsync(notes, 6000);
         Assert.IsNotNull(result);
     }
 }

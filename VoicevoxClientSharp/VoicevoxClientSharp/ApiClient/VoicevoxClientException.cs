@@ -10,13 +10,15 @@ namespace VoicevoxClientSharp.ApiClient
         }
     }
 
-    public class VoicevoxHttpValidationErrorException : VoicevoxClientException
+    public class VoicevoxApiErrorException : VoicevoxClientException
     {
-        public HttpValidationError Error { get; }
+        public string Json { get; }
+        public int StatusCode { get; }
 
-        public VoicevoxHttpValidationErrorException(string message, HttpValidationError error) : base(message)
+        public VoicevoxApiErrorException(string message, string json, int statusCode) : base(message)
         {
-            Error = error;
+            Json = json;
+            StatusCode = statusCode;
         }
     }
 }

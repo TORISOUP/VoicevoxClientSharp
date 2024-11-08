@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 
 namespace VoicevoxClientSharp.Models
 {
+    [DataContract(Name = "Notes")]
     public sealed class Notes : IEquatable<Notes>
     {
         public Notes(params Note[] notes)

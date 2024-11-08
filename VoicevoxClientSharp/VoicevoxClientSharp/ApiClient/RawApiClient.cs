@@ -1,5 +1,6 @@
 using System;
 using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -63,11 +64,10 @@ namespace VoicevoxClientSharp.ApiClient
             CancellationToken cancellationToken = default)
         {
             var response = await _httpClient.PostAsync(url, null, cancellationToken);
-            if ((int)response.StatusCode == 422)
+            if ((int)response.StatusCode >= 400)
             {
                 var errorJson = await response.Content.ReadAsStringAsync();
-                throw new VoicevoxHttpValidationErrorException("HTTP Validation Error",
-                    new HttpValidationError(errorJson));
+                throw new VoicevoxApiErrorException(errorJson, errorJson, (int)response.StatusCode);
             }
 
             var responseJson = await response.Content.ReadAsStringAsync();
@@ -81,12 +81,12 @@ namespace VoicevoxClientSharp.ApiClient
             CancellationToken cancellationToken = default)
         {
             var requestJson = JsonConvert.SerializeObject(request);
-            var response = await _httpClient.PostAsync(url, new StringContent(requestJson), cancellationToken);
-            if ((int)response.StatusCode == 422)
+            var content = new StringContent(requestJson, Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync(url, content, cancellationToken);
+            if ((int)response.StatusCode >= 400)
             {
                 var errorJson = await response.Content.ReadAsStringAsync();
-                throw new VoicevoxHttpValidationErrorException("HTTP Validation Error",
-                    new HttpValidationError(errorJson));
+                throw new VoicevoxApiErrorException(errorJson, errorJson, (int)response.StatusCode);
             }
 
             var responseJson = await response.Content.ReadAsStringAsync();
