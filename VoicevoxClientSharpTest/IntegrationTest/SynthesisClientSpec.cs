@@ -1,6 +1,7 @@
 using System.IO.Compression;
 using NAudio.Wave;
 using VoicevoxClientSharp.ApiClient;
+using VoicevoxClientSharp.Models;
 
 namespace VoicevoxClientSharpTest.IntegrationTest;
 
@@ -104,5 +105,56 @@ public class SynthesisClientSpec
                 await PlaySoundAsync(wavStream);
             }
         }
+    }
+
+    [Test, Timeout(10000)]
+    public async Task PostFrameSynthesisAsyncTest()
+    {
+        // この結果を使って合成する
+        var score = new Score(
+            new Note(key: null, frameLength: 15, lyric: "", id: null),
+            new Note(key: 60, frameLength: 45, lyric: "ド", id: null),
+            new Note(key: 62, frameLength: 45, lyric: "レ", id: null),
+            new Note(key: null, frameLength: 15, lyric: "", id: null)
+        );
+        var frameAudioQuery = await _queryClient.PostSingFrameAudioQueryAsync(score, 6000);
+
+        var result = await _synthesisClient.PostFrameSynthesisAsync(6000, frameAudioQuery);
+
+        await PlaySoundAsync(result);
+        Assert.Pass();
+    }
+
+    [Test, Timeout(10000)]
+    public async Task PostMorphableTargetsAsyncTest()
+    {
+        var result =
+            await _synthesisClient.PostMorphableTargetsAsync([
+                0, 1, 2
+            ]);
+
+        Assert.IsNotNull(result);
+        Assert.That(result.Length, Is.EqualTo(3));
+        Assert.Greater(result[0].Count, 0);
+        Assert.Greater(result[1].Count, 0);
+        Assert.Greater(result[2].Count, 0);
+    }
+
+    [Test, Timeout(10000)]
+    public async Task PostSynthesisMorphingAsyncTest()
+    {
+        // この結果を使って合成する
+        var audioQuery = await _queryClient.PostAudioQueryAsync("こんにちは、世界！", 0);
+        Assert.IsNotNull(audioQuery);
+
+        var result = await _synthesisClient.PostSynthesisMorphingAsync(
+            2, // 四国めたん ノーマル
+            37, // 四国めたん ヒソヒソ
+            0.5m, audioQuery);
+
+        Assert.IsNotNull(result);
+        Assert.Greater(result.Length, 0);
+        await PlaySoundAsync(result);
+        Assert.Pass();
     }
 }

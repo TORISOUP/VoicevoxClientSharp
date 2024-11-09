@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.Serialization;
 using System.Text;
-
+using System.Text.Json.Serialization;
 
 namespace VoicevoxClientSharp.Models
 {
@@ -11,20 +11,16 @@ namespace VoicevoxClientSharp.Models
     [DataContract(Name = "MorphableTargetInfo")]
     public sealed class MorphableTargetInfo : IEquatable<MorphableTargetInfo>
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MorphableTargetInfo" /> class.
-        /// </summary>
-        /// <param name="isMorphable">指定したキャラクターに対してモーフィングの可否 (required).</param>
-        public MorphableTargetInfo(bool isMorphable)
+        [JsonConstructor]
+        public MorphableTargetInfo()
         {
-            IsMorphable = isMorphable;
         }
 
         /// <summary>
         /// 指定したキャラクターに対してモーフィングの可否
         /// </summary>
         /// <value>指定したキャラクターに対してモーフィングの可否</value>
-        [DataMember(Name = "is_morphable", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("is_morphable")]
         public bool IsMorphable { get; set; }
 
         /// <summary>
@@ -56,7 +52,6 @@ namespace VoicevoxClientSharp.Models
             sb.Append("}\n");
             return sb.ToString();
         }
-
 
 
         /// <summary>

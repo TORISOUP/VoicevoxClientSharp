@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using VoicevoxClientSharp.Models;
@@ -50,13 +53,63 @@ namespace VoicevoxClientSharp.ApiClient
             string? coreVersion = "",
             CancellationToken ct = default);
 
-        ValueTask PostFrameSynthesisAsync();
-        ValueTask PostMorphableTargetsAsync();
-        ValueTask PostSynthesisMorphingAsync();
+        /// <summary>
+        /// 歌唱音声合成を行います。
+        /// </summary>
+        /// <param name="speakerId"></param>
+        /// <param name="frameAudioQuery"></param>
+        /// <param name="coreVersion"></param>
+        /// <param name="ct"></param>
+        /// <returns>wav</returns>
+        ValueTask<byte[]> PostFrameSynthesisAsync(int speakerId,
+            FrameAudioQuery frameAudioQuery,
+            string? coreVersion = "",
+            CancellationToken ct = default);
+
+        /// <summary>
+        /// 指定したスタイルに対してエンジン内のキャラクターがモーフィングが可能か判定する
+        /// 
+        /// 指定されたベーススタイルに対してエンジン内の各キャラクターがモーフィング機能を利用可能か返します。
+        /// モーフィングの許可/禁止は/speakersのspeaker.supported_features.synthesis_morphingに記載されています。
+        /// プロパティが存在しない場合は、モーフィングが許可されているとみなします。
+        /// 返り値のスタイルIDはstring型なので注意。
+        /// </summary>
+        /// <param name="speakerIds"></param>
+        /// <param name="coreVersion"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        ValueTask<IReadOnlyDictionary<int, MorphableTargetInfo>[]> PostMorphableTargetsAsync(
+            int[] speakerIds,
+            string? coreVersion = "",
+            CancellationToken ct = default);
+
+        /// <summary>
+        /// 2種類のスタイルでモーフィングした音声を合成する
+        ///
+        /// 指定された2種類のスタイルで音声を合成、指定した割合でモーフィングした音声を得ます。
+        /// モーフィングの割合はmorph_rateで指定でき、0.0でベースのスタイル、1.0でターゲットのスタイルに近づきます。
+        /// </summary>
+        /// <param name="baseSpeakerId"></param>
+        /// <param name="targetSpeakerId"></param>
+        /// <param name="morphRate"></param>
+        /// <param name="audioQuery"></param>
+        /// <param name="coreVersion"></param>
+        /// <param name="ct"></param>
+        /// <returns>wav</returns>
+        ValueTask<byte[]> PostSynthesisMorphingAsync(
+            int baseSpeakerId,
+            int targetSpeakerId,
+            decimal morphRate,
+            AudioQuery audioQuery,
+            string? coreVersion = "",
+            CancellationToken ct = default);
     }
 
     public partial class RawApiClient
     {
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public ValueTask<byte[]> PostSynthesisAsync(int speakerId,
             AudioQuery audioQuery,
             bool? enableInterrogativeUpspeak,
@@ -72,6 +125,9 @@ namespace VoicevoxClientSharp.ApiClient
             return PostAndByteResponseAsync(url, audioQuery, ct);
         }
 
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public ValueTask<byte[]> PostCancellableSynthesisAsync(int speakerId,
             AudioQuery audioQuery,
             bool? enableInterrogativeUpspeak,
@@ -87,6 +143,9 @@ namespace VoicevoxClientSharp.ApiClient
             return PostAndByteResponseAsync(url, audioQuery, ct);
         }
 
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public ValueTask<byte[]> PostMultiSpeakerSynthesisAsync(int speakerId,
             AudioQuery[] audioQueries,
             string? coreVersion = "",
@@ -100,20 +159,65 @@ namespace VoicevoxClientSharp.ApiClient
             return PostAndByteResponseAsync(url, audioQueries, ct);
         }
 
-
-        public ValueTask PostFrameSynthesisAsync()
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        public ValueTask<byte[]> PostFrameSynthesisAsync(int speakerId,
+            FrameAudioQuery frameAudioQuery,
+            string? coreVersion = "",
+            CancellationToken ct = default)
         {
-            throw new System.NotImplementedException();
+            var queryString = QueryString(
+                ("speaker", speakerId.ToString()),
+                ("core_version", coreVersion)
+            );
+            var url = $"{_baseUrl}/frame_synthesis?{queryString}";
+            return PostAndByteResponseAsync(url, frameAudioQuery, ct);
         }
 
-        public ValueTask PostMorphableTargetsAsync()
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        public async ValueTask<IReadOnlyDictionary<int, MorphableTargetInfo>[]> PostMorphableTargetsAsync(
+            int[] speakerIds,
+            string? coreVersion = "",
+            CancellationToken ct = default)
         {
-            throw new System.NotImplementedException();
+            var queryString = QueryString(("core_version", coreVersion));
+            var url = $"{_baseUrl}/morphable_targets?{queryString}";
+            var result = await PostAsync<int[], Dictionary<string, MorphableTargetInfo>[]>(url, speakerIds, ct);
+            return result.Select(x =>
+                {
+                    return (IReadOnlyDictionary<int, MorphableTargetInfo>)x.ToDictionary(
+                        s => int.Parse(s.Key),
+                        s => s.Value
+                    );
+                })
+                .ToArray();
         }
 
-        public ValueTask PostSynthesisMorphingAsync()
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        public ValueTask<byte[]> PostSynthesisMorphingAsync(
+            int baseSpeakerId,
+            int targetSpeakerId,
+            decimal morphRate,
+            AudioQuery audioQuery,
+            string? coreVersion = "",
+            CancellationToken ct = default)
         {
-            throw new System.NotImplementedException();
+            morphRate = Math.Min(Math.Max(morphRate, 0M), 1.0M);
+
+            var queryString = QueryString(
+                ("base_speaker", baseSpeakerId.ToString()),
+                ("target_speaker", targetSpeakerId.ToString()),
+                ("morph_rate", morphRate.ToString()),
+                ("core_version", coreVersion)
+            );
+            
+            var url = $"{_baseUrl}/synthesis_morphing?{queryString}";
+            return PostAndByteResponseAsync(url, audioQuery, ct);
         }
     }
 }

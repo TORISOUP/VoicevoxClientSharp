@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Newtonsoft.Json.Linq;
 using VoicevoxClientSharp.ApiClient;
 using VoicevoxClientSharp.Models;
@@ -58,6 +57,7 @@ public class QueryClientSpec
         );
         var result = await _queryClient.PostSingFrameAudioQueryAsync(score, 6000);
         Assert.IsNotNull(result);
+        
     }
 
     [Test, Timeout(5000)]

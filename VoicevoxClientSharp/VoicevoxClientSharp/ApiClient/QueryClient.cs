@@ -129,7 +129,7 @@ namespace VoicevoxClientSharp.ApiClient
             );
 
             var url = $"{_baseUrl}/sing_frame_audio_query?{queryString}";
-            return PostAsync<FrameAudioQuery, Score>(url, score, ct);
+            return PostAsync<Score, FrameAudioQuery>(url, score, ct);
         }
 
         /// <summary>
@@ -220,7 +220,7 @@ namespace VoicevoxClientSharp.ApiClient
             );
 
             var url = $"{_baseUrl}/sing_frame_volume?{queryString}";
-            return PostAsync<decimal[], SingFrameVolumeRequest>(url, request, ct);
+            return PostAsync<SingFrameVolumeRequest, decimal[]>(url, request, ct);
         }
     }
 }

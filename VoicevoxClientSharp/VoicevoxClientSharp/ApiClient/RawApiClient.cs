@@ -86,7 +86,7 @@ namespace VoicevoxClientSharp.ApiClient
             return JsonSerializer.Deserialize<TResult>(responseJson)!;
         }
 
-        internal async ValueTask<TResult> PostAsync<TResult, TRequest>(
+        internal async ValueTask<TResult> PostAsync<TRequest, TResult>(
             string url,
             TRequest request,
             CancellationToken cancellationToken = default)
