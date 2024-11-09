@@ -2,10 +2,6 @@ namespace VoicevoxClientSharp.ApiClient
 {
  
 
-    public interface ISynthesisClient
-    {
-    }
-
     public interface IMiscClient
     {
     }

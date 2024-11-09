@@ -26,6 +26,8 @@ public class QueryClientSpec
     {
         var result = await _queryClient.PostAudioQueryAsync("こんにちは、世界！", 0);
         Assert.IsNotNull(result);
+        Assert.That(result.AccentPhrases.Count, Is.GreaterThan(0));
+        Assert.That(result.AccentPhrases[0].Moras.Count, Is.GreaterThan(0));
     }
 
     [Test, Timeout(5000)]
@@ -106,6 +108,7 @@ public class QueryClientSpec
 
         // ここで得た結果を使ってテストを続ける
         var frameAudioQuery = await _queryClient.PostSingFrameAudioQueryAsync(score, 6000);
+
         var result = await _queryClient.PostSingFrameVolumeAsync(6000, score, frameAudioQuery);
         Assert.IsNotNull(result);
         Assert.That(result.Length, Is.GreaterThan(0));

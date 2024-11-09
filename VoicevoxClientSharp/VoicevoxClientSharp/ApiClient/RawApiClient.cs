@@ -9,10 +9,14 @@ using System.Threading.Tasks;
 
 namespace VoicevoxClientSharp.ApiClient
 {
+    public interface IVoicevoxApiClient : IQueryClient, ISynthesisClient, IDisposable
+    {
+    }
+
     /// <summary>
     /// Raw APIクライアント
     /// </summary>
-    public partial class RawApiClient : IDisposable, IQueryClient
+    public partial class RawApiClient : IVoicevoxApiClient
     {
         private readonly string _baseUrl = "http://localhost:50021";
         private readonly HttpClient _httpClient;
@@ -99,6 +103,23 @@ namespace VoicevoxClientSharp.ApiClient
             var responseJson = await response.Content.ReadAsStringAsync();
             if (responseJson == null) throw new VoicevoxClientException("Response was empty");
             return JsonSerializer.Deserialize<TResult>(responseJson)!;
+        }
+
+        internal async ValueTask<byte[]> PostAndByteResponseAsync<TRequest>(
+            string url,
+            TRequest request,
+            CancellationToken cancellationToken = default)
+        {
+            var requestJson = JsonSerializer.Serialize(request, _jsonSerializerOptions);
+            var content = new StringContent(requestJson, Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync(url, content, cancellationToken);
+            if ((int)response.StatusCode >= 400)
+            {
+                var errorJson = await response.Content.ReadAsStringAsync();
+                throw new VoicevoxApiErrorException(errorJson, errorJson, (int)response.StatusCode);
+            }
+
+            return await response.Content.ReadAsByteArrayAsync();
         }
 
         internal string QueryString(params (string key, string? value)[] query)

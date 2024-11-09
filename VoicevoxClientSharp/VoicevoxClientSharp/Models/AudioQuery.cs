@@ -16,71 +16,83 @@ namespace VoicevoxClientSharp.Models
         /// <summary>
         /// AccentPhrases
         /// </summary>
-        public List<AccentPhrase> AccentPhrases { get; set; }
+        [JsonPropertyName("accent_phrases")]
+        public AccentPhrase[] AccentPhrases { get; set; } = Array.Empty<AccentPhrase>();
 
         /// <summary>
         /// 全体の話速
         /// </summary>
         /// <value>全体の話速</value>
+        [JsonPropertyName("speedScale")]
         public decimal SpeedScale { get; set; }
 
         /// <summary>
         /// 全体の音高
         /// </summary>
         /// <value>全体の音高</value>
+        [JsonPropertyName("pitchScale")]
         public decimal PitchScale { get; set; }
 
         /// <summary>
         /// 全体の抑揚
         /// </summary>
         /// <value>全体の抑揚</value>
+        [JsonPropertyName("intonationScale")]
         public decimal IntonationScale { get; set; }
 
         /// <summary>
         /// 全体の音量
         /// </summary>
         /// <value>全体の音量</value>
+        [JsonPropertyName("volumeScale")]
         public decimal VolumeScale { get; set; }
 
         /// <summary>
         /// 音声の前の無音時間
         /// </summary>
         /// <value>音声の前の無音時間</value>
+        [JsonPropertyName("prePhonemeLength")]
         public decimal PrePhonemeLength { get; set; }
 
         /// <summary>
         /// 音声の後の無音時間
         /// </summary>
         /// <value>音声の後の無音時間</value>
+        [JsonPropertyName("postPhonemeLength")]
         public decimal PostPhonemeLength { get; set; }
 
         /// <summary>
         /// Gets or Sets PauseLength
         /// </summary>
+        [JsonPropertyName("pauseLength")]
         public decimal? PauseLength { get; set; }
 
         /// <summary>
         /// 句読点などの無音時間（倍率）。デフォルト値は1
         /// </summary>
         /// <value>句読点などの無音時間（倍率）。デフォルト値は1</value>
+        [JsonPropertyName("pauseLengthScale")]
         public decimal? PauseLengthScale { get; set; } = 1M;
 
         /// <summary>
         /// 音声データの出力サンプリングレート
         /// </summary>
         /// <value>音声データの出力サンプリングレート</value>
+        [JsonPropertyName("outputSamplingRate")]
         public int OutputSamplingRate { get; set; }
 
         /// <summary>
         /// 音声データをステレオ出力するか否か
         /// </summary>
         /// <value>音声データをステレオ出力するか否か</value>
+        [JsonPropertyName("outputStereo")]
         public bool OutputStereo { get; set; }
 
         /// <summary>
         /// [読み取り専用]AquesTalk 風記法によるテキスト。音声合成用のクエリとしては無視される
         /// </summary>
         /// <value>[読み取り専用]AquesTalk 風記法によるテキスト。音声合成用のクエリとしては無視される</value>
+        [JsonPropertyName("kana")]
         public string? Kana { get; set; }
 
         /// <summary>
