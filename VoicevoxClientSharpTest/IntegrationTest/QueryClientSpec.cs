@@ -4,37 +4,23 @@ using VoicevoxClientSharp.Models;
 
 namespace VoicevoxClientSharpTest.IntegrationTest;
 
-public class QueryClientSpec
+public class QueryClientSpec : SpecBase
 {
-    private IQueryClient _queryClient;
-
-    [SetUp]
-    public void Setup()
-    {
-        _queryClient = new RawApiClient();
-    }
-
-    [TearDown]
-    public void TearDown()
-    {
-        _queryClient.Dispose();
-    }
-
     [Test, Timeout(5000)]
-    public async Task PostAudioQueryAsyncTest()
+    public async Task CreateAudioQueryAsyncTest()
     {
-        var result = await _queryClient.PostAudioQueryAsync("こんにちは、世界！", 0);
+        var result = await QueryClient.CreateAudioQueryAsync("こんにちは、世界！", 0);
         Assert.IsNotNull(result);
         Assert.That(result.AccentPhrases.Count, Is.GreaterThan(0));
         Assert.That(result.AccentPhrases[0].Moras.Count, Is.GreaterThan(0));
     }
 
     [Test, Timeout(5000)]
-    public async Task PostAudioQueryFromPresetAsyncTest()
+    public async Task CreateAudioQueryFromPresetAsyncTest()
     {
         try
         {
-            var result = await _queryClient.PostAudioQueryFromPresetAsync("こんにちは、世界！", 0);
+            var result = await QueryClient.CreateAudioQueryFromPresetAsync("こんにちは、世界！", 0);
             Assert.IsNotNull(result);
         }
         catch (VoicevoxApiErrorException e)
@@ -55,40 +41,39 @@ public class QueryClientSpec
             new Note(key: 62, frameLength: 45, lyric: "レ", id: null),
             new Note(key: null, frameLength: 15, lyric: "", id: null)
         );
-        var result = await _queryClient.PostSingFrameAudioQueryAsync(score, 6000);
+        var result = await QueryClient.CreateSingFrameAudioQueryAsync(score, 6000);
         Assert.IsNotNull(result);
-        
     }
 
     [Test, Timeout(5000)]
-    public async Task PostAccentPhraseAsyncTest()
+    public async Task CreateAccentPhraseAsyncTest()
     {
-        var result = await _queryClient.PostAccentPhraseAsync("こんにちは、世界！", 0);
+        var result = await QueryClient.CreateAccentPhraseAsync("こんにちは、世界！", 0);
         Assert.IsNotNull(result);
     }
 
     [Test, Timeout(20000)]
-    public async Task PostMoraAsyncTests()
+    public async Task CreateMoraAsyncTests()
     {
         // ここで得た結果を使ってテストを続ける
-        var accentPhrases = await _queryClient.PostAccentPhraseAsync("こんにちは、世界！", 0);
+        var accentPhrases = await QueryClient.CreateAccentPhraseAsync("こんにちは、世界！", 0);
         Assert.IsNotNull(accentPhrases);
         Assert.IsNotNull(accentPhrases[0].Moras);
 
         {
-            var result = await _queryClient.PostMoraDataAsync(0, accentPhrases);
+            var result = await QueryClient.FetchMoraDataAsync(0, accentPhrases);
             Assert.IsNotNull(result);
             Assert.That(result.Length, Is.GreaterThan(0));
             Assert.IsNotNull(result[0].Moras);
         }
         {
-            var result = await _queryClient.PostMoraLengthAsync(0, accentPhrases);
+            var result = await QueryClient.FetchMoraLengthAsync(0, accentPhrases);
             Assert.IsNotNull(result);
             Assert.That(result.Length, Is.GreaterThan(0));
             Assert.IsNotNull(result[0].Moras);
         }
         {
-            var result = await _queryClient.PostMoraPitchAsync(0, accentPhrases);
+            var result = await QueryClient.FetchMoraPitchAsync(0, accentPhrases);
             Assert.IsNotNull(result);
             Assert.That(result.Length, Is.GreaterThan(0));
             Assert.IsNotNull(result[0].Moras);
@@ -97,7 +82,7 @@ public class QueryClientSpec
 
 
     [Test, Timeout(10000)]
-    public async Task PostSingFrameVolumeAsyncTest()
+    public async Task FetchSingFrameVolumeAsyncTest()
     {
         var score = new Score(
             new Note(key: null, frameLength: 15, lyric: "", id: null),
@@ -107,9 +92,9 @@ public class QueryClientSpec
         );
 
         // ここで得た結果を使ってテストを続ける
-        var frameAudioQuery = await _queryClient.PostSingFrameAudioQueryAsync(score, 6000);
+        var frameAudioQuery = await QueryClient.CreateSingFrameAudioQueryAsync(score, 6000);
 
-        var result = await _queryClient.PostSingFrameVolumeAsync(6000, score, frameAudioQuery);
+        var result = await QueryClient.FetchSingFrameVolumeAsync(6000, score, frameAudioQuery);
         Assert.IsNotNull(result);
         Assert.That(result.Length, Is.GreaterThan(0));
     }

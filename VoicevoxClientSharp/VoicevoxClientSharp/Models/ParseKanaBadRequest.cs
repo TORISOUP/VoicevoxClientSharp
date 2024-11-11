@@ -2,42 +2,23 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Text.Json.Serialization;
 
 
 namespace VoicevoxClientSharp.Models
 {
-    /// <summary>
-    /// ParseKanaBadRequest
-    /// </summary>
-    [DataContract(Name = "ParseKanaBadRequest")]
     public sealed class ParseKanaBadRequest : IEquatable<ParseKanaBadRequest>
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ParseKanaBadRequest" /> class.
-        /// </summary>
-        /// <param name="text">エラーメッセージ (required).</param>
-        /// <param name="errorName">
-        /// エラー名  |name|description| |- --|- --| | UNKNOWN_TEXT | 判別できない読み仮名があります: {text} | | ACCENT_TOP |
-        /// 句頭にアクセントは置けません: {text} | | ACCENT_TWICE | 1つのアクセント句に二つ以上のアクセントは置けません: {text} | | ACCENT_NOTFOUND |
-        /// アクセントを指定していないアクセント句があります: {text} | | EMPTY_PHRASE | {position}番目のアクセント句が空白です | | INTERROGATION_MARK_NOT_AT_END |
-        /// アクセント句末以外に「？」は置けません: {text} | | INFINITE_LOOP | 処理時に無限ループになってしまいました...バグ報告をお願いします。 | (required).
-        /// </param>
-        /// <param name="errorArgs">エラーを起こした箇所 (required).</param>
-        public ParseKanaBadRequest(
-            string text,
-            string errorName,
-            Dictionary<string, string> errorArgs)
+        [JsonConstructor]
+        public ParseKanaBadRequest()
         {
-            Text = text;
-            ErrorName = errorName;
-            ErrorArgs = errorArgs;
         }
 
         /// <summary>
         /// エラーメッセージ
         /// </summary>
         /// <value>エラーメッセージ</value>
-        [DataMember(Name = "text", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("text")]
         public string Text { get; set; }
 
         /// <summary>
@@ -52,14 +33,14 @@ namespace VoicevoxClientSharp.Models
         /// EMPTY_PHRASE | {position}番目のアクセント句が空白です | | INTERROGATION_MARK_NOT_AT_END | アクセント句末以外に「？」は置けません: {text} | |
         /// INFINITE_LOOP | 処理時に無限ループになってしまいました...バグ報告をお願いします。 |
         /// </value>
-        [DataMember(Name = "error_name", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("error_name")]
         public string ErrorName { get; set; }
 
         /// <summary>
         /// エラーを起こした箇所
         /// </summary>
         /// <value>エラーを起こした箇所</value>
-        [DataMember(Name = "error_args", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("error_args")]
         public Dictionary<string, string> ErrorArgs { get; set; }
 
         public bool Equals(ParseKanaBadRequest? other)
@@ -92,7 +73,6 @@ namespace VoicevoxClientSharp.Models
             sb.Append("}\n");
             return sb.ToString();
         }
-
 
 
         public override bool Equals(object? obj)

@@ -9,7 +9,8 @@ using System.Threading.Tasks;
 
 namespace VoicevoxClientSharp.ApiClient
 {
-    public interface IVoicevoxApiClient : IQueryClient, ISynthesisClient, IDisposable
+    public interface IVoicevoxApiClient : IQueryClient, ISynthesisClient, IMiscClient, ISpeakerClient, IPresetClient,
+        IDisposable
     {
     }
 
@@ -64,7 +65,12 @@ namespace VoicevoxClientSharp.ApiClient
         internal async ValueTask<TResult> GetAsync<TResult>(string url, CancellationToken cancellationToken = default)
         {
             var response = await _httpClient.GetAsync(url, cancellationToken);
-            response.EnsureSuccessStatusCode();
+            if ((int)response.StatusCode >= 400)
+            {
+                var errorJson = await response.Content.ReadAsStringAsync();
+                throw new VoicevoxApiErrorException(errorJson, errorJson, (int)response.StatusCode);
+            }
+
             var json = await response.Content.ReadAsStringAsync();
             if (json == null) throw new VoicevoxClientException("Response was empty");
             return JsonSerializer.Deserialize<TResult>(json)!;

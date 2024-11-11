@@ -2,10 +2,6 @@ namespace VoicevoxClientSharp.ApiClient
 {
  
 
-    public interface IMiscClient
-    {
-    }
-
     public interface ILibraryClient
     {
     }

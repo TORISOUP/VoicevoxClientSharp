@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Text.Json.Serialization;
 
 
 namespace VoicevoxClientSharp.Models
@@ -9,16 +10,20 @@ namespace VoicevoxClientSharp.Models
     /// <summary>
     /// キャラクターの追加情報
     /// </summary>
-    [DataContract(Name = "SpeakerInfo")]
     public sealed class SpeakerInfo : IEquatable<SpeakerInfo>
     {
+        [JsonConstructor]
+        public SpeakerInfo()
+        {
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SpeakerInfo" /> class.
         /// </summary>
         /// <param name="policy">policy.md (required).</param>
         /// <param name="portrait">立ち絵画像をbase64エンコードしたもの、あるいはURL (required).</param>
         /// <param name="styleInfos">styleInfos (required).</param>
-        public SpeakerInfo(string policy, string portrait, List<StyleInfo> styleInfos)
+        public SpeakerInfo(string policy, string portrait, StyleInfo[] styleInfos)
         {
             Policy = policy;
             Portrait = portrait;
@@ -29,21 +34,21 @@ namespace VoicevoxClientSharp.Models
         /// policy.md
         /// </summary>
         /// <value>policy.md</value>
-        [DataMember(Name = "policy", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("policy")]
         public string Policy { get; set; }
 
         /// <summary>
         /// 立ち絵画像をbase64エンコードしたもの、あるいはURL
         /// </summary>
         /// <value>立ち絵画像をbase64エンコードしたもの、あるいはURL</value>
-        [DataMember(Name = "portrait", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("portrait")]
         public string Portrait { get; set; }
 
         /// <summary>
         /// Gets or Sets StyleInfos
         /// </summary>
-        [DataMember(Name = "style_infos", IsRequired = true, EmitDefaultValue = false)]
-        public List<StyleInfo> StyleInfos { get; set; }
+        [JsonPropertyName("styles")]
+        public StyleInfo[] StyleInfos { get; set; } = Array.Empty<StyleInfo>();
 
 
         public bool Equals(SpeakerInfo? other)
@@ -75,7 +80,7 @@ namespace VoicevoxClientSharp.Models
             sb.Append("}\n");
             return sb.ToString();
         }
-        
+
         public override bool Equals(object? obj)
         {
             return ReferenceEquals(this, obj) || (obj is SpeakerInfo other && Equals(other));

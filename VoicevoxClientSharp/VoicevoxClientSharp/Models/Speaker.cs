@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Text.Json.Serialization;
 
 
 namespace VoicevoxClientSharp.Models
@@ -12,6 +13,11 @@ namespace VoicevoxClientSharp.Models
     [DataContract(Name = "Speaker")]
     public sealed class Speaker : IEquatable<Speaker>
     {
+        [JsonConstructor]
+        public Speaker()
+        {
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Speaker" /> class.
         /// </summary>
@@ -22,7 +28,7 @@ namespace VoicevoxClientSharp.Models
         /// <param name="supportedFeatures">supportedFeatures.</param>
         public Speaker(string name,
             string speakerUuid,
-            List<SpeakerStyle> styles,
+            SpeakerStyle[] styles,
             string varVersion,
             SpeakerSupportedFeatures? supportedFeatures)
         {
@@ -37,33 +43,28 @@ namespace VoicevoxClientSharp.Models
         /// 名前
         /// </summary>
         /// <value>名前</value>
-        [DataMember(Name = "name", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("name")]
         public string Name { get; set; }
 
         /// <summary>
         /// キャラクターのUUID
         /// </summary>
         /// <value>キャラクターのUUID</value>
-        [DataMember(Name = "speaker_uuid", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("speaker_uuid")]
         public string SpeakerUuid { get; set; }
 
-        /// <summary>
-        /// Gets or Sets Styles
-        /// </summary>
-        [DataMember(Name = "styles", IsRequired = true, EmitDefaultValue = false)]
-        public List<SpeakerStyle> Styles { get; set; }
+
+        [JsonPropertyName("styles")]
+        public SpeakerStyle[] Styles { get; set; } = Array.Empty<SpeakerStyle>();
 
         /// <summary>
         /// キャラクターのバージョン
         /// </summary>
         /// <value>キャラクターのバージョン</value>
-        [DataMember(Name = "version", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("version")]
         public string VarVersion { get; set; }
-
-        /// <summary>
-        /// Gets or Sets SupportedFeatures
-        /// </summary>
-        [DataMember(Name = "supported_features", EmitDefaultValue = false)]
+        
+        [JsonPropertyName("supported_features")]
         public SpeakerSupportedFeatures? SupportedFeatures { get; set; }
 
         public bool Equals(Speaker? other)

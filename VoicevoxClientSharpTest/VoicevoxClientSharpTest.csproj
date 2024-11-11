@@ -26,4 +26,10 @@
       <ProjectReference Include="..\VoicevoxClientSharp\VoicevoxClientSharp.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="Resources\Speakers.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>

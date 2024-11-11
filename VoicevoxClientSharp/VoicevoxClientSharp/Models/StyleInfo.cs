@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Text.Json.Serialization;
 
 
 namespace VoicevoxClientSharp.Models
@@ -9,9 +10,13 @@ namespace VoicevoxClientSharp.Models
     /// <summary>
     /// スタイルの追加情報
     /// </summary>
-    [DataContract(Name = "StyleInfo")]
     public sealed class StyleInfo : IEquatable<StyleInfo>
     {
+        [JsonConstructor]
+        public StyleInfo()
+        {
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="StyleInfo" /> class.
         /// </summary>
@@ -22,7 +27,7 @@ namespace VoicevoxClientSharp.Models
         public StyleInfo(int id,
             string icon,
             string? portrait,
-            List<string> voiceSamples)
+            string[] voiceSamples)
         {
             Id = id;
             Icon = icon;
@@ -34,7 +39,7 @@ namespace VoicevoxClientSharp.Models
         /// スタイルID
         /// </summary>
         /// <value>スタイルID</value>
-        [DataMember(Name = "id", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("id")]
         public int Id { get; set; }
 
         /// <summary>
@@ -42,20 +47,19 @@ namespace VoicevoxClientSharp.Models
         /// </summary>
         /// <value>このスタイルのアイコンをbase64エンコードしたもの、あるいはURL</value>
         [DataMember(Name = "icon", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("icon")]
         public string Icon { get; set; }
 
         /// <summary>
         /// このスタイルの立ち絵画像をbase64エンコードしたもの、あるいはURL
         /// </summary>
         /// <value>このスタイルの立ち絵画像をbase64エンコードしたもの、あるいはURL</value>
-        [DataMember(Name = "portrait", EmitDefaultValue = false)]
+        [JsonPropertyName("portrait")]
         public string? Portrait { get; set; }
 
-        /// <summary>
-        /// Gets or Sets VoiceSamples
-        /// </summary>
-        [DataMember(Name = "voice_samples", IsRequired = true, EmitDefaultValue = false)]
-        public List<string> VoiceSamples { get; set; }
+
+        [JsonPropertyName("voice_samples")] 
+        public string[] VoiceSamples { get; set; } = Array.Empty<string>();
 
         public bool Equals(StyleInfo? other)
         {
@@ -88,7 +92,6 @@ namespace VoicevoxClientSharp.Models
             sb.Append("}\n");
             return sb.ToString();
         }
-
 
 
         public override bool Equals(object? obj)

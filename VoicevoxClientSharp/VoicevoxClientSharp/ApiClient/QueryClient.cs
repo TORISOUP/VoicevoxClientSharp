@@ -10,71 +10,71 @@ namespace VoicevoxClientSharp.ApiClient
         /// <summary>
         /// 音声合成用のクエリを作成する
         /// </summary>
-        ValueTask<AudioQuery> PostAudioQueryAsync(string text,
+        ValueTask<AudioQuery> CreateAudioQueryAsync(string text,
             int speakerId,
-            string? coreVersion = "",
+            string? coreVersion = null,
             CancellationToken ct = default);
 
         /// <summary>
         /// 音声合成用のクエリをプリセットを用いて作成する
         /// </summary>
-        ValueTask<AudioQuery> PostAudioQueryFromPresetAsync(string text,
+        ValueTask<AudioQuery> CreateAudioQueryFromPresetAsync(string text,
             int presetId,
-            string? coreVersion = "",
+            string? coreVersion = null,
             CancellationToken ct = default);
 
         /// <summary>
         /// 歌唱音声合成用のクエリを作成する
         /// </summary>
-        ValueTask<FrameAudioQuery> PostSingFrameAudioQueryAsync(Score score,
+        ValueTask<FrameAudioQuery> CreateSingFrameAudioQueryAsync(Score score,
             int speakerId,
-            string? coreVersion = "",
+            string? coreVersion = null,
             CancellationToken ct = default);
 
         /// <summary>
         /// テキストからアクセント句を得る
         /// </summary>
-        ValueTask<AccentPhrase[]> PostAccentPhraseAsync(string text,
+        ValueTask<AccentPhrase[]> CreateAccentPhraseAsync(string text,
             int speakerId,
             bool? isKana = false,
-            string? coreVersion = "",
+            string? coreVersion = null,
             CancellationToken ct = default);
 
         /// <summary>
         /// アクセント句から音高・音素長を得る
         /// </summary>
-        ValueTask<AccentPhrase[]> PostMoraDataAsync(
+        ValueTask<AccentPhrase[]> FetchMoraDataAsync(
             int speakerId,
             AccentPhrase[] accentPhrases,
-            string? coreVersion = "",
+            string? coreVersion = null,
             CancellationToken ct = default);
 
         /// <summary>
         /// アクセント句から音素長を得る
         /// </summary>
-        ValueTask<AccentPhrase[]> PostMoraLengthAsync(
+        ValueTask<AccentPhrase[]> FetchMoraLengthAsync(
             int speakerId,
             AccentPhrase[] accentPhrases,
-            string? coreVersion = "",
+            string? coreVersion = null,
             CancellationToken ct = default);
 
         /// <summary>
         /// アクセント句から音高を得る
         /// </summary>
-        ValueTask<AccentPhrase[]> PostMoraPitchAsync(
+        ValueTask<AccentPhrase[]> FetchMoraPitchAsync(
             int speakerId,
             AccentPhrase[] accentPhrases,
-            string? coreVersion = "",
+            string? coreVersion = null,
             CancellationToken ct = default);
 
         /// <summary>
         /// 楽譜・歌唱音声合成用のクエリからフレームごとの音量を得る
         /// </summary>
-        ValueTask<decimal[]> PostSingFrameVolumeAsync(
+        ValueTask<decimal[]> FetchSingFrameVolumeAsync(
             int speakerId,
             Score score,
             FrameAudioQuery frameAudioQuery,
-            string? coreVersion = "",
+            string? coreVersion = null,
             CancellationToken ct = default);
     }
 
@@ -83,9 +83,9 @@ namespace VoicevoxClientSharp.ApiClient
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
-        public ValueTask<AudioQuery> PostAudioQueryAsync(string text,
+        public ValueTask<AudioQuery> CreateAudioQueryAsync(string text,
             int speakerId,
-            string? coreVersion = "",
+            string? coreVersion = null,
             CancellationToken ct = default)
         {
             var queryString = QueryString(
@@ -100,9 +100,9 @@ namespace VoicevoxClientSharp.ApiClient
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
-        public ValueTask<AudioQuery> PostAudioQueryFromPresetAsync(string text,
+        public ValueTask<AudioQuery> CreateAudioQueryFromPresetAsync(string text,
             int presetId,
-            string? coreVersion = "",
+            string? coreVersion = null,
             CancellationToken ct = default)
         {
             var queryString = QueryString(
@@ -118,9 +118,9 @@ namespace VoicevoxClientSharp.ApiClient
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
-        public ValueTask<FrameAudioQuery> PostSingFrameAudioQueryAsync(Score score,
+        public ValueTask<FrameAudioQuery> CreateSingFrameAudioQueryAsync(Score score,
             int speakerId,
-            string? coreVersion = "",
+            string? coreVersion = null,
             CancellationToken ct = default)
         {
             var queryString = QueryString(
@@ -135,10 +135,10 @@ namespace VoicevoxClientSharp.ApiClient
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
-        public ValueTask<AccentPhrase[]> PostAccentPhraseAsync(string text,
+        public ValueTask<AccentPhrase[]> CreateAccentPhraseAsync(string text,
             int speakerId,
             bool? isKana,
-            string? coreVersion = "",
+            string? coreVersion = null,
             CancellationToken ct = default)
         {
             var queryString = QueryString(
@@ -156,9 +156,9 @@ namespace VoicevoxClientSharp.ApiClient
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
-        public ValueTask<AccentPhrase[]> PostMoraDataAsync(int speakerId,
+        public ValueTask<AccentPhrase[]> FetchMoraDataAsync(int speakerId,
             AccentPhrase[] accentPhrases,
-            string? coreVersion = "",
+            string? coreVersion = null,
             CancellationToken ct = default)
         {
             var queryString = QueryString(
@@ -173,9 +173,9 @@ namespace VoicevoxClientSharp.ApiClient
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
-        public ValueTask<AccentPhrase[]> PostMoraLengthAsync(int speakerId,
+        public ValueTask<AccentPhrase[]> FetchMoraLengthAsync(int speakerId,
             AccentPhrase[] accentPhrases,
-            string? coreVersion = "",
+            string? coreVersion = null,
             CancellationToken ct = default)
         {
             var queryString = QueryString(
@@ -190,9 +190,9 @@ namespace VoicevoxClientSharp.ApiClient
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
-        public ValueTask<AccentPhrase[]> PostMoraPitchAsync(int speakerId,
+        public ValueTask<AccentPhrase[]> FetchMoraPitchAsync(int speakerId,
             AccentPhrase[] accentPhrases,
-            string? coreVersion = "",
+            string? coreVersion = null,
             CancellationToken ct = default)
         {
             var queryString = QueryString(
@@ -207,10 +207,10 @@ namespace VoicevoxClientSharp.ApiClient
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
-        public ValueTask<decimal[]> PostSingFrameVolumeAsync(int speakerId,
+        public ValueTask<decimal[]> FetchSingFrameVolumeAsync(int speakerId,
             Score score,
             FrameAudioQuery frameAudioQuery,
-            string? coreVersion = "",
+            string? coreVersion = null,
             CancellationToken ct = default)
         {
             var request = new SingFrameVolumeRequest(score, frameAudioQuery);

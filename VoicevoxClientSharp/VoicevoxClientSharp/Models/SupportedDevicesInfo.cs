@@ -11,6 +11,7 @@
 using System;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Text.Json.Serialization;
 
 
 namespace VoicevoxClientSharp.Models
@@ -21,38 +22,31 @@ namespace VoicevoxClientSharp.Models
     [DataContract(Name = "SupportedDevicesInfo")]
     public sealed class SupportedDevicesInfo : IEquatable<SupportedDevicesInfo>
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SupportedDevicesInfo" /> class.
-        /// </summary>
-        /// <param name="cpu">CPUに対応しているか (required).</param>
-        /// <param name="cuda">CUDA(Nvidia GPU)に対応しているか (required).</param>
-        /// <param name="dml">DirectML(Nvidia GPU/Radeon GPU等)に対応しているか (required).</param>
-        public SupportedDevicesInfo(bool cpu, bool cuda, bool dml)
+        [JsonConstructor]
+        public SupportedDevicesInfo()
         {
-            Cpu = cpu;
-            Cuda = cuda;
-            Dml = dml;
+            
         }
 
         /// <summary>
         /// CPUに対応しているか
         /// </summary>
         /// <value>CPUに対応しているか</value>
-        [DataMember(Name = "cpu", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("cpu")]
         public bool Cpu { get; set; }
 
         /// <summary>
         /// CUDA(Nvidia GPU)に対応しているか
         /// </summary>
         /// <value>CUDA(Nvidia GPU)に対応しているか</value>
-        [DataMember(Name = "cuda", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("cuda")]
         public bool Cuda { get; set; }
 
         /// <summary>
         /// DirectML(Nvidia GPU/Radeon GPU等)に対応しているか
         /// </summary>
         /// <value>DirectML(Nvidia GPU/Radeon GPU等)に対応しているか</value>
-        [DataMember(Name = "dml", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("dml")]
         public bool Dml { get; set; }
 
         /// <summary>

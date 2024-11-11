@@ -18,10 +18,10 @@ namespace VoicevoxClientSharp.ApiClient
         /// <param name="coreVersion"></param>
         /// <param name="ct"></param>
         /// <returns>wav</returns>
-        ValueTask<byte[]> PostSynthesisAsync(int speakerId,
+        ValueTask<byte[]> SynthesisAsync(int speakerId,
             AudioQuery audioQuery,
             bool? enableInterrogativeUpspeak = true,
-            string? coreVersion = "",
+            string? coreVersion = null,
             CancellationToken ct = default);
 
         /// <summary>
@@ -34,10 +34,10 @@ namespace VoicevoxClientSharp.ApiClient
         /// <param name="coreVersion"></param>
         /// <param name="ct"></param>
         /// <returns>wav</returns>
-        ValueTask<byte[]> PostCancellableSynthesisAsync(int speakerId,
+        ValueTask<byte[]> CancellableSynthesisAsync(int speakerId,
             AudioQuery audioQuery,
             bool? enableInterrogativeUpspeak = true,
-            string? coreVersion = "",
+            string? coreVersion = null,
             CancellationToken ct = default);
 
         /// <summary>
@@ -48,9 +48,9 @@ namespace VoicevoxClientSharp.ApiClient
         /// <param name="coreVersion"></param>
         /// <param name="ct"></param>
         /// <returns>zip圧縮されたwavファイル群</returns>
-        ValueTask<byte[]> PostMultiSpeakerSynthesisAsync(int speakerId,
+        ValueTask<byte[]> MultiSpeakerSynthesisAsync(int speakerId,
             AudioQuery[] audioQueries,
-            string? coreVersion = "",
+            string? coreVersion = null,
             CancellationToken ct = default);
 
         /// <summary>
@@ -61,9 +61,9 @@ namespace VoicevoxClientSharp.ApiClient
         /// <param name="coreVersion"></param>
         /// <param name="ct"></param>
         /// <returns>wav</returns>
-        ValueTask<byte[]> PostFrameSynthesisAsync(int speakerId,
+        ValueTask<byte[]> FrameSynthesisAsync(int speakerId,
             FrameAudioQuery frameAudioQuery,
-            string? coreVersion = "",
+            string? coreVersion = null,
             CancellationToken ct = default);
 
         /// <summary>
@@ -78,9 +78,9 @@ namespace VoicevoxClientSharp.ApiClient
         /// <param name="coreVersion"></param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        ValueTask<IReadOnlyDictionary<int, MorphableTargetInfo>[]> PostMorphableTargetsAsync(
+        ValueTask<IReadOnlyDictionary<int, MorphableTargetInfo>[]> IsMorphableTargetsAsync(
             int[] speakerIds,
-            string? coreVersion = "",
+            string? coreVersion = null,
             CancellationToken ct = default);
 
         /// <summary>
@@ -96,12 +96,12 @@ namespace VoicevoxClientSharp.ApiClient
         /// <param name="coreVersion"></param>
         /// <param name="ct"></param>
         /// <returns>wav</returns>
-        ValueTask<byte[]> PostSynthesisMorphingAsync(
+        ValueTask<byte[]> SynthesisMorphingAsync(
             int baseSpeakerId,
             int targetSpeakerId,
             decimal morphRate,
             AudioQuery audioQuery,
-            string? coreVersion = "",
+            string? coreVersion = null,
             CancellationToken ct = default);
     }
 
@@ -110,10 +110,10 @@ namespace VoicevoxClientSharp.ApiClient
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
-        public ValueTask<byte[]> PostSynthesisAsync(int speakerId,
+        public ValueTask<byte[]> SynthesisAsync(int speakerId,
             AudioQuery audioQuery,
             bool? enableInterrogativeUpspeak,
-            string? coreVersion = "",
+            string? coreVersion = null,
             CancellationToken ct = default)
         {
             var queryString = QueryString(
@@ -128,10 +128,10 @@ namespace VoicevoxClientSharp.ApiClient
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
-        public ValueTask<byte[]> PostCancellableSynthesisAsync(int speakerId,
+        public ValueTask<byte[]> CancellableSynthesisAsync(int speakerId,
             AudioQuery audioQuery,
             bool? enableInterrogativeUpspeak,
-            string? coreVersion = "",
+            string? coreVersion = null,
             CancellationToken ct = default)
         {
             var queryString = QueryString(
@@ -146,9 +146,9 @@ namespace VoicevoxClientSharp.ApiClient
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
-        public ValueTask<byte[]> PostMultiSpeakerSynthesisAsync(int speakerId,
+        public ValueTask<byte[]> MultiSpeakerSynthesisAsync(int speakerId,
             AudioQuery[] audioQueries,
-            string? coreVersion = "",
+            string? coreVersion = null,
             CancellationToken ct = default)
         {
             var queryString = QueryString(
@@ -162,9 +162,9 @@ namespace VoicevoxClientSharp.ApiClient
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
-        public ValueTask<byte[]> PostFrameSynthesisAsync(int speakerId,
+        public ValueTask<byte[]> FrameSynthesisAsync(int speakerId,
             FrameAudioQuery frameAudioQuery,
-            string? coreVersion = "",
+            string? coreVersion = null,
             CancellationToken ct = default)
         {
             var queryString = QueryString(
@@ -178,9 +178,9 @@ namespace VoicevoxClientSharp.ApiClient
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
-        public async ValueTask<IReadOnlyDictionary<int, MorphableTargetInfo>[]> PostMorphableTargetsAsync(
+        public async ValueTask<IReadOnlyDictionary<int, MorphableTargetInfo>[]> IsMorphableTargetsAsync(
             int[] speakerIds,
-            string? coreVersion = "",
+            string? coreVersion = null,
             CancellationToken ct = default)
         {
             var queryString = QueryString(("core_version", coreVersion));
@@ -199,12 +199,12 @@ namespace VoicevoxClientSharp.ApiClient
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
-        public ValueTask<byte[]> PostSynthesisMorphingAsync(
+        public ValueTask<byte[]> SynthesisMorphingAsync(
             int baseSpeakerId,
             int targetSpeakerId,
             decimal morphRate,
             AudioQuery audioQuery,
-            string? coreVersion = "",
+            string? coreVersion = null,
             CancellationToken ct = default)
         {
             morphRate = Math.Min(Math.Max(morphRate, 0M), 1.0M);

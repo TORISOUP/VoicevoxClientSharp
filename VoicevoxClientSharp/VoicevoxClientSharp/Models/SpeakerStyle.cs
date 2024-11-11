@@ -1,6 +1,8 @@
 using System;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Text.Json.Serialization;
+using VoicevoxClientSharp.Extensions;
 
 namespace VoicevoxClientSharp.Models
 {
@@ -10,32 +12,9 @@ namespace VoicevoxClientSharp.Models
     [DataContract(Name = "SpeakerStyle")]
     public sealed class SpeakerStyle : IEquatable<SpeakerStyle>
     {
-        /// <summary>
-        /// スタイルの種類。talk:音声合成クエリの作成と音声合成が可能。singing_teacher:歌唱音声合成用のクエリの作成が可能。frame_decode:歌唱音声合成が可能。sing:歌唱音声合成用のクエリの作成と歌唱音声合成が可能。
-        /// </summary>
-        /// <value>スタイルの種類。talk:音声合成クエリの作成と音声合成が可能。singing_teacher:歌唱音声合成用のクエリの作成が可能。frame_decode:歌唱音声合成が可能。sing:歌唱音声合成用のクエリの作成と歌唱音声合成が可能。</value>
-        public enum TypeEnum
+        [JsonConstructor]
+        public SpeakerStyle()
         {
-            /// <summary>
-            /// Enum Talk for value: talk
-            /// </summary>
-            [EnumMember(Value = "talk")] Talk = 1,
-
-            /// <summary>
-            /// Enum SingingTeacher for value: singing_teacher
-            /// </summary>
-            [EnumMember(Value = "singing_teacher")]
-            SingingTeacher = 2,
-
-            /// <summary>
-            /// Enum FrameDecode for value: frame_decode
-            /// </summary>
-            [EnumMember(Value = "frame_decode")] FrameDecode = 3,
-
-            /// <summary>
-            /// Enum Sing for value: sing
-            /// </summary>
-            [EnumMember(Value = "sing")] Sing = 4
         }
 
         /// <summary>
@@ -47,7 +26,7 @@ namespace VoicevoxClientSharp.Models
         /// スタイルの種類。talk:音声合成クエリの作成と音声合成が可能。singing_teacher:歌唱音声合成用のクエリの作成が可能。frame_decode:歌唱音声合成が可能。sing:歌唱音声合成用のクエリの作成と歌唱音声合成が可能。
         /// (default to TypeEnum.Talk).
         /// </param>
-        public SpeakerStyle(string name, int id, TypeEnum? type = TypeEnum.Talk)
+        public SpeakerStyle(string name, int id, SpeakerType? type = SpeakerType.Talk)
         {
             Name = name;
             Id = id;
@@ -59,14 +38,16 @@ namespace VoicevoxClientSharp.Models
         /// スタイルの種類。talk:音声合成クエリの作成と音声合成が可能。singing_teacher:歌唱音声合成用のクエリの作成が可能。frame_decode:歌唱音声合成が可能。sing:歌唱音声合成用のクエリの作成と歌唱音声合成が可能。
         /// </summary>
         /// <value>スタイルの種類。talk:音声合成クエリの作成と音声合成が可能。singing_teacher:歌唱音声合成用のクエリの作成が可能。frame_decode:歌唱音声合成が可能。sing:歌唱音声合成用のクエリの作成と歌唱音声合成が可能。</value>
-        [DataMember(Name = "type", EmitDefaultValue = false)]
-        public TypeEnum? Type { get; set; }
+        [JsonPropertyName("type")]
+        [JsonConverter(typeof(Extensions.JsonStringEnumConverter<SpeakerType>))]
+        public SpeakerType? Type { get; set; }
 
         /// <summary>
         /// スタイル名
         /// </summary>
         /// <value>スタイル名</value>
         [DataMember(Name = "name", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("name")]
         public string Name { get; set; }
 
         /// <summary>
@@ -74,6 +55,7 @@ namespace VoicevoxClientSharp.Models
         /// </summary>
         /// <value>スタイルID</value>
         [DataMember(Name = "id", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("id")]
         public int Id { get; set; }
 
         public bool Equals(SpeakerStyle? other)
@@ -121,5 +103,33 @@ namespace VoicevoxClientSharp.Models
                 return hashCode;
             }
         }
+    }
+
+    /// <summary>
+    /// スタイルの種類。talk:音声合成クエリの作成と音声合成が可能。singing_teacher:歌唱音声合成用のクエリの作成が可能。frame_decode:歌唱音声合成が可能。sing:歌唱音声合成用のクエリの作成と歌唱音声合成が可能。
+    /// </summary>
+    /// <value>スタイルの種類。talk:音声合成クエリの作成と音声合成が可能。singing_teacher:歌唱音声合成用のクエリの作成が可能。frame_decode:歌唱音声合成が可能。sing:歌唱音声合成用のクエリの作成と歌唱音声合成が可能。</value>
+    public enum SpeakerType
+    {
+        /// <summary>
+        /// Enum Talk for value: talk
+        /// </summary>
+        [EnumMember(Value = "talk")] Talk = 1,
+
+        /// <summary>
+        /// Enum SingingTeacher for value: singing_teacher
+        /// </summary>
+        [EnumMember(Value = "singing_teacher")]
+        SingingTeacher = 2,
+
+        /// <summary>
+        /// Enum FrameDecode for value: frame_decode
+        /// </summary>
+        [EnumMember(Value = "frame_decode")] FrameDecode = 3,
+
+        /// <summary>
+        /// Enum Sing for value: sing
+        /// </summary>
+        [EnumMember(Value = "sing")] Sing = 4
     }
 }

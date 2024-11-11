@@ -1,6 +1,6 @@
 using System;
-using System.Runtime.Serialization;
 using System.Text;
+using System.Text.Json.Serialization;
 
 
 namespace VoicevoxClientSharp.Models
@@ -8,24 +8,28 @@ namespace VoicevoxClientSharp.Models
     /// <summary>
     /// プリセット情報
     /// </summary>
-    [DataContract(Name = "Preset")]
     public sealed class Preset : IEquatable<Preset>
     {
+        [JsonConstructor]
+        public Preset()
+        {
+        }
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="Preset" /> class.
+        /// プリセット情報
         /// </summary>
-        /// <param name="id">プリセットID (required).</param>
-        /// <param name="name">プリセット名 (required).</param>
-        /// <param name="speakerUuid">キャラクターのUUID (required).</param>
-        /// <param name="styleId">スタイルID (required).</param>
-        /// <param name="speedScale">全体の話速 (required).</param>
-        /// <param name="pitchScale">全体の音高 (required).</param>
-        /// <param name="intonationScale">全体の抑揚 (required).</param>
-        /// <param name="volumeScale">全体の音量 (required).</param>
-        /// <param name="prePhonemeLength">音声の前の無音時間 (required).</param>
-        /// <param name="postPhonemeLength">音声の後の無音時間 (required).</param>
-        /// <param name="pauseLength">句読点などの無音時間.</param>
-        /// <param name="pauseLengthScale">句読点などの無音時間（倍率） (default to 1M).</param>
+        /// <param name="id">プリセットID</param>
+        /// <param name="name">プリセット名</param>
+        /// <param name="speakerUuid">キャラクターのUUID</param>
+        /// <param name="styleId">スタイルID</param>
+        /// <param name="speedScale">全体の話速</param>
+        /// <param name="pitchScale">全体の音高</param>
+        /// <param name="intonationScale">全体の抑揚</param>
+        /// <param name="volumeScale">全体の音量</param>
+        /// <param name="prePhonemeLength">音声の前の無音時間</param>
+        /// <param name="postPhonemeLength">音声の後の無音時間</param>
+        /// <param name="pauseLength">句読点などの無音時間</param>
+        /// <param name="pauseLengthScale">句読点などの無音時間（倍率）</param>
         public Preset(int id,
             string name,
             string speakerUuid,
@@ -36,8 +40,8 @@ namespace VoicevoxClientSharp.Models
             decimal volumeScale,
             decimal prePhonemeLength,
             decimal postPhonemeLength,
-            decimal? pauseLength,
-            decimal? pauseLengthScale = 1M)
+            decimal? pauseLength = null,
+            decimal? pauseLengthScale = null)
         {
             Id = id;
             Name = name;
@@ -57,84 +61,84 @@ namespace VoicevoxClientSharp.Models
         /// プリセットID
         /// </summary>
         /// <value>プリセットID</value>
-        [DataMember(Name = "id", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("id")]
         public int Id { get; set; }
 
         /// <summary>
         /// プリセット名
         /// </summary>
         /// <value>プリセット名</value>
-        [DataMember(Name = "name", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("name")]
         public string Name { get; set; }
 
         /// <summary>
         /// キャラクターのUUID
         /// </summary>
         /// <value>キャラクターのUUID</value>
-        [DataMember(Name = "speaker_uuid", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("speaker_uuid")]
         public string SpeakerUuid { get; set; }
 
         /// <summary>
         /// スタイルID
         /// </summary>
         /// <value>スタイルID</value>
-        [DataMember(Name = "style_id", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("style_id")]
         public int StyleId { get; set; }
 
         /// <summary>
         /// 全体の話速
         /// </summary>
         /// <value>全体の話速</value>
-        [DataMember(Name = "speedScale", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("speedScale")]
         public decimal SpeedScale { get; set; }
 
         /// <summary>
         /// 全体の音高
         /// </summary>
         /// <value>全体の音高</value>
-        [DataMember(Name = "pitchScale", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("pitchScale")]
         public decimal PitchScale { get; set; }
 
         /// <summary>
         /// 全体の抑揚
         /// </summary>
         /// <value>全体の抑揚</value>
-        [DataMember(Name = "intonationScale", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("intonationScale")]
         public decimal IntonationScale { get; set; }
 
         /// <summary>
         /// 全体の音量
         /// </summary>
         /// <value>全体の音量</value>
-        [DataMember(Name = "volumeScale", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("volumeScale")]
         public decimal VolumeScale { get; set; }
 
         /// <summary>
         /// 音声の前の無音時間
         /// </summary>
         /// <value>音声の前の無音時間</value>
-        [DataMember(Name = "prePhonemeLength", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("prePhonemeLength")]
         public decimal PrePhonemeLength { get; set; }
 
         /// <summary>
         /// 音声の後の無音時間
         /// </summary>
         /// <value>音声の後の無音時間</value>
-        [DataMember(Name = "postPhonemeLength", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("postPhonemeLength")]
         public decimal PostPhonemeLength { get; set; }
 
         /// <summary>
         /// 句読点などの無音時間
         /// </summary>
         /// <value>句読点などの無音時間</value>
-        [DataMember(Name = "pauseLength", EmitDefaultValue = false)]
+        [JsonPropertyName("pauseLength")]
         public decimal? PauseLength { get; set; }
 
         /// <summary>
         /// 句読点などの無音時間（倍率）
         /// </summary>
         /// <value>句読点などの無音時間（倍率）</value>
-        [DataMember(Name = "pauseLengthScale", EmitDefaultValue = false)]
+        [JsonPropertyName("pauseLengthScale")]
         public decimal? PauseLengthScale { get; set; }
 
         public bool Equals(Preset? other)
@@ -180,7 +184,6 @@ namespace VoicevoxClientSharp.Models
             sb.Append("}\n");
             return sb.ToString();
         }
-
 
 
         public override bool Equals(object? obj)
