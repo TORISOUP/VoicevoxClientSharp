@@ -47,10 +47,27 @@ public class MiscClientSpec : SpecBase
 
 
     [Test, Timeout(5000)]
-    public async Task GetSupportedDevicesAsyncTest()
+    public async Task GetVersionAsyncTest()
     {
-        var result = await MiscClient.GetSupportedDevicesAsync(ct: CancellationToken.None);
+        var result = await MiscClient.GetVersionAsync(ct: CancellationToken.None);
         Assert.IsNotNull(result);
     }
 
+    [Test, Timeout(5000)]
+    public async Task GetCoreVersionsAsyncTest()
+    {
+        var result = await MiscClient.GetCoreVersionsAsync(ct: CancellationToken.None);
+        Assert.IsNotNull(result);
+        Assert.Greater(result.Length, 0);
+    }
+    
+    [Test, Timeout(5000)]
+    public async Task GetEngineManifestAsyncTest()
+    {
+        var result = await MiscClient.GetEngineManifestAsync(ct: CancellationToken.None);
+        Assert.IsNotNull(result);
+        Assert.IsNotNull(result.SupportedFeatures);
+        Assert.Greater(result.DependencyLicenses.Length, 0);
+        Assert.Greater(result.UpdateInfos.Length, 0);
+    }
 }

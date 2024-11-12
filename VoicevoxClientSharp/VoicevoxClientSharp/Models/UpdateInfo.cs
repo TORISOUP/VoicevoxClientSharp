@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Text.Json.Serialization;
 
 
 namespace VoicevoxClientSharp.Models
@@ -13,6 +14,11 @@ namespace VoicevoxClientSharp.Models
     [DataContract(Name = "UpdateInfo")]
     public sealed class UpdateInfo : IEquatable<UpdateInfo>
     {
+        [JsonConstructor]
+        public UpdateInfo()
+        {
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="UpdateInfo" /> class.
         /// </summary>
@@ -20,8 +26,8 @@ namespace VoicevoxClientSharp.Models
         /// <param name="descriptions">descriptions (required).</param>
         /// <param name="contributors">contributors.</param>
         public UpdateInfo(string varVersion,
-            List<string> descriptions,
-            List<string>? contributors)
+            string[] descriptions,
+            string[]? contributors)
         {
             VarVersion = varVersion;
             Descriptions = descriptions;
@@ -32,20 +38,14 @@ namespace VoicevoxClientSharp.Models
         /// エンジンのバージョン名
         /// </summary>
         /// <value>エンジンのバージョン名</value>
-        [DataMember(Name = "version", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("version")]
         public string VarVersion { get; set; }
 
-        /// <summary>
-        /// Gets or Sets Descriptions
-        /// </summary>
-        [DataMember(Name = "descriptions", IsRequired = true, EmitDefaultValue = false)]
-        public List<string> Descriptions { get; set; }
 
-        /// <summary>
-        /// Gets or Sets Contributors
-        /// </summary>
-        [DataMember(Name = "contributors", EmitDefaultValue = false)]
-        public List<string>? Contributors { get; set; }
+        [JsonPropertyName("descriptions")] public string[] Descriptions { get; set; }
+
+
+        [JsonPropertyName("contributors")] public string[]? Contributors { get; set; }
 
         /// <summary>
         /// Returns true if UpdateInfo instances are equal
@@ -90,7 +90,6 @@ namespace VoicevoxClientSharp.Models
             sb.Append("}\n");
             return sb.ToString();
         }
-
 
 
         /// <summary>

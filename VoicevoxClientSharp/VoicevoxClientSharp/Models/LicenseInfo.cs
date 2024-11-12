@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Text.Json.Serialization;
 
 
 namespace VoicevoxClientSharp.Models
@@ -8,9 +9,13 @@ namespace VoicevoxClientSharp.Models
     /// <summary>
     /// 依存ライブラリのライセンス情報
     /// </summary>
-    [DataContract(Name = "LicenseInfo")]
     public sealed class LicenseInfo : IEquatable<LicenseInfo>
     {
+        [JsonConstructor]
+        public LicenseInfo()
+        {
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="LicenseInfo" /> class.
         /// </summary>
@@ -33,7 +38,7 @@ namespace VoicevoxClientSharp.Models
         /// 依存ライブラリ名
         /// </summary>
         /// <value>依存ライブラリ名</value>
-        [DataMember(Name = "name", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("name")]
         public string Name { get; set; }
 
         /// <summary>
@@ -41,6 +46,7 @@ namespace VoicevoxClientSharp.Models
         /// </summary>
         /// <value>依存ライブラリのバージョン</value>
         [DataMember(Name = "version", EmitDefaultValue = false)]
+        [JsonPropertyName("version")]
         public string? VarVersion { get; set; }
 
         /// <summary>
@@ -48,6 +54,7 @@ namespace VoicevoxClientSharp.Models
         /// </summary>
         /// <value>依存ライブラリのライセンス名</value>
         [DataMember(Name = "license", EmitDefaultValue = false)]
+        [JsonPropertyName("license")]
         public string? License { get; set; }
 
         /// <summary>
@@ -55,6 +62,7 @@ namespace VoicevoxClientSharp.Models
         /// </summary>
         /// <value>依存ライブラリのライセンス本文</value>
         [DataMember(Name = "text", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("text")]
         public string Text { get; set; }
 
 
@@ -90,7 +98,6 @@ namespace VoicevoxClientSharp.Models
             sb.Append("}\n");
             return sb.ToString();
         }
-
 
 
         /// <summary>

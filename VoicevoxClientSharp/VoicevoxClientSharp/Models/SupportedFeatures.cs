@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Text.Json.Serialization;
 
 
 namespace VoicevoxClientSharp.Models
@@ -8,9 +9,13 @@ namespace VoicevoxClientSharp.Models
     /// <summary>
     /// エンジンが持つ機能の一覧
     /// </summary>
-    [DataContract(Name = "SupportedFeatures")]
     public sealed class SupportedFeatures : IEquatable<SupportedFeatures>
     {
+        [JsonConstructor]
+        public SupportedFeatures()
+        {
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SupportedFeatures" /> class.
         /// </summary>
@@ -57,84 +62,84 @@ namespace VoicevoxClientSharp.Models
         /// モーラごとの音高の調整
         /// </summary>
         /// <value>モーラごとの音高の調整</value>
-        [DataMember(Name = "adjust_mora_pitch", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("adjust_mora_pitch")]
         public bool AdjustMoraPitch { get; set; }
 
         /// <summary>
         /// 音素ごとの長さの調整
         /// </summary>
         /// <value>音素ごとの長さの調整</value>
-        [DataMember(Name = "adjust_phoneme_length", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("adjust_phoneme_length")]
         public bool AdjustPhonemeLength { get; set; }
 
         /// <summary>
         /// 全体の話速の調整
         /// </summary>
         /// <value>全体の話速の調整</value>
-        [DataMember(Name = "adjust_speed_scale", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("adjust_speed_scale")]
         public bool AdjustSpeedScale { get; set; }
 
         /// <summary>
         /// 全体の音高の調整
         /// </summary>
         /// <value>全体の音高の調整</value>
-        [DataMember(Name = "adjust_pitch_scale", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("adjust_pitch_scale")]
         public bool AdjustPitchScale { get; set; }
 
         /// <summary>
         /// 全体の抑揚の調整
         /// </summary>
         /// <value>全体の抑揚の調整</value>
-        [DataMember(Name = "adjust_intonation_scale", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("adjust_intonation_scale")]
         public bool AdjustIntonationScale { get; set; }
 
         /// <summary>
         /// 全体の音量の調整
         /// </summary>
         /// <value>全体の音量の調整</value>
-        [DataMember(Name = "adjust_volume_scale", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("adjust_volume_scale")]
         public bool AdjustVolumeScale { get; set; }
 
         /// <summary>
         /// 句読点などの無音時間の調整
         /// </summary>
         /// <value>句読点などの無音時間の調整</value>
-        [DataMember(Name = "adjust_pause_length", EmitDefaultValue = true)]
+        [JsonPropertyName("adjust_pause_length")]
         public bool AdjustPauseLength { get; set; }
 
         /// <summary>
         /// 疑問文の自動調整
         /// </summary>
         /// <value>疑問文の自動調整</value>
-        [DataMember(Name = "interrogative_upspeak", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("interrogative_upspeak")]
         public bool InterrogativeUpspeak { get; set; }
 
         /// <summary>
         /// 2種類のスタイルでモーフィングした音声を合成
         /// </summary>
         /// <value>2種類のスタイルでモーフィングした音声を合成</value>
-        [DataMember(Name = "synthesis_morphing", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("synthesis_morphing")]
         public bool SynthesisMorphing { get; set; }
 
         /// <summary>
         /// 歌唱音声合成
         /// </summary>
         /// <value>歌唱音声合成</value>
-        [DataMember(Name = "sing", EmitDefaultValue = true)]
+        [JsonPropertyName("sing")]
         public bool? Sing { get; set; }
 
         /// <summary>
         /// 音声ライブラリのインストール・アンインストール
         /// </summary>
         /// <value>音声ライブラリのインストール・アンインストール</value>
-        [DataMember(Name = "manage_library", EmitDefaultValue = true)]
+        [JsonPropertyName("manage_library")]
         public bool? ManageLibrary { get; set; }
 
         /// <summary>
         /// キャラクター情報のリソースをURLで返送
         /// </summary>
         /// <value>キャラクター情報のリソースをURLで返送</value>
-        [DataMember(Name = "return_resource_url", EmitDefaultValue = true)]
+        [JsonPropertyName("return_resource_url")]
         public bool? ReturnResourceUrl { get; set; }
 
         /// <summary>
@@ -223,7 +228,6 @@ namespace VoicevoxClientSharp.Models
             sb.Append("}\n");
             return sb.ToString();
         }
-
 
 
         /// <summary>

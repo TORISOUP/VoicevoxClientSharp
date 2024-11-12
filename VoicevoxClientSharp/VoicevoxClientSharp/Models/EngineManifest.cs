@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Text.Json.Serialization;
 
 
 namespace VoicevoxClientSharp.Models
@@ -10,9 +11,14 @@ namespace VoicevoxClientSharp.Models
     /// <summary>
     /// エンジン自体に関する情報
     /// </summary>
-    [DataContract(Name = "EngineManifest")]
     public sealed class EngineManifest : IEquatable<EngineManifest>
     {
+        [JsonConstructor]
+        public EngineManifest()
+        {
+            
+        }
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="EngineManifest" /> class.
         /// </summary>
@@ -38,8 +44,8 @@ namespace VoicevoxClientSharp.Models
             int defaultSamplingRate,
             decimal frameRate,
             string termsOfService,
-            List<UpdateInfo> updateInfos,
-            List<LicenseInfo> dependencyLicenses,
+            UpdateInfo[] updateInfos,
+            LicenseInfo[] dependencyLicenses,
             string? supportedVvlibManifestVersion,
             SupportedFeatures supportedFeatures)
         {
@@ -62,88 +68,82 @@ namespace VoicevoxClientSharp.Models
         /// マニフェストのバージョン
         /// </summary>
         /// <value>マニフェストのバージョン</value>
-        [DataMember(Name = "manifest_version", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("manifest_version")]
         public string ManifestVersion { get; set; }
 
         /// <summary>
         /// エンジン名
         /// </summary>
         /// <value>エンジン名</value>
-        [DataMember(Name = "name", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("name")]
         public string Name { get; set; }
 
         /// <summary>
         /// ブランド名
         /// </summary>
         /// <value>ブランド名</value>
-        [DataMember(Name = "brand_name", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("brand_name")]
         public string BrandName { get; set; }
 
         /// <summary>
         /// エンジンのUUID
         /// </summary>
         /// <value>エンジンのUUID</value>
-        [DataMember(Name = "uuid", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("uuid")]
         public string Uuid { get; set; }
 
         /// <summary>
         /// エンジンのURL
         /// </summary>
         /// <value>エンジンのURL</value>
-        [DataMember(Name = "url", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("url")]
         public string Url { get; set; }
 
         /// <summary>
         /// エンジンのアイコンをBASE64エンコードしたもの
         /// </summary>
         /// <value>エンジンのアイコンをBASE64エンコードしたもの</value>
-        [DataMember(Name = "icon", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("icon")]
         public string Icon { get; set; }
 
         /// <summary>
         /// デフォルトのサンプリング周波数
         /// </summary>
         /// <value>デフォルトのサンプリング周波数</value>
-        [DataMember(Name = "default_sampling_rate", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("default_sampling_rate")]
         public int DefaultSamplingRate { get; set; }
 
         /// <summary>
         /// エンジンのフレームレート
         /// </summary>
         /// <value>エンジンのフレームレート</value>
-        [DataMember(Name = "frame_rate", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("frame_rate")]
         public decimal FrameRate { get; set; }
 
         /// <summary>
         /// エンジンの利用規約
         /// </summary>
         /// <value>エンジンの利用規約</value>
-        [DataMember(Name = "terms_of_service", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("terms_of_service")]
         public string TermsOfService { get; set; }
 
-        /// <summary>
-        /// Gets or Sets UpdateInfos
-        /// </summary>
-        [DataMember(Name = "update_infos", IsRequired = true, EmitDefaultValue = false)]
-        public List<UpdateInfo> UpdateInfos { get; set; }
 
-        /// <summary>
-        /// Gets or Sets DependencyLicenses
-        /// </summary>
-        [DataMember(Name = "dependency_licenses", IsRequired = true, EmitDefaultValue = false)]
-        public List<LicenseInfo> DependencyLicenses { get; set; }
+        [JsonPropertyName("update_infos")]
+        public UpdateInfo[]  UpdateInfos { get; set; }
+
+
+        [JsonPropertyName("dependency_licenses")]
+        public LicenseInfo[] DependencyLicenses { get; set; }
 
         /// <summary>
         /// エンジンが対応するvvlibのバージョン
         /// </summary>
         /// <value>エンジンが対応するvvlibのバージョン</value>
-        [DataMember(Name = "supported_vvlib_manifest_version", EmitDefaultValue = false)]
+        [JsonPropertyName("supported_vvlib_manifest_version")]
         public string? SupportedVvlibManifestVersion { get; set; }
 
-        /// <summary>
-        /// Gets or Sets SupportedFeatures
-        /// </summary>
-        [DataMember(Name = "supported_features", IsRequired = true, EmitDefaultValue = false)]
+
+        [JsonPropertyName("supported_features")]
         public SupportedFeatures SupportedFeatures { get; set; }
 
         /// <summary>

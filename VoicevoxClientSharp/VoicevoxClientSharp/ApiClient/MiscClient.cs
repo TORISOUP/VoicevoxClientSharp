@@ -9,23 +9,49 @@ namespace VoicevoxClientSharp.ApiClient
     public interface IMiscClient
     {
         /// <summary>
+        /// POST /connect_waves
         /// base64エンコードされたwavデータを一纏めにし、wavファイルで返します。
         /// </summary>
         ValueTask<byte[]> PostConnectWavesAsync(string[] waves, CancellationToken ct = default);
 
         /// <summary>
+        /// POST /validate_kana
         /// テキストがAquesTalk 風記法に従っているかどうかを判定します。 
         /// </summary>
         ValueTask<(bool isOk, ParseKanaBadRequest? error)> PostValidateKanaAsync(string text,
             CancellationToken ct = default);
-        
+
         /// <summary>
+        /// GET /supported_devices
         /// 対応デバイスの一覧を取得します。
         /// </summary>
         ValueTask<SupportedDevicesInfo> GetSupportedDevicesAsync(
             string? coreVersion = null,
             CancellationToken ct = default);
 
+        /// <summary>
+        /// GET /version
+        /// エンジンのバージョンを取得します。
+        /// </summary>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        ValueTask<string> GetVersionAsync(CancellationToken ct = default);
+
+        /// <summary>
+        /// GET /core_versions
+        /// 利用可能なコアのバージョン一覧を取得します。
+        /// </summary>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        ValueTask<string[]> GetCoreVersionsAsync(CancellationToken ct = default);
+
+        /// <summary>
+        /// GET /engine_manifest
+        /// エンジンマニフェストを取得します。
+        /// </summary>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        ValueTask<EngineManifest> GetEngineManifestAsync(CancellationToken ct = default);
     }
 
     public partial class RawApiClient
@@ -74,7 +100,7 @@ namespace VoicevoxClientSharp.ApiClient
                 throw;
             }
         }
-        
+
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
@@ -88,7 +114,30 @@ namespace VoicevoxClientSharp.ApiClient
             var url = $"{_baseUrl}/supported_devices?{queryString}";
             return GetAsync<SupportedDevicesInfo>(url, ct);
         }
+
+        public async ValueTask<string> GetVersionAsync(CancellationToken ct = default)
+        {
+            var url = $"{_baseUrl}/version";
+            var response = await _httpClient.GetAsync(url, ct);
+            if ((int)response.StatusCode >= 400)
+            {
+                var errorJson = await response.Content.ReadAsStringAsync();
+                throw new VoicevoxApiErrorException(errorJson, errorJson, (int)response.StatusCode);
+            }
+
+            return await response.Content.ReadAsStringAsync();
+        }
+
+        public ValueTask<string[]> GetCoreVersionsAsync(CancellationToken ct = default)
+        {
+            var url = $"{_baseUrl}/core_versions";
+            return GetAsync<string[]>(url, ct);
+        }
+
+        public ValueTask<EngineManifest> GetEngineManifestAsync(CancellationToken ct = default)
+        {
+            var url = $"{_baseUrl}/engine_manifest";
+            return GetAsync<EngineManifest>(url, ct);
+        }
     }
-    
-    
 }
