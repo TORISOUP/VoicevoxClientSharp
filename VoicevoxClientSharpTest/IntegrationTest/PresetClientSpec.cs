@@ -25,18 +25,22 @@ public class PresetClientSpec : SpecBase
             name: "TestPreset",
             speakerUuid: speakerId,
             styleId: styleId,
-            speedScale: 1M,
+            speedScale: 1.0M,
             pitchScale: 0M,
-            intonationScale: 1M,
-            volumeScale: 1M,
+            intonationScale: 1.0M,
+            volumeScale: 1.0M,
             prePhonemeLength: 0.1M,
-            postPhonemeLength: 1.0M);
-        
-        // TODO: 壊れている
-        
+            postPhonemeLength: 1.0M,
+            pauseLength: 0.5M,
+            pauseLengthScale: 1.0M);
+
+
         // 追加
-        await PresetClient.AddPresetAsync(newPreset);
-        
+        var createdId = await PresetClient.AddPresetAsync(newPreset);
+
+        // 作成成功
+        Assert.That(createdId, Is.EqualTo(presetId));
+
         // プリセットを取得する
         {
             var ps = await PresetClient.GetPresetsAsync();
@@ -46,6 +50,49 @@ public class PresetClientSpec : SpecBase
             var addedPreset = ps.FirstOrDefault(p => p.Id == presetId);
             Assert.IsNotNull(addedPreset);
             Assert.That(addedPreset, Is.EqualTo(newPreset));
+        }
+
+        var updatedPreset = new Preset(
+            id: presetId,
+            name: "TestPresetUpdated",
+            speakerUuid: speakerId,
+            styleId: styleId,
+            speedScale: 2.0M,
+            pitchScale: 1M,
+            intonationScale: 2.0M,
+            volumeScale: 2.0M,
+            prePhonemeLength: 0.5M,
+            postPhonemeLength: 2.0M,
+            pauseLength: 0.1M,
+            pauseLengthScale: 2.0M
+        );
+
+        // 更新
+        var updatedId = await PresetClient.UpdatePresetAsync(updatedPreset);
+        
+        // 更新成功
+        Assert.That(updatedId, Is.EqualTo(presetId));
+        {
+            var ps = await PresetClient.GetPresetsAsync();
+            Assert.IsNotNull(ps);
+
+            // 更新されているはず
+            var addedPreset = ps.FirstOrDefault(p => p.Id == presetId);
+            Assert.IsNotNull(addedPreset);
+            Assert.That(addedPreset, Is.EqualTo(updatedPreset));
+        }
+        
+        // 削除
+        await PresetClient.DeletePresetAsync(presetId);
+        
+        // 削除成功
+        {
+            var ps = await PresetClient.GetPresetsAsync();
+            Assert.IsNotNull(ps);
+
+            // 削除されているはず
+            var addedPreset = ps.FirstOrDefault(p => p.Id == presetId);
+            Assert.IsNull(addedPreset);
         }
     }
 }
