@@ -9,7 +9,13 @@ using System.Threading.Tasks;
 
 namespace VoicevoxClientSharp.ApiClient
 {
-    public interface IVoicevoxApiClient : IQueryClient, ISynthesisClient, IMiscClient, ISpeakerClient, IPresetClient,
+    public interface IVoicevoxApiClient : 
+        IQueryClient, 
+        ISynthesisClient, 
+        IMiscClient, 
+        ISpeakerClient,
+        IPresetClient,
+        ILibraryClient,
         IDisposable
     {
     }

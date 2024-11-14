@@ -10,6 +10,7 @@ namespace VoicevoxClientSharp.ApiClient
     public interface ISynthesisClient
     {
         /// <summary>
+        /// POST /synthesis
         /// 音声合成する
         /// </summary>
         /// <param name="speakerId"></param>
@@ -25,6 +26,7 @@ namespace VoicevoxClientSharp.ApiClient
             CancellationToken ct = default);
 
         /// <summary>
+        /// POST /cancellable_synthesis
         /// 音声合成する（キャンセル可能）
         /// この API は実験的機能であり、エンジン起動時に引数で--enable_cancellable_synthesisを指定しないと有効化されません。
         /// </summary>
@@ -41,6 +43,7 @@ namespace VoicevoxClientSharp.ApiClient
             CancellationToken ct = default);
 
         /// <summary>
+        /// POST /multi_synthesis
         /// 複数まとめて音声合成する
         /// </summary>
         /// <param name="speakerId"></param>
@@ -54,6 +57,7 @@ namespace VoicevoxClientSharp.ApiClient
             CancellationToken ct = default);
 
         /// <summary>
+        /// POST /frame_synthesis
         /// 歌唱音声合成を行います。
         /// </summary>
         /// <param name="speakerId"></param>
@@ -67,6 +71,7 @@ namespace VoicevoxClientSharp.ApiClient
             CancellationToken ct = default);
 
         /// <summary>
+        /// POST /morphable_targets
         /// 指定したスタイルに対してエンジン内のキャラクターがモーフィングが可能か判定する
         /// 
         /// 指定されたベーススタイルに対してエンジン内の各キャラクターがモーフィング機能を利用可能か返します。
@@ -84,6 +89,7 @@ namespace VoicevoxClientSharp.ApiClient
             CancellationToken ct = default);
 
         /// <summary>
+        /// POST /synthesis_morphing
         /// 2種類のスタイルでモーフィングした音声を合成する
         ///
         /// 指定された2種類のスタイルで音声を合成、指定した割合でモーフィングした音声を得ます。

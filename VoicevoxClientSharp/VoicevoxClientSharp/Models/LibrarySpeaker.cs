@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Text.Json.Serialization;
 
 
 namespace VoicevoxClientSharp.Models
@@ -8,9 +9,13 @@ namespace VoicevoxClientSharp.Models
     /// <summary>
     /// 音声ライブラリに含まれるキャラクターの情報
     /// </summary>
-    [DataContract(Name = "LibrarySpeaker")]
     public sealed class LibrarySpeaker : IEquatable<LibrarySpeaker>
     {
+        [JsonConstructor]
+        public LibrarySpeaker()
+        {
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="LibrarySpeaker" /> class.
         /// </summary>
@@ -25,13 +30,14 @@ namespace VoicevoxClientSharp.Models
         /// <summary>
         /// Gets or Sets Speaker
         /// </summary>
-        [DataMember(Name = "speaker", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("speaker")]
         public Speaker Speaker { get; set; }
 
         /// <summary>
         /// Gets or Sets SpeakerInfo
         /// </summary>
         [DataMember(Name = "speaker_info", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("speaker_info")]
         public SpeakerInfo SpeakerInfo { get; set; }
 
         /// <summary>
@@ -70,7 +76,6 @@ namespace VoicevoxClientSharp.Models
             sb.Append("}\n");
             return sb.ToString();
         }
-
 
 
         /// <summary>

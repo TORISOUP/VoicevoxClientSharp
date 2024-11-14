@@ -3,14 +3,15 @@ using VoicevoxClientSharp.ApiClient;
 
 namespace VoicevoxClientSharpTest.IntegrationTest;
 
-public class SpecBase
+public class BaseSpec
 {
     private IVoicevoxApiClient _voicevoxApiClient;
-    protected IQueryClient QueryClient;
-    protected ISynthesisClient SynthesisClient;
-    protected IMiscClient MiscClient;
-    protected ISpeakerClient SpeakerClient;
-    protected IPresetClient PresetClient;
+    protected IQueryClient QueryClient { get; private set; }
+    protected ISynthesisClient SynthesisClient { get; private set; }
+    protected IMiscClient MiscClient { get; private set; }
+    protected ISpeakerClient SpeakerClient { get; private set; }
+    protected IPresetClient PresetClient { get; private set; }
+    protected ILibraryClient LibraryClient { get; private set; }
 
     [SetUp]
     public void Setup()
@@ -21,6 +22,7 @@ public class SpecBase
         MiscClient = _voicevoxApiClient;
         SpeakerClient = _voicevoxApiClient;
         PresetClient = _voicevoxApiClient;
+        LibraryClient = _voicevoxApiClient;
     }
 
     [TearDown]
@@ -28,7 +30,7 @@ public class SpecBase
     {
         _voicevoxApiClient.Dispose();
     }
-    
+
     protected async ValueTask PlaySoundAsync(byte[] wav)
     {
         await using var stream = new MemoryStream(wav);

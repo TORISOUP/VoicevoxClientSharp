@@ -3,7 +3,7 @@ using VoicevoxClientSharp.Models;
 
 namespace VoicevoxClientSharpTest.IntegrationTest;
 
-public class SynthesisClientSpec : SpecBase
+public class SynthesisClientBaseSpec : BaseSpec
 {
     [Test, Timeout(10000)]
     public async Task PostSynthesisAsyncTest()

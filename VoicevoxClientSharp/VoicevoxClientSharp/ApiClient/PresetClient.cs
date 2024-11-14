@@ -7,6 +7,7 @@ namespace VoicevoxClientSharp.ApiClient
     public interface IPresetClient
     {
         /// <summary>
+        /// GET /presets
         /// エンジンが保持しているプリセットの設定を返します
         /// </summary>
         ValueTask<Preset[]> GetPresetsAsync(
@@ -14,6 +15,7 @@ namespace VoicevoxClientSharp.ApiClient
             CancellationToken ct = default);
 
         /// <summary>
+        /// POST /add_preset
         /// 新しいプリセットを追加します
         /// </summary>
         /// <param name="preset"></param>
@@ -24,6 +26,7 @@ namespace VoicevoxClientSharp.ApiClient
             CancellationToken ct = default);
 
         /// <summary>
+        /// POST /update_preset
         /// 既存のプリセットを更新します
         /// </summary>
         /// <param name="preset"></param>
@@ -34,6 +37,7 @@ namespace VoicevoxClientSharp.ApiClient
             CancellationToken ct = default);
 
         /// <summary>
+        /// POST /delete_preset
         /// 既存のプリセットを削除します
         /// </summary>
         /// <param name="id">削除するプリセットのプリセットID</param>

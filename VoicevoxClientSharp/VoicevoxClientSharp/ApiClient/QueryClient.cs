@@ -8,6 +8,7 @@ namespace VoicevoxClientSharp.ApiClient
     public interface IQueryClient : IDisposable
     {
         /// <summary>
+        /// POST /audio_query
         /// 音声合成用のクエリを作成する
         /// </summary>
         ValueTask<AudioQuery> CreateAudioQueryAsync(string text,
@@ -16,6 +17,7 @@ namespace VoicevoxClientSharp.ApiClient
             CancellationToken ct = default);
 
         /// <summary>
+        /// POST /audio_query_from_preset
         /// 音声合成用のクエリをプリセットを用いて作成する
         /// </summary>
         ValueTask<AudioQuery> CreateAudioQueryFromPresetAsync(string text,
@@ -24,6 +26,7 @@ namespace VoicevoxClientSharp.ApiClient
             CancellationToken ct = default);
 
         /// <summary>
+        /// POST /sing_frame_audio_query
         /// 歌唱音声合成用のクエリを作成する
         /// </summary>
         ValueTask<FrameAudioQuery> CreateSingFrameAudioQueryAsync(Score score,
@@ -32,6 +35,7 @@ namespace VoicevoxClientSharp.ApiClient
             CancellationToken ct = default);
 
         /// <summary>
+        /// POST /accent_phrases
         /// テキストからアクセント句を得る
         /// </summary>
         ValueTask<AccentPhrase[]> CreateAccentPhraseAsync(string text,
@@ -41,6 +45,7 @@ namespace VoicevoxClientSharp.ApiClient
             CancellationToken ct = default);
 
         /// <summary>
+        /// POST /mora_data
         /// アクセント句から音高・音素長を得る
         /// </summary>
         ValueTask<AccentPhrase[]> FetchMoraDataAsync(
@@ -50,6 +55,7 @@ namespace VoicevoxClientSharp.ApiClient
             CancellationToken ct = default);
 
         /// <summary>
+        /// POST /mora_length
         /// アクセント句から音素長を得る
         /// </summary>
         ValueTask<AccentPhrase[]> FetchMoraLengthAsync(
@@ -59,6 +65,7 @@ namespace VoicevoxClientSharp.ApiClient
             CancellationToken ct = default);
 
         /// <summary>
+        /// POST /mora_pitch
         /// アクセント句から音高を得る
         /// </summary>
         ValueTask<AccentPhrase[]> FetchMoraPitchAsync(
@@ -68,6 +75,7 @@ namespace VoicevoxClientSharp.ApiClient
             CancellationToken ct = default);
 
         /// <summary>
+        /// POST /sing_frame_volume
         /// 楽譜・歌唱音声合成用のクエリからフレームごとの音量を得る
         /// </summary>
         ValueTask<decimal[]> FetchSingFrameVolumeAsync(

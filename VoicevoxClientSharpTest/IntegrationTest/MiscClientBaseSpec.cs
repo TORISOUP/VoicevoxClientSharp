@@ -2,7 +2,7 @@ using VoicevoxClientSharp.ApiClient;
 
 namespace VoicevoxClientSharpTest.IntegrationTest;
 
-public class MiscClientSpec : SpecBase
+public class MiscClientBaseSpec : BaseSpec
 {
     [Test, Timeout(10000)]
     public async Task ConnectWavesAsyncTest()

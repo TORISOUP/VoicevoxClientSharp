@@ -2,7 +2,7 @@ using VoicevoxClientSharp.Models;
 
 namespace VoicevoxClientSharpTest.IntegrationTest;
 
-public class PresetClientSpec : SpecBase
+public class PresetClientBaseSpec : BaseSpec
 {
     [Test, Timeout(15000)]
     public async Task PresetsAsyncTest()

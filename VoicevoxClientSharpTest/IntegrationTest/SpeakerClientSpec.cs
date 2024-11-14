@@ -3,7 +3,7 @@ using VoicevoxClientSharp.Models;
 
 namespace VoicevoxClientSharpTest.IntegrationTest;
 
-public class SpeakerClientSpeck : SpecBase
+public class SpeakerClientSpeck : BaseSpec
 {
     [Test, Timeout(5000)]
     public void InitializeSpeakerAsyncTest()

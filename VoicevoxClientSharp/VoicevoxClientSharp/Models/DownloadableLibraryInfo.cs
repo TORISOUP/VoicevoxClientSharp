@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Text.Json.Serialization;
 
 
 namespace VoicevoxClientSharp.Models
@@ -10,9 +11,13 @@ namespace VoicevoxClientSharp.Models
     /// <summary>
     /// ダウンロード可能な音声ライブラリの情報
     /// </summary>
-    [DataContract(Name = "DownloadableLibraryInfo")]
     public sealed class DownloadableLibraryInfo : IEquatable<DownloadableLibraryInfo>
     {
+        [JsonConstructor]
+        public DownloadableLibraryInfo()
+        {
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="DownloadableLibraryInfo" /> class.
         /// </summary>
@@ -27,7 +32,7 @@ namespace VoicevoxClientSharp.Models
             string varVersion,
             string downloadUrl,
             int bytes,
-            List<LibrarySpeaker> speakers)
+            LibrarySpeaker[] speakers)
         {
             Name = name;
             Uuid = uuid;
@@ -42,41 +47,42 @@ namespace VoicevoxClientSharp.Models
         /// </summary>
         /// <value>音声ライブラリの名前</value>
         [DataMember(Name = "name", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("name")]
         public string Name { get; set; }
 
         /// <summary>
         /// 音声ライブラリのUUID
         /// </summary>
         /// <value>音声ライブラリのUUID</value>
-        [DataMember(Name = "uuid", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("uuid")]
         public string Uuid { get; set; }
 
         /// <summary>
         /// 音声ライブラリのバージョン
         /// </summary>
         /// <value>音声ライブラリのバージョン</value>
-        [DataMember(Name = "version", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("version")]
         public string VarVersion { get; set; }
 
         /// <summary>
         /// 音声ライブラリのダウンロードURL
         /// </summary>
         /// <value>音声ライブラリのダウンロードURL</value>
-        [DataMember(Name = "download_url", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("download_url")]
         public string DownloadUrl { get; set; }
 
         /// <summary>
         /// 音声ライブラリのバイト数
         /// </summary>
         /// <value>音声ライブラリのバイト数</value>
-        [DataMember(Name = "bytes", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("bytes")]
         public int Bytes { get; set; }
 
         /// <summary>
         /// Gets or Sets Speakers
         /// </summary>
-        [DataMember(Name = "speakers", IsRequired = true, EmitDefaultValue = false)]
-        public List<LibrarySpeaker> Speakers { get; set; }
+        [JsonPropertyName("speakers")]
+        public LibrarySpeaker[] Speakers { get; set; }
 
         /// <summary>
         /// Returns true if DownloadableLibraryInfo instances are equal
@@ -134,7 +140,6 @@ namespace VoicevoxClientSharp.Models
             sb.Append("}\n");
             return sb.ToString();
         }
-
 
 
         /// <summary>
