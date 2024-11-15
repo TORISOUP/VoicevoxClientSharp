@@ -1,10 +1,11 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using VoicevoxClientSharp.Models;
 
 namespace VoicevoxClientSharp.ApiClient
 {
-    public interface ILibraryClient
+    public interface ILibraryClient : IDisposable
     {
         /// <summary>
         /// GET //downloadable_libraries

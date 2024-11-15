@@ -7,7 +7,7 @@ using VoicevoxClientSharp.Models;
 
 namespace VoicevoxClientSharp.ApiClient
 {
-    public interface ISynthesisClient
+    public interface ISynthesisClient : IDisposable
     {
         /// <summary>
         /// POST /synthesis

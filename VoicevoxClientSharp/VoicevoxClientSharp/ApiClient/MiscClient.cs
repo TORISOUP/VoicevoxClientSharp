@@ -6,7 +6,7 @@ using VoicevoxClientSharp.Models;
 
 namespace VoicevoxClientSharp.ApiClient
 {
-    public interface IMiscClient
+    public interface IMiscClient : IDisposable
     {
         /// <summary>
         /// POST /connect_waves

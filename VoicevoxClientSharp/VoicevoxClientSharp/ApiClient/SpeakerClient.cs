@@ -6,7 +6,7 @@ using VoicevoxClientSharp.Models;
 
 namespace VoicevoxClientSharp.ApiClient
 {
-    public interface ISpeakerClient
+    public interface ISpeakerClient : IDisposable
     {
         /// <summary>
         /// POST /initialize_speaker

@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Text.Json.Serialization;
 
 
 namespace VoicevoxClientSharp.Models
@@ -8,9 +9,13 @@ namespace VoicevoxClientSharp.Models
     /// <summary>
     /// 辞書のコンパイルに使われる情報
     /// </summary>
-    [DataContract(Name = "UserDictWord")]
     public sealed class UserDictWord : IEquatable<UserDictWord>
     {
+        [JsonConstructor]
+        public UserDictWord()
+        {
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="UserDictWord" /> class.
         /// </summary>
@@ -66,105 +71,105 @@ namespace VoicevoxClientSharp.Models
         /// 表層形
         /// </summary>
         /// <value>表層形</value>
-        [DataMember(Name = "surface", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("surface")]
         public string Surface { get; set; }
 
         /// <summary>
         /// 優先度
         /// </summary>
         /// <value>優先度</value>
-        [DataMember(Name = "priority", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("priority")]
         public int Priority { get; set; }
 
         /// <summary>
         /// 文脈ID
         /// </summary>
         /// <value>文脈ID</value>
-        [DataMember(Name = "context_id", EmitDefaultValue = false)]
+        [JsonPropertyName("context_id")]
         public int ContextId { get; set; }
 
         /// <summary>
         /// 品詞
         /// </summary>
         /// <value>品詞</value>
-        [DataMember(Name = "part_of_speech", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("part_of_speech")]
         public string PartOfSpeech { get; set; }
 
         /// <summary>
         /// 品詞細分類1
         /// </summary>
         /// <value>品詞細分類1</value>
-        [DataMember(Name = "part_of_speech_detail_1", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("part_of_speech_detail_1")]
         public string PartOfSpeechDetail1 { get; set; }
 
         /// <summary>
         /// 品詞細分類2
         /// </summary>
         /// <value>品詞細分類2</value>
-        [DataMember(Name = "part_of_speech_detail_2", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("part_of_speech_detail_2")]
         public string PartOfSpeechDetail2 { get; set; }
 
         /// <summary>
         /// 品詞細分類3
         /// </summary>
         /// <value>品詞細分類3</value>
-        [DataMember(Name = "part_of_speech_detail_3", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("part_of_speech_detail_3")]
         public string PartOfSpeechDetail3 { get; set; }
 
         /// <summary>
         /// 活用型
         /// </summary>
         /// <value>活用型</value>
-        [DataMember(Name = "inflectional_type", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("inflectional_type")]
         public string InflectionalType { get; set; }
 
         /// <summary>
         /// 活用形
         /// </summary>
         /// <value>活用形</value>
-        [DataMember(Name = "inflectional_form", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("inflectional_form")]
         public string InflectionalForm { get; set; }
 
         /// <summary>
         /// 原形
         /// </summary>
         /// <value>原形</value>
-        [DataMember(Name = "stem", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("stem")]
         public string Stem { get; set; }
 
         /// <summary>
         /// 読み
         /// </summary>
         /// <value>読み</value>
-        [DataMember(Name = "yomi", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("yomi")]
         public string Yomi { get; set; }
 
         /// <summary>
         /// 発音
         /// </summary>
         /// <value>発音</value>
-        [DataMember(Name = "pronunciation", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("pronunciation")]
         public string Pronunciation { get; set; }
 
         /// <summary>
         /// アクセント型
         /// </summary>
         /// <value>アクセント型</value>
-        [DataMember(Name = "accent_type", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("accent_type")]
         public int AccentType { get; set; }
 
         /// <summary>
         /// モーラ数
         /// </summary>
         /// <value>モーラ数</value>
-        [DataMember(Name = "mora_count", EmitDefaultValue = false)]
+        [JsonPropertyName("mora_count")]
         public int? MoraCount { get; set; }
 
         /// <summary>
         /// アクセント結合規則
         /// </summary>
         /// <value>アクセント結合規則</value>
-        [DataMember(Name = "accent_associative_rule", IsRequired = true, EmitDefaultValue = false)]
+        [JsonPropertyName("accent_associative_rule")]
         public string AccentAssociativeRule { get; set; }
 
         public bool Equals(UserDictWord? other)
@@ -215,7 +220,6 @@ namespace VoicevoxClientSharp.Models
             sb.Append("}\n");
             return sb.ToString();
         }
-
 
 
         public override bool Equals(object? obj)

@@ -16,7 +16,7 @@ namespace VoicevoxClientSharp.ApiClient
         ISpeakerClient,
         IPresetClient,
         ILibraryClient,
-        IDisposable
+        IUserDictionaryClient
     {
     }
 
@@ -82,6 +82,18 @@ namespace VoicevoxClientSharp.ApiClient
             return JsonSerializer.Deserialize<TResult>(json)!;
         }
 
+        internal async ValueTask PutAsync(
+            string url,
+            CancellationToken cancellationToken = default)
+        {
+            var response = await _httpClient.PutAsync(url, null, cancellationToken);
+            if ((int)response.StatusCode >= 400)
+            {
+                var errorJson = await response.Content.ReadAsStringAsync();
+                throw new VoicevoxApiErrorException(errorJson, errorJson, (int)response.StatusCode);
+            }
+        }
+        
         internal async ValueTask<TResult> PostAsync<TResult>(
             string url,
             CancellationToken cancellationToken = default)

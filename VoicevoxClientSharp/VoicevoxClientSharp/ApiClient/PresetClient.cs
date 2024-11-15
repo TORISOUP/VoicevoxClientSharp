@@ -1,10 +1,11 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using VoicevoxClientSharp.Models;
 
 namespace VoicevoxClientSharp.ApiClient
 {
-    public interface IPresetClient
+    public interface IPresetClient : IDisposable
     {
         /// <summary>
         /// GET /presets
