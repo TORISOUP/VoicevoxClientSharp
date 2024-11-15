@@ -1,10 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Text.Json.Serialization;
-
 
 namespace VoicevoxClientSharp.Models
 {
@@ -22,9 +20,8 @@ namespace VoicevoxClientSharp.Models
         {
             Notes = notes;
         }
-        
-        [JsonPropertyName("notes")]
-        public Note[] Notes { get; set; }
+
+        [JsonPropertyName("notes")] public Note[] Notes { get; set; }
 
         /// <summary>
         /// Returns true if Score instances are equal
@@ -55,7 +52,6 @@ namespace VoicevoxClientSharp.Models
             sb.Append("}\n");
             return sb.ToString();
         }
-
 
 
         /// <summary>

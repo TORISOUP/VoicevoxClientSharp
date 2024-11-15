@@ -111,7 +111,7 @@ namespace VoicevoxClientSharp.ApiClient
             CancellationToken ct = default);
     }
 
-    public partial class RawApiClient
+    public partial class RawRawApiClient
     {
         /// <summary>
         /// <inheritdoc/>
@@ -122,7 +122,7 @@ namespace VoicevoxClientSharp.ApiClient
             string? coreVersion = null,
             CancellationToken ct = default)
         {
-            var queryString = QueryString(
+            var queryString = CreateQueryString(
                 ("speaker", speakerId.ToString()),
                 ("core_version", coreVersion),
                 ("enable_interrogative_upspeak", enableInterrogativeUpspeak?.ToString())
@@ -140,7 +140,7 @@ namespace VoicevoxClientSharp.ApiClient
             string? coreVersion = null,
             CancellationToken ct = default)
         {
-            var queryString = QueryString(
+            var queryString = CreateQueryString(
                 ("speaker", speakerId.ToString()),
                 ("core_version", coreVersion),
                 ("enable_interrogative_upspeak", enableInterrogativeUpspeak?.ToString())
@@ -157,7 +157,7 @@ namespace VoicevoxClientSharp.ApiClient
             string? coreVersion = null,
             CancellationToken ct = default)
         {
-            var queryString = QueryString(
+            var queryString = CreateQueryString(
                 ("speaker", speakerId.ToString()),
                 ("core_version", coreVersion)
             );
@@ -173,7 +173,7 @@ namespace VoicevoxClientSharp.ApiClient
             string? coreVersion = null,
             CancellationToken ct = default)
         {
-            var queryString = QueryString(
+            var queryString = CreateQueryString(
                 ("speaker", speakerId.ToString()),
                 ("core_version", coreVersion)
             );
@@ -189,7 +189,7 @@ namespace VoicevoxClientSharp.ApiClient
             string? coreVersion = null,
             CancellationToken ct = default)
         {
-            var queryString = QueryString(("core_version", coreVersion));
+            var queryString = CreateQueryString(("core_version", coreVersion));
             var url = $"{_baseUrl}/morphable_targets?{queryString}";
             var result = await PostAsync<int[], Dictionary<string, MorphableTargetInfo>[]>(url, speakerIds, ct);
             return result.Select(x =>
@@ -215,7 +215,7 @@ namespace VoicevoxClientSharp.ApiClient
         {
             morphRate = Math.Min(Math.Max(morphRate, 0M), 1.0M);
 
-            var queryString = QueryString(
+            var queryString = CreateQueryString(
                 ("base_speaker", baseSpeakerId.ToString()),
                 ("target_speaker", targetSpeakerId.ToString()),
                 ("morph_rate", morphRate.ToString()),

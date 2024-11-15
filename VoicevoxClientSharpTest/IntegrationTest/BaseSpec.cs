@@ -1,3 +1,8 @@
+/*
+    NAudio Copyright 2020 Mark Heath
+    https://github.com/naudio/NAudio/blob/master/license.txt
+*/
+
 using NAudio.Wave;
 using VoicevoxClientSharp.ApiClient;
 
@@ -5,7 +10,7 @@ namespace VoicevoxClientSharpTest.IntegrationTest;
 
 public class BaseSpec
 {
-    private IVoicevoxApiClient _voicevoxApiClient;
+    private IVoicevoxRawApiClient _voicevoxRawApiClient;
     protected IQueryClient QueryClient { get; private set; }
     protected ISynthesisClient SynthesisClient { get; private set; }
     protected IMiscClient MiscClient { get; private set; }
@@ -17,20 +22,20 @@ public class BaseSpec
     [SetUp]
     public void Setup()
     {
-        _voicevoxApiClient = new RawApiClient();
-        QueryClient = _voicevoxApiClient;
-        SynthesisClient = _voicevoxApiClient;
-        MiscClient = _voicevoxApiClient;
-        SpeakerClient = _voicevoxApiClient;
-        PresetClient = _voicevoxApiClient;
-        LibraryClient = _voicevoxApiClient;
-        UserDictionaryClient = _voicevoxApiClient;
+        _voicevoxRawApiClient = new RawRawApiClient();
+        QueryClient = _voicevoxRawApiClient;
+        SynthesisClient = _voicevoxRawApiClient;
+        MiscClient = _voicevoxRawApiClient;
+        SpeakerClient = _voicevoxRawApiClient;
+        PresetClient = _voicevoxRawApiClient;
+        LibraryClient = _voicevoxRawApiClient;
+        UserDictionaryClient = _voicevoxRawApiClient;
     }
 
     [TearDown]
     public void TearDown()
     {
-        _voicevoxApiClient.Dispose();
+        _voicevoxRawApiClient.Dispose();
     }
 
     protected async ValueTask PlaySoundAsync(byte[] wav)

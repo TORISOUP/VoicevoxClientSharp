@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 
-
+// たぶん未使用
 namespace VoicevoxClientSharp.Models
 {
     /// <summary>
@@ -134,7 +134,6 @@ namespace VoicevoxClientSharp.Models
             sb.Append("}\n");
             return sb.ToString();
         }
-
 
 
         /// <summary>

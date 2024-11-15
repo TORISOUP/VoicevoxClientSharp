@@ -79,7 +79,7 @@ namespace VoicevoxClientSharp.ApiClient
             CancellationToken ct = default);
     }
 
-    public partial class RawApiClient
+    public partial class RawRawApiClient
     {
         /// <summary>
         /// <inheritdoc/>
@@ -89,7 +89,7 @@ namespace VoicevoxClientSharp.ApiClient
             string? coreVersion = null,
             CancellationToken ct = default)
         {
-            var queryString = QueryString(
+            var queryString = CreateQueryString(
                 ("speaker", speaker.ToString()),
                 ("skip_reinit", skipReinit?.ToString()),
                 ("core_version", coreVersion)
@@ -112,7 +112,7 @@ namespace VoicevoxClientSharp.ApiClient
             string? coreVersion = null,
             CancellationToken ct = default)
         {
-            var queryString = QueryString(
+            var queryString = CreateQueryString(
                 ("speaker", speaker.ToString()),
                 ("core_version", coreVersion)
             );
@@ -134,7 +134,7 @@ namespace VoicevoxClientSharp.ApiClient
         /// </summary>
         public ValueTask<Speaker[]> GetSpeakersAsync(string? coreVersion = null, CancellationToken ct = default)
         {
-            var queryString = QueryString(
+            var queryString = CreateQueryString(
                 ("core_version", coreVersion)
             );
 
@@ -159,7 +159,7 @@ namespace VoicevoxClientSharp.ApiClient
                 _ => throw new ArgumentOutOfRangeException(nameof(resourceFormat), resourceFormat, null)
             };
 
-            var queryString = QueryString(
+            var queryString = CreateQueryString(
                 ("speaker_uuid", speakerUuId),
                 ("resource_format", resourceFormatStr),
                 ("core_version", coreVersion)
@@ -174,7 +174,7 @@ namespace VoicevoxClientSharp.ApiClient
         /// </summary>
         public ValueTask<Speaker[]> GetSingersAsync(string? coreVersion = null, CancellationToken ct = default)
         {
-            var queryString = QueryString(
+            var queryString = CreateQueryString(
                 ("core_version", coreVersion)
             );
 
@@ -198,7 +198,7 @@ namespace VoicevoxClientSharp.ApiClient
                 _ => throw new ArgumentOutOfRangeException(nameof(resourceFormat), resourceFormat, null)
             };
 
-            var queryString = QueryString(
+            var queryString = CreateQueryString(
                 ("speaker_uuid", speakerUuId),
                 ("resource_format", resourceFormatStr),
                 ("core_version", coreVersion)

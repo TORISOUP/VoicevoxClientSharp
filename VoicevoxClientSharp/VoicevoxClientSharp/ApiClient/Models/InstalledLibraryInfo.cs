@@ -1,10 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Text.Json.Serialization;
-
 
 namespace VoicevoxClientSharp.Models
 {
@@ -82,8 +80,7 @@ namespace VoicevoxClientSharp.Models
         public int Bytes { get; set; }
 
 
-        [JsonPropertyName("speakers")]
-        public LibrarySpeaker[] Speakers { get; set; }
+        [JsonPropertyName("speakers")] public LibrarySpeaker[] Speakers { get; set; }
 
         /// <summary>
         /// アンインストール可能かどうか

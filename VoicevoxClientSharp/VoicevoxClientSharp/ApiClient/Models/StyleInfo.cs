@@ -1,9 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Text.Json.Serialization;
-
 
 namespace VoicevoxClientSharp.Models
 {
@@ -58,8 +56,7 @@ namespace VoicevoxClientSharp.Models
         public string? Portrait { get; set; }
 
 
-        [JsonPropertyName("voice_samples")] 
-        public string[] VoiceSamples { get; set; } = Array.Empty<string>();
+        [JsonPropertyName("voice_samples")] public string[] VoiceSamples { get; set; } = Array.Empty<string>();
 
         public bool Equals(StyleInfo? other)
         {

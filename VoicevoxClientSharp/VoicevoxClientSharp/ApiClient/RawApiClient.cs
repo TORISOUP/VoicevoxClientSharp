@@ -9,10 +9,13 @@ using System.Threading.Tasks;
 
 namespace VoicevoxClientSharp.ApiClient
 {
-    public interface IVoicevoxApiClient : 
-        IQueryClient, 
-        ISynthesisClient, 
-        IMiscClient, 
+    /// <summary>
+    /// VOICEVOX APIのクライアント
+    /// </summary>
+    public interface IVoicevoxRawApiClient :
+        IQueryClient,
+        ISynthesisClient,
+        IMiscClient,
         ISpeakerClient,
         IPresetClient,
         ILibraryClient,
@@ -23,10 +26,11 @@ namespace VoicevoxClientSharp.ApiClient
     /// <summary>
     /// Raw APIクライアント
     /// </summary>
-    public partial class RawApiClient : IVoicevoxApiClient
+    public partial class RawRawApiClient : IVoicevoxRawApiClient
     {
         private readonly string _baseUrl = "http://localhost:50021";
         private readonly HttpClient _httpClient;
+        private readonly CancellationTokenSource _cts = new CancellationTokenSource();
 
         private readonly JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions()
         {
@@ -40,25 +44,25 @@ namespace VoicevoxClientSharp.ApiClient
 
         #region Constructors
 
-        public RawApiClient()
+        public RawRawApiClient()
         {
             _httpClient = new HttpClient();
             _handleHttpClient = true;
         }
 
-        public RawApiClient(HttpClient httpClient)
+        public RawRawApiClient(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }
 
-        public RawApiClient(string baseUrl)
+        public RawRawApiClient(string baseUrl)
         {
             _baseUrl = baseUrl;
             _httpClient = new HttpClient();
             _handleHttpClient = true;
         }
 
-        public RawApiClient(string baseUrl, HttpClient httpClient)
+        public RawRawApiClient(string baseUrl, HttpClient httpClient)
         {
             _baseUrl = baseUrl;
             _httpClient = httpClient;
@@ -70,7 +74,9 @@ namespace VoicevoxClientSharp.ApiClient
 
         internal async ValueTask<TResult> GetAsync<TResult>(string url, CancellationToken cancellationToken = default)
         {
-            var response = await _httpClient.GetAsync(url, cancellationToken);
+            using var lcts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _cts.Token);
+            var ct = lcts.Token;
+            var response = await _httpClient.GetAsync(url, ct);
             if ((int)response.StatusCode >= 400)
             {
                 var errorJson = await response.Content.ReadAsStringAsync();
@@ -86,19 +92,23 @@ namespace VoicevoxClientSharp.ApiClient
             string url,
             CancellationToken cancellationToken = default)
         {
-            var response = await _httpClient.PutAsync(url, null, cancellationToken);
+            using var lcts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _cts.Token);
+            var ct = lcts.Token;
+            var response = await _httpClient.PutAsync(url, null, ct);
             if ((int)response.StatusCode >= 400)
             {
                 var errorJson = await response.Content.ReadAsStringAsync();
                 throw new VoicevoxApiErrorException(errorJson, errorJson, (int)response.StatusCode);
             }
         }
-        
+
         internal async ValueTask<TResult> PostAsync<TResult>(
             string url,
             CancellationToken cancellationToken = default)
         {
-            var response = await _httpClient.PostAsync(url, null, cancellationToken);
+            using var lcts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _cts.Token);
+            var ct = lcts.Token;
+            var response = await _httpClient.PostAsync(url, null, ct);
             if ((int)response.StatusCode >= 400)
             {
                 var errorJson = await response.Content.ReadAsStringAsync();
@@ -115,9 +125,11 @@ namespace VoicevoxClientSharp.ApiClient
             TRequest request,
             CancellationToken cancellationToken = default)
         {
+            using var lcts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _cts.Token);
+            var ct = lcts.Token;
             var requestJson = JsonSerializer.Serialize(request, _jsonSerializerOptions);
             var content = new StringContent(requestJson, Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync(url, content, cancellationToken);
+            var response = await _httpClient.PostAsync(url, content, ct);
             if ((int)response.StatusCode >= 400)
             {
                 var errorJson = await response.Content.ReadAsStringAsync();
@@ -134,9 +146,11 @@ namespace VoicevoxClientSharp.ApiClient
             TRequest request,
             CancellationToken cancellationToken = default)
         {
+            using var lcts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _cts.Token);
+            var ct = lcts.Token;
             var requestJson = JsonSerializer.Serialize(request, _jsonSerializerOptions);
             var content = new StringContent(requestJson, Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync(url, content, cancellationToken);
+            var response = await _httpClient.PostAsync(url, content, ct);
             if ((int)response.StatusCode >= 400)
             {
                 var errorJson = await response.Content.ReadAsStringAsync();
@@ -146,7 +160,7 @@ namespace VoicevoxClientSharp.ApiClient
             return await response.Content.ReadAsByteArrayAsync();
         }
 
-        internal string QueryString(params (string key, string? value)[] query)
+        internal string CreateQueryString(params (string key, string? value)[] query)
         {
             var sb = new StringBuilder();
             foreach (var (key, value) in query)
@@ -165,6 +179,8 @@ namespace VoicevoxClientSharp.ApiClient
         {
             if (IsDisposed) return;
             IsDisposed = true;
+            _cts.Cancel();
+            _cts.Dispose();
 
             if (_handleHttpClient)
             {

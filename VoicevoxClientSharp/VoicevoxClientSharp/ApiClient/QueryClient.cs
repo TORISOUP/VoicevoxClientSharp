@@ -86,7 +86,7 @@ namespace VoicevoxClientSharp.ApiClient
             CancellationToken ct = default);
     }
 
-    public partial class RawApiClient
+    public partial class RawRawApiClient
     {
         /// <summary>
         /// <inheritdoc/>
@@ -96,7 +96,7 @@ namespace VoicevoxClientSharp.ApiClient
             string? coreVersion = null,
             CancellationToken ct = default)
         {
-            var queryString = QueryString(
+            var queryString = CreateQueryString(
                 ("text", text),
                 ("speaker", speakerId.ToString()),
                 ("core_version", coreVersion)
@@ -113,7 +113,7 @@ namespace VoicevoxClientSharp.ApiClient
             string? coreVersion = null,
             CancellationToken ct = default)
         {
-            var queryString = QueryString(
+            var queryString = CreateQueryString(
                 ("text", text),
                 ("preset_id", presetId.ToString()),
                 ("core_version", coreVersion)
@@ -131,7 +131,7 @@ namespace VoicevoxClientSharp.ApiClient
             string? coreVersion = null,
             CancellationToken ct = default)
         {
-            var queryString = QueryString(
+            var queryString = CreateQueryString(
                 ("speaker", speakerId.ToString()),
                 ("core_version", coreVersion)
             );
@@ -149,7 +149,7 @@ namespace VoicevoxClientSharp.ApiClient
             string? coreVersion = null,
             CancellationToken ct = default)
         {
-            var queryString = QueryString(
+            var queryString = CreateQueryString(
                 ("text", text),
                 ("speaker", speakerId.ToString()),
                 ("core_version", coreVersion),
@@ -169,7 +169,7 @@ namespace VoicevoxClientSharp.ApiClient
             string? coreVersion = null,
             CancellationToken ct = default)
         {
-            var queryString = QueryString(
+            var queryString = CreateQueryString(
                 ("speaker", speakerId.ToString()),
                 ("core_version", coreVersion)
             );
@@ -186,7 +186,7 @@ namespace VoicevoxClientSharp.ApiClient
             string? coreVersion = null,
             CancellationToken ct = default)
         {
-            var queryString = QueryString(
+            var queryString = CreateQueryString(
                 ("speaker", speakerId.ToString()),
                 ("core_version", coreVersion)
             );
@@ -203,7 +203,7 @@ namespace VoicevoxClientSharp.ApiClient
             string? coreVersion = null,
             CancellationToken ct = default)
         {
-            var queryString = QueryString(
+            var queryString = CreateQueryString(
                 ("speaker", speakerId.ToString()),
                 ("core_version", coreVersion)
             );
@@ -222,7 +222,7 @@ namespace VoicevoxClientSharp.ApiClient
             CancellationToken ct = default)
         {
             var request = new SingFrameVolumeRequest(score, frameAudioQuery);
-            var queryString = QueryString(
+            var queryString = CreateQueryString(
                 ("speaker", speakerId.ToString()),
                 ("core_version", coreVersion)
             );

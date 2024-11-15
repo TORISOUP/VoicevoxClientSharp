@@ -87,7 +87,7 @@ namespace VoicevoxClientSharp.ApiClient
         );
     }
 
-    public partial class RawApiClient
+    public partial class RawRawApiClient
     {
         /// <summary>
         /// <inheritdoc/>
@@ -109,7 +109,7 @@ namespace VoicevoxClientSharp.ApiClient
             int? priority = 0,
             CancellationToken ct = default)
         {
-            var queryString = QueryString(
+            var queryString = CreateQueryString(
                 ("surface", surface),
                 ("pronunciation", pronunciation),
                 ("accent_type", accentType.ToString()),
@@ -132,7 +132,7 @@ namespace VoicevoxClientSharp.ApiClient
             int? priority = 5,
             CancellationToken ct = default)
         {
-            var queryString = QueryString(
+            var queryString = CreateQueryString(
                 ("word_uuid ", wordUuid),
                 ("surface", surface),
                 ("pronunciation", pronunciation),
@@ -151,7 +151,9 @@ namespace VoicevoxClientSharp.ApiClient
         public async ValueTask DeleteUserDictionaryWordAsync(string wordUuid, CancellationToken ct = default)
         {
             var url = $"{_baseUrl}/user_dict_word/{wordUuid}";
-            var response = await _httpClient.DeleteAsync(url, ct);
+            using var lcts = CancellationTokenSource.CreateLinkedTokenSource(ct, _cts.Token);
+            var ct2 = lcts.Token;
+            var response = await _httpClient.DeleteAsync(url, ct2);
             if ((int)response.StatusCode >= 400)
             {
                 var errorJson = await response.Content.ReadAsStringAsync();
@@ -167,13 +169,14 @@ namespace VoicevoxClientSharp.ApiClient
             bool overrideEntry,
             CancellationToken ct = default)
         {
-            var queryString = QueryString(("override", overrideEntry.ToString()));
+            var queryString = CreateQueryString(("override", overrideEntry.ToString()));
             
             var url = $"{_baseUrl}/import_user_dict?{queryString}";
-
+            using var lcts = CancellationTokenSource.CreateLinkedTokenSource(ct, _cts.Token);
+            var ct2 = lcts.Token;
             var requestJson = JsonSerializer.Serialize(words, _jsonSerializerOptions);
             var content = new StringContent(requestJson, Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync(url, content, ct);
+            var response = await _httpClient.PostAsync(url, content, ct2);
             if ((int)response.StatusCode >= 400)
             {
                 var errorJson = await response.Content.ReadAsStringAsync();

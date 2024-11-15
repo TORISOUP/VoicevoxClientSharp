@@ -3,7 +3,6 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Text.Json.Serialization;
 
-
 namespace VoicevoxClientSharp.Models
 {
     /// <summary>
@@ -15,9 +14,8 @@ namespace VoicevoxClientSharp.Models
         [JsonConstructor]
         public Note()
         {
-            
         }
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Note" /> class.
         /// </summary>
@@ -90,7 +88,6 @@ namespace VoicevoxClientSharp.Models
             sb.Append("}\n");
             return sb.ToString();
         }
-
 
 
         public override bool Equals(object? obj)

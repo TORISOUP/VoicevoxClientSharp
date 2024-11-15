@@ -49,14 +49,14 @@ namespace VoicevoxClientSharp.ApiClient
             CancellationToken ct = default);
     }
 
-    public partial class RawApiClient
+    public partial class RawRawApiClient
     {
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
         public ValueTask<Preset[]> GetPresetsAsync(string? coreVersion = null, CancellationToken ct = default)
         {
-            var queryString = QueryString(
+            var queryString = CreateQueryString(
                 ("core_version", coreVersion)
             );
 
@@ -87,8 +87,10 @@ namespace VoicevoxClientSharp.ApiClient
         /// </summary>
         public async ValueTask DeletePresetAsync(int id, CancellationToken ct = default)
         {
+            using var lcts = CancellationTokenSource.CreateLinkedTokenSource(ct, _cts.Token);
+            var ct2 = lcts.Token;
             var url = $"{_baseUrl}/delete_preset?id={id}";
-            var response = await _httpClient.PostAsync(url, null, ct);
+            var response = await _httpClient.PostAsync(url, null, ct2);
             if ((int)response.StatusCode >= 400)
             {
                 var errorJson = await response.Content.ReadAsStringAsync();

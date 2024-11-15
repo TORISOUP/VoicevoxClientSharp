@@ -1,4 +1,5 @@
 using System;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using VoicevoxClientSharp.Models;
@@ -46,7 +47,7 @@ namespace VoicevoxClientSharp.ApiClient
         ValueTask UninstallLibraryAsync(string libraryId, CancellationToken ct = default);
     }
 
-    public partial class RawApiClient
+    public partial class RawRawApiClient
     {
         /// <summary>
         /// <inheritdoc/>
@@ -69,17 +70,20 @@ namespace VoicevoxClientSharp.ApiClient
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
-        public ValueTask InstallLibraryAsync(string libraryId, byte[] libraryZip, CancellationToken ct = default)
+        public async ValueTask InstallLibraryAsync(string libraryId, byte[] libraryZip, CancellationToken ct = default)
         {
-            throw new System.NotImplementedException();
+            var url = $"{_baseUrl}/install_library/{libraryId}";
+            var contents = new ByteArrayContent(libraryZip);
+            await _httpClient.PostAsync(url, contents, ct);
         }
 
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
-        public ValueTask UninstallLibraryAsync(string libraryId, CancellationToken ct = default)
+        public async ValueTask UninstallLibraryAsync(string libraryId, CancellationToken ct = default)
         {
-            throw new System.NotImplementedException();
+            var url = $"{_baseUrl}/uninstall_library/{libraryId}";
+            await _httpClient.PostAsync(url, null, ct);
         }
     }
 }

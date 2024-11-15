@@ -1,10 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text;
 using System.Text.Json.Serialization;
-
 
 namespace VoicevoxClientSharp.Models
 {
@@ -16,9 +13,8 @@ namespace VoicevoxClientSharp.Models
         [JsonConstructor]
         public EngineManifest()
         {
-            
         }
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="EngineManifest" /> class.
         /// </summary>
@@ -128,8 +124,7 @@ namespace VoicevoxClientSharp.Models
         public string TermsOfService { get; set; }
 
 
-        [JsonPropertyName("update_infos")]
-        public UpdateInfo[]  UpdateInfos { get; set; }
+        [JsonPropertyName("update_infos")] public UpdateInfo[] UpdateInfos { get; set; }
 
 
         [JsonPropertyName("dependency_licenses")]

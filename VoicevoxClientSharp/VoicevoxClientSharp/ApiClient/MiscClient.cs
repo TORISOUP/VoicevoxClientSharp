@@ -54,7 +54,7 @@ namespace VoicevoxClientSharp.ApiClient
         ValueTask<EngineManifest> GetEngineManifestAsync(CancellationToken ct = default);
     }
 
-    public partial class RawApiClient
+    public partial class RawRawApiClient
     {
         /// <summary>
         /// <inheritdoc/>
@@ -71,7 +71,7 @@ namespace VoicevoxClientSharp.ApiClient
         public async ValueTask<(bool isOk, ParseKanaBadRequest? error)> PostValidateKanaAsync(string text,
             CancellationToken ct)
         {
-            var queryString = QueryString(
+            var queryString = CreateQueryString(
                 ("text", text)
             );
             var url = $"{_baseUrl}/validate_kana?{queryString}";
@@ -107,7 +107,7 @@ namespace VoicevoxClientSharp.ApiClient
         public ValueTask<SupportedDevicesInfo> GetSupportedDevicesAsync(string? coreVersion = null,
             CancellationToken ct = default)
         {
-            var queryString = QueryString(
+            var queryString = CreateQueryString(
                 ("core_version", coreVersion)
             );
 
@@ -118,7 +118,10 @@ namespace VoicevoxClientSharp.ApiClient
         public async ValueTask<string> GetVersionAsync(CancellationToken ct = default)
         {
             var url = $"{_baseUrl}/version";
-            var response = await _httpClient.GetAsync(url, ct);
+            using var lcts = CancellationTokenSource.CreateLinkedTokenSource(ct, _cts.Token);
+            var ct2 = lcts.Token;
+            
+            var response = await _httpClient.GetAsync(url, ct2);
             if ((int)response.StatusCode >= 400)
             {
                 var errorJson = await response.Content.ReadAsStringAsync();

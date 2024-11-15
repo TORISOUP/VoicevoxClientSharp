@@ -1,9 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Text.Json.Serialization;
-
 
 namespace VoicevoxClientSharp.Models
 {
@@ -54,8 +52,7 @@ namespace VoicevoxClientSharp.Models
         public string SpeakerUuid { get; set; }
 
 
-        [JsonPropertyName("styles")]
-        public SpeakerStyle[] Styles { get; set; } = Array.Empty<SpeakerStyle>();
+        [JsonPropertyName("styles")] public SpeakerStyle[] Styles { get; set; } = Array.Empty<SpeakerStyle>();
 
         /// <summary>
         /// キャラクターのバージョン
@@ -63,7 +60,7 @@ namespace VoicevoxClientSharp.Models
         /// <value>キャラクターのバージョン</value>
         [JsonPropertyName("version")]
         public string VarVersion { get; set; }
-        
+
         [JsonPropertyName("supported_features")]
         public SpeakerSupportedFeatures? SupportedFeatures { get; set; }
 
@@ -100,7 +97,6 @@ namespace VoicevoxClientSharp.Models
             sb.Append("}\n");
             return sb.ToString();
         }
-
 
 
         public override bool Equals(object? obj)

@@ -3,7 +3,6 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Text.Json.Serialization;
 
-
 namespace VoicevoxClientSharp.Models
 {
     /// <summary>

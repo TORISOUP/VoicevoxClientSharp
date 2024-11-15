@@ -61,7 +61,6 @@ namespace VoicevoxClientSharp.Models
         }
 
 
-
         /// <summary>
         /// Returns true if objects are equal
         /// </summary>
