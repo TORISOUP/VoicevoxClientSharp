@@ -2,7 +2,7 @@ using System;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using VoicevoxClientSharp.Models;
+using VoicevoxClientSharp.ApiClient.Models;
 
 namespace VoicevoxClientSharp.ApiClient
 {
@@ -16,7 +16,7 @@ namespace VoicevoxClientSharp.ApiClient
 
         /// <summary>
         /// POST /validate_kana
-        /// テキストがAquesTalk 風記法に従っているかどうかを判定します。 
+        /// テキストがAquesTalk 風記法に従っているかどうかを判定します。
         /// </summary>
         ValueTask<(bool isOk, ParseKanaBadRequest? error)> PostValidateKanaAsync(string text,
             CancellationToken ct = default);
@@ -54,10 +54,10 @@ namespace VoicevoxClientSharp.ApiClient
         ValueTask<EngineManifest> GetEngineManifestAsync(CancellationToken ct = default);
     }
 
-    public partial class RawRawApiClient
+    public partial class VoicevoxRawApiClient
     {
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public ValueTask<byte[]> PostConnectWavesAsync(string[] waves, CancellationToken ct)
         {
@@ -66,7 +66,7 @@ namespace VoicevoxClientSharp.ApiClient
         }
 
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public async ValueTask<(bool isOk, ParseKanaBadRequest? error)> PostValidateKanaAsync(string text,
             CancellationToken ct)
@@ -102,7 +102,7 @@ namespace VoicevoxClientSharp.ApiClient
         }
 
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public ValueTask<SupportedDevicesInfo> GetSupportedDevicesAsync(string? coreVersion = null,
             CancellationToken ct = default)
@@ -120,7 +120,7 @@ namespace VoicevoxClientSharp.ApiClient
             var url = $"{_baseUrl}/version";
             using var lcts = CancellationTokenSource.CreateLinkedTokenSource(ct, _cts.Token);
             var ct2 = lcts.Token;
-            
+
             var response = await _httpClient.GetAsync(url, ct2);
             if ((int)response.StatusCode >= 400)
             {

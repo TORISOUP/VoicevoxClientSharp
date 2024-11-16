@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace VoicevoxClientSharp.Extensions
+namespace VoicevoxClientSharp.ApiClient.Extensions
 {
     // refs. https://github.com/dotnet/runtime/issues/31081#issuecomment-848697673
     internal class JsonStringEnumConverter<TEnum> : JsonConverter<TEnum> where TEnum : struct, Enum

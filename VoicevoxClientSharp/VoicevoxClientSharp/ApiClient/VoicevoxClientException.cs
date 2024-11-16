@@ -1,5 +1,4 @@
 using System;
-using VoicevoxClientSharp.Models;
 
 namespace VoicevoxClientSharp.ApiClient
 {
@@ -12,13 +11,13 @@ namespace VoicevoxClientSharp.ApiClient
 
     public class VoicevoxApiErrorException : VoicevoxClientException
     {
-        public string Json { get; }
-        public int StatusCode { get; }
-
         public VoicevoxApiErrorException(string message, string json, int statusCode) : base(message)
         {
             Json = json;
             StatusCode = statusCode;
         }
+
+        public string Json { get; }
+        public int StatusCode { get; }
     }
 }

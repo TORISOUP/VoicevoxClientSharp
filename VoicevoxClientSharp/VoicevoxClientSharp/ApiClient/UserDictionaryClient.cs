@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using VoicevoxClientSharp.Models;
+using VoicevoxClientSharp.ApiClient.Models;
 
 namespace VoicevoxClientSharp.ApiClient
 {
@@ -87,10 +87,10 @@ namespace VoicevoxClientSharp.ApiClient
         );
     }
 
-    public partial class RawRawApiClient
+    public partial class VoicevoxRawApiClient
     {
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public async ValueTask<IReadOnlyDictionary<string, UserDictWord>> GetUserDictionaryWordsAsync(
             CancellationToken ct = default)
@@ -100,7 +100,7 @@ namespace VoicevoxClientSharp.ApiClient
         }
 
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public ValueTask<string> AddUserDictionaryWordAsync(string surface,
             string pronunciation,
@@ -122,7 +122,7 @@ namespace VoicevoxClientSharp.ApiClient
         }
 
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public ValueTask UpdateUserDictionaryWordAsync(string wordUuid,
             string surface,
@@ -146,7 +146,7 @@ namespace VoicevoxClientSharp.ApiClient
         }
 
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public async ValueTask DeleteUserDictionaryWordAsync(string wordUuid, CancellationToken ct = default)
         {
@@ -162,7 +162,7 @@ namespace VoicevoxClientSharp.ApiClient
         }
 
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public async ValueTask ImportUserDictionaryWordsAsync(
             IReadOnlyDictionary<string, UserDictWord> words,
@@ -170,7 +170,7 @@ namespace VoicevoxClientSharp.ApiClient
             CancellationToken ct = default)
         {
             var queryString = CreateQueryString(("override", overrideEntry.ToString()));
-            
+
             var url = $"{_baseUrl}/import_user_dict?{queryString}";
             using var lcts = CancellationTokenSource.CreateLinkedTokenSource(ct, _cts.Token);
             var ct2 = lcts.Token;

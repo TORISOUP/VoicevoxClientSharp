@@ -2,7 +2,7 @@ using System;
 using System.Text;
 using System.Text.Json.Serialization;
 
-namespace VoicevoxClientSharp.Models
+namespace VoicevoxClientSharp.ApiClient.Models
 {
     /// <summary>
     /// エンジンが持つ機能の一覧

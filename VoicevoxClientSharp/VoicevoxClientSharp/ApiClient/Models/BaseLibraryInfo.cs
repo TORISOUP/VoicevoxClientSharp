@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 using System.Text;
 
 // たぶん未使用
-namespace VoicevoxClientSharp.Models
+namespace VoicevoxClientSharp.ApiClient.Models
 {
     /// <summary>
     /// 音声ライブラリの情報

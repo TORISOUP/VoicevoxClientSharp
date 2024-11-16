@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using VoicevoxClientSharp.Models;
+using VoicevoxClientSharp.ApiClient.Models;
 
 namespace VoicevoxClientSharp.ApiClient
 {
@@ -86,10 +86,10 @@ namespace VoicevoxClientSharp.ApiClient
             CancellationToken ct = default);
     }
 
-    public partial class RawRawApiClient
+    public partial class VoicevoxRawApiClient
     {
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public ValueTask<AudioQuery> CreateAudioQueryAsync(string text,
             int speakerId,
@@ -106,7 +106,7 @@ namespace VoicevoxClientSharp.ApiClient
         }
 
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public ValueTask<AudioQuery> CreateAudioQueryFromPresetAsync(string text,
             int presetId,
@@ -124,7 +124,7 @@ namespace VoicevoxClientSharp.ApiClient
         }
 
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public ValueTask<FrameAudioQuery> CreateSingFrameAudioQueryAsync(Score score,
             int speakerId,
@@ -141,7 +141,7 @@ namespace VoicevoxClientSharp.ApiClient
         }
 
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public ValueTask<AccentPhrase[]> CreateAccentPhraseAsync(string text,
             int speakerId,
@@ -162,7 +162,7 @@ namespace VoicevoxClientSharp.ApiClient
         }
 
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public ValueTask<AccentPhrase[]> FetchMoraDataAsync(int speakerId,
             AccentPhrase[] accentPhrases,
@@ -179,7 +179,7 @@ namespace VoicevoxClientSharp.ApiClient
         }
 
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public ValueTask<AccentPhrase[]> FetchMoraLengthAsync(int speakerId,
             AccentPhrase[] accentPhrases,
@@ -196,7 +196,7 @@ namespace VoicevoxClientSharp.ApiClient
         }
 
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public ValueTask<AccentPhrase[]> FetchMoraPitchAsync(int speakerId,
             AccentPhrase[] accentPhrases,
@@ -213,7 +213,7 @@ namespace VoicevoxClientSharp.ApiClient
         }
 
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public ValueTask<decimal[]> FetchSingFrameVolumeAsync(int speakerId,
             Score score,

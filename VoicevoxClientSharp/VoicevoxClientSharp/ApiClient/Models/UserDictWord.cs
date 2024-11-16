@@ -2,7 +2,7 @@ using System;
 using System.Text;
 using System.Text.Json.Serialization;
 
-namespace VoicevoxClientSharp.Models
+namespace VoicevoxClientSharp.ApiClient.Models
 {
     /// <summary>
     /// 辞書のコンパイルに使われる情報

@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Text.Json.Serialization;
 
-namespace VoicevoxClientSharp.Models
+namespace VoicevoxClientSharp.ApiClient.Models
 {
     /// <summary>
     /// インストール済み音声ライブラリの情報

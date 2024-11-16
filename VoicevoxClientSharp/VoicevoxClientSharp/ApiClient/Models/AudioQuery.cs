@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 
-namespace VoicevoxClientSharp.Models
+namespace VoicevoxClientSharp.ApiClient.Models
 {
     /// <summary>
     /// 音声合成用のクエリ
@@ -91,6 +91,7 @@ namespace VoicevoxClientSharp.Models
         /// <value>[読み取り専用]AquesTalk 風記法によるテキスト。音声合成用のクエリとしては無視される</value>
         [JsonPropertyName("kana")]
         public string? Kana { get; set; }
+
 
         /// <summary>
         /// Returns true if AudioQuery instances are equal

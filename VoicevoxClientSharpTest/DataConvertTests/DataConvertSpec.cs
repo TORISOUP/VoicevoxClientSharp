@@ -1,5 +1,5 @@
 using System.Text.Json;
-using VoicevoxClientSharp.Models;
+using VoicevoxClientSharp.ApiClient.Models;
 
 namespace VoicevoxClientSharpTest.DataConvertTests;
 

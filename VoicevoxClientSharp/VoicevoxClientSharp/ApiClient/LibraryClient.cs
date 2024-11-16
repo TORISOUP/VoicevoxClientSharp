@@ -2,7 +2,7 @@ using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using VoicevoxClientSharp.Models;
+using VoicevoxClientSharp.ApiClient.Models;
 
 namespace VoicevoxClientSharp.ApiClient
 {
@@ -26,7 +26,6 @@ namespace VoicevoxClientSharp.ApiClient
 
         /// <summary>
         /// POST /install_library/{library_uuid}
-        ///
         /// 音声ライブラリをインストールします。
         /// 音声ライブラリのZIPファイルを送信してください。
         /// </summary>
@@ -38,7 +37,6 @@ namespace VoicevoxClientSharp.ApiClient
 
         /// <summary>
         /// POST /uninstall_library/{library_uuid}
-        ///
         /// 音声ライブラリをアンインストールします。
         /// </summary>
         /// <param name="libraryId"></param>
@@ -47,10 +45,10 @@ namespace VoicevoxClientSharp.ApiClient
         ValueTask UninstallLibraryAsync(string libraryId, CancellationToken ct = default);
     }
 
-    public partial class RawRawApiClient
+    public partial class VoicevoxRawApiClient
     {
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public ValueTask<DownloadableLibraryInfo[]> GetDownloadableLibrariesAsync(CancellationToken ct = default)
         {
@@ -59,7 +57,7 @@ namespace VoicevoxClientSharp.ApiClient
         }
 
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public ValueTask<InstalledLibraryInfo[]> GetInstalledLibrariesAsync(CancellationToken ct = default)
         {
@@ -68,7 +66,7 @@ namespace VoicevoxClientSharp.ApiClient
         }
 
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public async ValueTask InstallLibraryAsync(string libraryId, byte[] libraryZip, CancellationToken ct = default)
         {
@@ -78,7 +76,7 @@ namespace VoicevoxClientSharp.ApiClient
         }
 
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public async ValueTask UninstallLibraryAsync(string libraryId, CancellationToken ct = default)
         {

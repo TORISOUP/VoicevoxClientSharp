@@ -22,7 +22,7 @@ public class BaseSpec
     [SetUp]
     public void Setup()
     {
-        _voicevoxRawApiClient = new RawRawApiClient();
+        _voicevoxRawApiClient = new VoicevoxRawApiClient();
         QueryClient = _voicevoxRawApiClient;
         SynthesisClient = _voicevoxRawApiClient;
         MiscClient = _voicevoxRawApiClient;

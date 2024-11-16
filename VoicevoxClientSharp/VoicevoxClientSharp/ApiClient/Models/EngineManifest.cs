@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 
-namespace VoicevoxClientSharp.Models
+namespace VoicevoxClientSharp.ApiClient.Models
 {
     /// <summary>
     /// エンジン自体に関する情報

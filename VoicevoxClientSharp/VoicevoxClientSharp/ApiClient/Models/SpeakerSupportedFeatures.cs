@@ -2,7 +2,7 @@ using System;
 using System.Runtime.Serialization;
 using System.Text;
 
-namespace VoicevoxClientSharp.Models
+namespace VoicevoxClientSharp.ApiClient.Models
 {
     /// <summary>
     /// キャラクターの対応機能の情報

@@ -1,6 +1,4 @@
 
-using VoicevoxClientSharp.Models;
-
 namespace VoicevoxClientSharpTest;
 
 public class DataConvertSpec

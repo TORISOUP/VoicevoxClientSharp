@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoicevoxClientSharp", "Voic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoicevoxClientSharpTest", "VoicevoxClientSharpTest\VoicevoxClientSharpTest.csproj", "{07EE102E-A412-4B74-A6EB-8E6B636FC12E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoicevoxClientSharp.Sandbox", "VoicevoxClientSharp.Sandbox\VoicevoxClientSharp.Sandbox.csproj", "{EC38431C-255C-4253-8417-9D1D7CAF2406}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{07EE102E-A412-4B74-A6EB-8E6B636FC12E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{07EE102E-A412-4B74-A6EB-8E6B636FC12E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{07EE102E-A412-4B74-A6EB-8E6B636FC12E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC38431C-255C-4253-8417-9D1D7CAF2406}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC38431C-255C-4253-8417-9D1D7CAF2406}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC38431C-255C-4253-8417-9D1D7CAF2406}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC38431C-255C-4253-8417-9D1D7CAF2406}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

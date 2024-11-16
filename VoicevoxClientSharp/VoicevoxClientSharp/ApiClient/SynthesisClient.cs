@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using VoicevoxClientSharp.Models;
+using VoicevoxClientSharp.ApiClient.Models;
 
 namespace VoicevoxClientSharp.ApiClient
 {
@@ -73,7 +73,6 @@ namespace VoicevoxClientSharp.ApiClient
         /// <summary>
         /// POST /morphable_targets
         /// 指定したスタイルに対してエンジン内のキャラクターがモーフィングが可能か判定する
-        /// 
         /// 指定されたベーススタイルに対してエンジン内の各キャラクターがモーフィング機能を利用可能か返します。
         /// モーフィングの許可/禁止は/speakersのspeaker.supported_features.synthesis_morphingに記載されています。
         /// プロパティが存在しない場合は、モーフィングが許可されているとみなします。
@@ -83,7 +82,7 @@ namespace VoicevoxClientSharp.ApiClient
         /// <param name="coreVersion"></param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        ValueTask<IReadOnlyDictionary<int, MorphableTargetInfo>[]> IsMorphableTargetsAsync(
+        ValueTask<IReadOnlyDictionary<string, MorphableTargetInfo>[]> IsMorphableTargetsAsync(
             int[] speakerIds,
             string? coreVersion = null,
             CancellationToken ct = default);
@@ -91,7 +90,6 @@ namespace VoicevoxClientSharp.ApiClient
         /// <summary>
         /// POST /synthesis_morphing
         /// 2種類のスタイルでモーフィングした音声を合成する
-        ///
         /// 指定された2種類のスタイルで音声を合成、指定した割合でモーフィングした音声を得ます。
         /// モーフィングの割合はmorph_rateで指定でき、0.0でベースのスタイル、1.0でターゲットのスタイルに近づきます。
         /// </summary>
@@ -111,10 +109,10 @@ namespace VoicevoxClientSharp.ApiClient
             CancellationToken ct = default);
     }
 
-    public partial class RawRawApiClient
+    public partial class VoicevoxRawApiClient
     {
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public ValueTask<byte[]> SynthesisAsync(int speakerId,
             AudioQuery audioQuery,
@@ -132,7 +130,7 @@ namespace VoicevoxClientSharp.ApiClient
         }
 
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public ValueTask<byte[]> CancellableSynthesisAsync(int speakerId,
             AudioQuery audioQuery,
@@ -150,7 +148,7 @@ namespace VoicevoxClientSharp.ApiClient
         }
 
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public ValueTask<byte[]> MultiSpeakerSynthesisAsync(int speakerId,
             AudioQuery[] audioQueries,
@@ -166,7 +164,7 @@ namespace VoicevoxClientSharp.ApiClient
         }
 
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public ValueTask<byte[]> FrameSynthesisAsync(int speakerId,
             FrameAudioQuery frameAudioQuery,
@@ -182,9 +180,9 @@ namespace VoicevoxClientSharp.ApiClient
         }
 
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
-        public async ValueTask<IReadOnlyDictionary<int, MorphableTargetInfo>[]> IsMorphableTargetsAsync(
+        public async ValueTask<IReadOnlyDictionary<string, MorphableTargetInfo>[]> IsMorphableTargetsAsync(
             int[] speakerIds,
             string? coreVersion = null,
             CancellationToken ct = default)
@@ -192,18 +190,11 @@ namespace VoicevoxClientSharp.ApiClient
             var queryString = CreateQueryString(("core_version", coreVersion));
             var url = $"{_baseUrl}/morphable_targets?{queryString}";
             var result = await PostAsync<int[], Dictionary<string, MorphableTargetInfo>[]>(url, speakerIds, ct);
-            return result.Select(x =>
-                {
-                    return (IReadOnlyDictionary<int, MorphableTargetInfo>)x.ToDictionary(
-                        s => int.Parse(s.Key),
-                        s => s.Value
-                    );
-                })
-                .ToArray();
+            return result.ToArray<IReadOnlyDictionary<string, MorphableTargetInfo>>();
         }
 
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public ValueTask<byte[]> SynthesisMorphingAsync(
             int baseSpeakerId,
@@ -221,7 +212,7 @@ namespace VoicevoxClientSharp.ApiClient
                 ("morph_rate", morphRate.ToString()),
                 ("core_version", coreVersion)
             );
-            
+
             var url = $"{_baseUrl}/synthesis_morphing?{queryString}";
             return PostAndByteResponseAsync(url, audioQuery, ct);
         }

@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 using System.Text;
 
 // たぶん未使用
-namespace VoicevoxClientSharp.Models
+namespace VoicevoxClientSharp.ApiClient.Models
 {
     /// <summary>
     /// vvlib(VOICEVOX Library)に関する情報

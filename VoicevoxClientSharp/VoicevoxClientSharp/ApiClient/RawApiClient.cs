@@ -6,7 +6,6 @@ using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
-
 namespace VoicevoxClientSharp.ApiClient
 {
     /// <summary>
@@ -24,45 +23,64 @@ namespace VoicevoxClientSharp.ApiClient
     }
 
     /// <summary>
-    /// Raw APIクライアント
+    /// VOICEVOX APIのクライアント実装
+    /// それぞれのREST APIと1:1対応
     /// </summary>
-    public partial class RawRawApiClient : IVoicevoxRawApiClient
+    public partial class VoicevoxRawApiClient : IVoicevoxRawApiClient
     {
         private readonly string _baseUrl = "http://localhost:50021";
-        private readonly HttpClient _httpClient;
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
 
-        private readonly JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions()
+
+        // HttpClientを自前で生成した場合はtrue
+        private readonly bool _handleHttpClient;
+        private readonly HttpClient _httpClient;
+
+        private readonly JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions
         {
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         };
 
-
-        // HttpClientを自前で生成した場合はtrue
-        private readonly bool _handleHttpClient = false;
         private bool IsDisposed { get; set; }
+
+        public void Dispose()
+        {
+            if (IsDisposed)
+            {
+                return;
+            }
+
+            IsDisposed = true;
+            _cts.Cancel();
+            _cts.Dispose();
+
+            if (_handleHttpClient)
+            {
+                _httpClient.Dispose();
+            }
+        }
 
         #region Constructors
 
-        public RawRawApiClient()
+        public VoicevoxRawApiClient()
         {
             _httpClient = new HttpClient();
             _handleHttpClient = true;
         }
 
-        public RawRawApiClient(HttpClient httpClient)
+        public VoicevoxRawApiClient(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }
 
-        public RawRawApiClient(string baseUrl)
+        public VoicevoxRawApiClient(string baseUrl)
         {
             _baseUrl = baseUrl;
             _httpClient = new HttpClient();
             _handleHttpClient = true;
         }
 
-        public RawRawApiClient(string baseUrl, HttpClient httpClient)
+        public VoicevoxRawApiClient(string baseUrl, HttpClient httpClient)
         {
             _baseUrl = baseUrl;
             _httpClient = httpClient;
@@ -84,7 +102,11 @@ namespace VoicevoxClientSharp.ApiClient
             }
 
             var json = await response.Content.ReadAsStringAsync();
-            if (json == null) throw new VoicevoxClientException("Response was empty");
+            if (json == null)
+            {
+                throw new VoicevoxClientException("Response was empty");
+            }
+
             return JsonSerializer.Deserialize<TResult>(json)!;
         }
 
@@ -116,7 +138,11 @@ namespace VoicevoxClientSharp.ApiClient
             }
 
             var responseJson = await response.Content.ReadAsStringAsync();
-            if (responseJson == null) throw new VoicevoxClientException("Response was empty");
+            if (responseJson == null)
+            {
+                throw new VoicevoxClientException("Response was empty");
+            }
+
             return JsonSerializer.Deserialize<TResult>(responseJson)!;
         }
 
@@ -137,7 +163,11 @@ namespace VoicevoxClientSharp.ApiClient
             }
 
             var responseJson = await response.Content.ReadAsStringAsync();
-            if (responseJson == null) throw new VoicevoxClientException("Response was empty");
+            if (responseJson == null)
+            {
+                throw new VoicevoxClientException("Response was empty");
+            }
+
             return JsonSerializer.Deserialize<TResult>(responseJson)!;
         }
 
@@ -165,8 +195,16 @@ namespace VoicevoxClientSharp.ApiClient
             var sb = new StringBuilder();
             foreach (var (key, value) in query)
             {
-                if (value == null) continue;
-                if (sb.Length > 0) sb.Append("&");
+                if (value == null)
+                {
+                    continue;
+                }
+
+                if (sb.Length > 0)
+                {
+                    sb.Append("&");
+                }
+
                 sb.Append($"{key}={Uri.EscapeDataString(value)}");
             }
 
@@ -174,18 +212,5 @@ namespace VoicevoxClientSharp.ApiClient
         }
 
         #endregion
-
-        public void Dispose()
-        {
-            if (IsDisposed) return;
-            IsDisposed = true;
-            _cts.Cancel();
-            _cts.Dispose();
-
-            if (_handleHttpClient)
-            {
-                _httpClient.Dispose();
-            }
-        }
     }
 }

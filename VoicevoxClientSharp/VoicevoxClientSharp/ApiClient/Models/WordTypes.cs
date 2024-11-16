@@ -1,6 +1,6 @@
 using System.Runtime.Serialization;
 
-namespace VoicevoxClientSharp.Models
+namespace VoicevoxClientSharp.ApiClient.Models
 {
     /// <summary>
     /// 品詞

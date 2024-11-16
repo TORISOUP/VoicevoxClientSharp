@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using VoicevoxClientSharp.Models;
+using VoicevoxClientSharp.ApiClient.Models;
 
 namespace VoicevoxClientSharp.ApiClient
 {
@@ -49,10 +49,10 @@ namespace VoicevoxClientSharp.ApiClient
             CancellationToken ct = default);
     }
 
-    public partial class RawRawApiClient
+    public partial class VoicevoxRawApiClient
     {
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public ValueTask<Preset[]> GetPresetsAsync(string? coreVersion = null, CancellationToken ct = default)
         {
@@ -65,7 +65,7 @@ namespace VoicevoxClientSharp.ApiClient
         }
 
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public ValueTask<int> AddPresetAsync(Preset preset, CancellationToken ct = default)
         {
@@ -74,7 +74,7 @@ namespace VoicevoxClientSharp.ApiClient
         }
 
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public ValueTask<int> UpdatePresetAsync(Preset preset, CancellationToken ct = default)
         {
@@ -83,7 +83,7 @@ namespace VoicevoxClientSharp.ApiClient
         }
 
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public async ValueTask DeletePresetAsync(int id, CancellationToken ct = default)
         {

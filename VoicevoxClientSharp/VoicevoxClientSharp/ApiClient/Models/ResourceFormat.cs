@@ -1,4 +1,4 @@
-namespace VoicevoxClientSharp.Models
+namespace VoicevoxClientSharp.ApiClient.Models
 {
     public enum ResourceFormat
     {

@@ -1,6 +1,6 @@
 using Newtonsoft.Json.Linq;
 using VoicevoxClientSharp.ApiClient;
-using VoicevoxClientSharp.Models;
+using VoicevoxClientSharp.ApiClient.Models;
 
 namespace VoicevoxClientSharpTest.IntegrationTest;
 

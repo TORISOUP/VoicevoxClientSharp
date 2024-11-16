@@ -1,5 +1,5 @@
 using System.IO.Compression;
-using VoicevoxClientSharp.Models;
+using VoicevoxClientSharp.ApiClient.Models;
 
 namespace VoicevoxClientSharpTest.IntegrationTest;
 

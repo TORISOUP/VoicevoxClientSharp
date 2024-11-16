@@ -2,7 +2,7 @@ using System;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using VoicevoxClientSharp.Models;
+using VoicevoxClientSharp.ApiClient.Models;
 
 namespace VoicevoxClientSharp.ApiClient
 {
@@ -79,10 +79,10 @@ namespace VoicevoxClientSharp.ApiClient
             CancellationToken ct = default);
     }
 
-    public partial class RawRawApiClient
+    public partial class VoicevoxRawApiClient
     {
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public async ValueTask InitializeSpeakerAsync(int speaker,
             bool? skipReinit,
@@ -99,14 +99,17 @@ namespace VoicevoxClientSharp.ApiClient
 
             var response = await _httpClient.PostAsync(url, null, ct);
 
-            if (response.IsSuccessStatusCode) return;
+            if (response.IsSuccessStatusCode)
+            {
+                return;
+            }
 
             var errorJson = await response.Content.ReadAsStringAsync();
             throw new VoicevoxApiErrorException(errorJson, errorJson, (int)response.StatusCode);
         }
 
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public async ValueTask<bool> IsInitializedSpeakerAsync(int speaker,
             string? coreVersion = null,
@@ -130,7 +133,7 @@ namespace VoicevoxClientSharp.ApiClient
         }
 
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public ValueTask<Speaker[]> GetSpeakersAsync(string? coreVersion = null, CancellationToken ct = default)
         {
@@ -143,7 +146,7 @@ namespace VoicevoxClientSharp.ApiClient
         }
 
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public ValueTask<SpeakerInfo> GetSpeakerInfoAsync(
             string speakerUuId,
@@ -170,7 +173,7 @@ namespace VoicevoxClientSharp.ApiClient
         }
 
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public ValueTask<Speaker[]> GetSingersAsync(string? coreVersion = null, CancellationToken ct = default)
         {
@@ -183,7 +186,7 @@ namespace VoicevoxClientSharp.ApiClient
         }
 
         /// <summary>
-        /// <inheritdoc/>
+        ///     <inheritdoc />
         /// </summary>
         public ValueTask<SpeakerInfo> GetSingerInfoAsync(string speakerUuId,
             ResourceFormat? resourceFormat,

@@ -3,32 +3,27 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using VoicevoxClientSharp.ApiClient;
-using VoicevoxClientSharp.Models;
+using VoicevoxClientSharp.ApiClient.Models;
 
 namespace VoicevoxClientSharp
 {
     /// <summary>
-    /// VOICEVOXの発話制御を簡易に行うためのPlayer
-    /// スレッドセーフではない
+    /// VOICEVOXの音声合成を簡易に扱うためのラッパークラス
     /// </summary>
-    public sealed class VoicevoxSpeakPlayer : IDisposable
+    public sealed class VoicevoxSynthesizer : IDisposable
     {
+        private readonly object _gate = new object();
         private bool _isDisposed = false;
         private readonly IVoicevoxRawApiClient _rawApiClient;
         private readonly bool _handleRawApiClient = false;
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
 
         /// <summary>
-        /// 現在設定されているSpeakerId
-        /// </summary>
-        public int SpeakerId { get; private set; } = 0;
-
-        /// <summary>
         /// VOICEVOXの制御を簡易に行うためのPlayer
         /// </summary>
-        public VoicevoxSpeakPlayer()
+        public VoicevoxSynthesizer()
         {
-            _rawApiClient = new RawRawApiClient();
+            _rawApiClient = new VoicevoxRawApiClient();
             _handleRawApiClient = true;
         }
 
@@ -36,73 +31,244 @@ namespace VoicevoxClientSharp
         /// VOICEVOXの制御を簡易に行うためのPlayer
         /// </summary>
         /// <param name="rawApiClient">ここで指定したIVoicevoxRawApiClientのDispose()呼び出しはしません。手動で寿命管理してください。</param>
-        public VoicevoxSpeakPlayer(IVoicevoxRawApiClient rawApiClient)
+        public VoicevoxSynthesizer(IVoicevoxRawApiClient rawApiClient)
         {
             _rawApiClient = rawApiClient;
             _handleRawApiClient = false;
         }
-
 
         /// <summary>
         /// Speaker一覧を取得します。
         /// </summary>
         /// <param name="ct"></param>
         /// <returns></returns>
-        public async ValueTask<Speaker[]> GetSpeakerAsync(CancellationToken ct = default)
+        public async ValueTask<Speaker[]> GetSpeakersAsync(CancellationToken ct = default)
         {
+            ThrowIfDisposed();
+
             using var lcts = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token, ct);
             return await _rawApiClient.GetSpeakersAsync(ct: lcts.Token);
         }
 
         /// <summary>
-        /// Speakerを設定します。
+        /// スタイルを初期化します。
+        /// 
+        /// 初期化しなくても発話は可能ですが、初回実行時に時間がかかることがあります。
         /// </summary>
-        /// <param name="speakerId"></param>
+        /// <param name="styleId"></param>
         /// <param name="ct"></param>
-        public async ValueTask SetCurrentSpeakerAsync(int speakerId, CancellationToken ct = default)
+        /// <exception cref="InvalidOperationException"></exception>
+        public async ValueTask InitializeStyleAsync(int styleId, CancellationToken ct = default)
         {
+            ThrowIfDisposed();
+
             using var lcts = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token, ct);
-            var isInitialized = await _rawApiClient.IsInitializedSpeakerAsync(speakerId, ct: lcts.Token);
+            var isInitialized = await _rawApiClient.IsInitializedSpeakerAsync(styleId, ct: lcts.Token);
             if (!isInitialized)
             {
-                await _rawApiClient.InitializeSpeakerAsync(speakerId, ct: lcts.Token);
+                await _rawApiClient.InitializeSpeakerAsync(styleId, ct: lcts.Token);
             }
-
-            SpeakerId = speakerId;
         }
 
         /// <summary>
-        /// Speakerを名前とスタイル名から検索します。
+        /// StyleIdをSpeakerNameとStyleNameから検索します。
         /// </summary>
-        /// <param name="speakerName">スピーカー名</param>
-        /// <param name="styleName">スタイル名</param>
+        /// <param name="speakerName">スピーカー名 例:四国めたん</param>
+        /// <param name="styleName">スタイル名 例:あまあま</param>
         /// <param name="ct"></param>
         /// <returns>見つけた場合はSpeakerId、見つからなければnull</returns>
-        public async ValueTask<int?> FindSpeakerIdByNameAsync(
-            string speakerName = "四国めたん",
-            string styleName = "ノーマル",
+        public async ValueTask<int?> FindStyleIdByNameAsync(
+            string speakerName,
+            string styleName,
             CancellationToken ct = default)
         {
-            var speakers = await GetSpeakerAsync(ct);
+            ThrowIfDisposed();
+
+            var speakers = await GetSpeakersAsync(ct);
             var speaker = speakers.FirstOrDefault(s => s.Name == speakerName);
             var style = speaker?.Styles.FirstOrDefault(x => x.Name == styleName);
             return style?.Id;
         }
 
-        public void Dispose()
+        /// <summary>
+        /// 指定スタイルIdで指定テキストを発話し、その結果をwavとして返します。
+        /// </summary>
+        /// <param name="styleId">スタイルId</param>
+        /// <param name="text">発話内容</param>
+        /// <param name="speedScale">全体の話速、 推奨:0.5~2.0</param>
+        /// <param name="pitchScale">全体の音高、 推奨:-0.15~0.15</param>
+        /// <param name="intonationScale">全体の抑揚、推奨:0.0~2.0</param>
+        /// <param name="volumeScale">全体の音量</param>
+        /// <param name="prePhonemeLength">音声の前の無音時間</param>
+        /// <param name="postPhonemeLength">音声の後の無音時間</param>
+        /// <param name="pauseLength">句読点などの無音時間。nullのときは無視される。</param>
+        /// <param name="pauseLengthScale">句読点などの無音時間（倍率）。</param>
+        /// <param name="ct"></param>
+        /// <returns>wavデータ</returns>
+        public async ValueTask<byte[]> SpeakAsync(
+            int styleId,
+            string text,
+            decimal speedScale = 1M,
+            decimal pitchScale = 0M,
+            decimal intonationScale = 1M,
+            decimal volumeScale = 1M,
+            decimal prePhonemeLength = 0.1M,
+            decimal postPhonemeLength = 0.1M,
+            decimal? pauseLength = null,
+            decimal? pauseLengthScale = 1M,
+            CancellationToken ct = default)
         {
-            if (_isDisposed)
+            ThrowIfDisposed();
+
+            using var lcts = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token, ct);
+
+            // 音声合成クエリを作成
+            var audioQuery = await _rawApiClient.CreateAudioQueryAsync(text, styleId, ct: lcts.Token);
+
+            // 音声クエリを指定パラメータで上書き
+            audioQuery.SpeedScale = speedScale;
+            audioQuery.PitchScale = pitchScale;
+            audioQuery.IntonationScale = intonationScale;
+            audioQuery.VolumeScale = volumeScale;
+            audioQuery.PrePhonemeLength = prePhonemeLength;
+            audioQuery.PostPhonemeLength = postPhonemeLength;
+            audioQuery.PauseLength = pauseLength;
+            audioQuery.PauseLengthScale = pauseLengthScale;
+
+            // wavの作成
+            return await _rawApiClient.SynthesisAsync(styleId, audioQuery, ct: lcts.Token);
+        }
+
+        /// <summary>
+        /// VOICEVOXに登録されたプリセットを使って発話し、その結果をwavとして返します。
+        /// プリセットが存在しない場合は
+        /// 
+        /// プリセット情報の取得・更新・削除はIPresetClientを使って行ってください。
+        /// </summary>
+        /// <param name="presetId">プリセットId</param>
+        /// <param name="text">発話内容</param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        public async ValueTask<byte[]> SpeakWithPresetAsync(
+            int presetId,
+            string text,
+            CancellationToken ct = default)
+        {
+            ThrowIfDisposed();
+            using var lcts = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token, ct);
+            var audioQuery = await _rawApiClient.CreateAudioQueryFromPresetAsync(text, presetId, ct: lcts.Token);
+            return await _rawApiClient.SynthesisAsync(presetId, audioQuery, ct: lcts.Token);
+        }
+
+
+        /// <summary>
+        /// 2つのスタイルを合成して発話し、その結果をwavとして返します。
+        /// スタイルが合成可能であるかはCanMorphAsyncで確認してください。
+        /// </summary>
+        /// <param name="baseStyleId">スタイルId</param>
+        /// <param name="targetStyleId">合成するスタイルId</param>
+        /// <param name="rate">合成の割合。0.0でベース、1.0でターゲットに近づく。</param>
+        /// <param name="text">発話内容</param>
+        /// <param name="speedScale">全体の話速、 推奨:0.5~2.0</param>
+        /// <param name="pitchScale">全体の音高、 推奨:-0.15~0.15</param>
+        /// <param name="intonationScale">全体の抑揚、推奨:0.0~2.0</param>
+        /// <param name="volumeScale">全体の音量</param>
+        /// <param name="prePhonemeLength">音声の前の無音時間</param>
+        /// <param name="postPhonemeLength">音声の後の無音時間</param>
+        /// <param name="pauseLength">句読点などの無音時間。nullのときは無視される。</param>
+        /// <param name="pauseLengthScale">句読点などの無音時間（倍率）。</param>
+        /// <param name="ct"></param>
+        /// <returns>wavデータ</returns>
+        public async ValueTask<byte[]> SpeakMorphingAsync(
+            int baseStyleId,
+            int targetStyleId,
+            decimal rate,
+            string text,
+            decimal speedScale = 1M,
+            decimal pitchScale = 0M,
+            decimal intonationScale = 1M,
+            decimal volumeScale = 1M,
+            decimal prePhonemeLength = 0.1M,
+            decimal postPhonemeLength = 0.1M,
+            decimal? pauseLength = null,
+            decimal? pauseLengthScale = 1M,
+            CancellationToken ct = default)
+        {
+            ThrowIfDisposed();
+
+            using var lcts = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token, ct);
+
+            // 音声合成クエリを作成
+            var audioQuery = await _rawApiClient.CreateAudioQueryAsync(text, baseStyleId, ct: lcts.Token);
+
+            // 音声クエリを指定パラメータで上書き
+            audioQuery.SpeedScale = speedScale;
+            audioQuery.PitchScale = pitchScale;
+            audioQuery.IntonationScale = intonationScale;
+            audioQuery.VolumeScale = volumeScale;
+            audioQuery.PrePhonemeLength = prePhonemeLength;
+            audioQuery.PostPhonemeLength = postPhonemeLength;
+            audioQuery.PauseLength = pauseLength;
+            audioQuery.PauseLengthScale = pauseLengthScale;
+
+            // wavの作成
+            return await _rawApiClient.SynthesisMorphingAsync(baseStyleId, targetStyleId, rate, audioQuery,
+                ct: lcts.Token);
+        }
+
+        /// <summary>
+        /// 2つのスタイルが合成可能であるかを返します。
+        /// </summary>
+        /// <param name="baseStyleId">ベース</param>
+        /// <param name="targetStyleId">ターゲット</param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        public async ValueTask<bool> CanMorphAsync(int baseStyleId, int targetStyleId, CancellationToken ct = default)
+        {
+            ThrowIfDisposed();
+            using var lcts = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token, ct);
+            var result = await _rawApiClient.IsMorphableTargetsAsync(new[] { baseStyleId }, ct: lcts.Token);
+
+            if (result.Length == 0) return false;
+
+            var dict = result[0];
+            if (dict.TryGetValue(targetStyleId.ToString(), out var morphableTargetInfo))
             {
-                return;
+                return morphableTargetInfo.IsMorphable;
             }
 
-            _isDisposed = true;
-            _cts.Cancel();
-            _cts.Dispose();
+            return false;
+        }
 
-            if (_handleRawApiClient)
+
+        private void ThrowIfDisposed()
+        {
+            lock (_gate)
             {
-                _rawApiClient.Dispose();
+                if (_isDisposed)
+                {
+                    throw new ObjectDisposedException(nameof(VoicevoxSynthesizer));
+                }
+            }
+        }
+
+        public void Dispose()
+        {
+            lock (_gate)
+            {
+                if (_isDisposed)
+                {
+                    return;
+                }
+
+                _isDisposed = true;
+
+                _cts.Cancel();
+                _cts.Dispose();
+                if (_handleRawApiClient)
+                {
+                    _rawApiClient.Dispose();
+                }
             }
         }
     }
