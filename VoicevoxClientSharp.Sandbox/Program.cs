@@ -23,16 +23,15 @@ using var synthesizer = new VoicevoxSynthesizer();
 // スタイルIDを取得
 var styleId = (await synthesizer.FindStyleIdByNameAsync("ずんだもん", "あまあま"))!.Value;
 
-
 // そのまま喋らせる
 {
-    var wav = await synthesizer.SpeakAsync(styleId, "こんにちは、世界！");
+    var (wav, _) = await synthesizer.SpeakAsync(styleId, "こんにちは、世界！");
     await PlaySoundAsync(wav);
 }
 
 // パラメータを上書きしてみる
 {
-    var wav = await synthesizer.SpeakAsync(styleId, "こんにちは、世界！",
+    var (wav, _)  = await synthesizer.SpeakAsync(styleId, "こんにちは、世界！",
         speedScale: 1.1M,
         pitchScale: 0.1M,
         intonationScale: 1.1M,
@@ -46,7 +45,7 @@ var styleId = (await synthesizer.FindStyleIdByNameAsync("ずんだもん", "あ�
 
 // プリセットを使って喋らせる
 {
-    var wav = await synthesizer.SpeakWithPresetAsync(1, "こんにちは、世界！");
+    var (wav, _)  = await synthesizer.SpeakWithPresetAsync(1, "こんにちは、世界！");
     await PlaySoundAsync(wav);
 }
 
@@ -54,13 +53,13 @@ var styleId = (await synthesizer.FindStyleIdByNameAsync("ずんだもん", "あ�
 try
 {
     // 存在しないプリセットを使ってみる
-    var wav = await synthesizer.SpeakWithPresetAsync(0, "こんにちは、世界！");
+    var (wav, _)  = await synthesizer.SpeakWithPresetAsync(0, "こんにちは、世界！");
     await PlaySoundAsync(wav);
 }
 catch (VoicevoxClientException ex)
 {
     // 失敗するはず
-    var wav = await synthesizer.SpeakAsync(0, ex.Message);
+    var (wav, _)  = await synthesizer.SpeakAsync(0, ex.Message);
     await PlaySoundAsync(wav);
 }
 
@@ -68,7 +67,7 @@ catch (VoicevoxClientException ex)
 {
     // 合成可能？
     var isMorphable = await synthesizer.CanMorphAsync(0, 2);
-    var wav = await synthesizer.SpeakAsync(styleId,
+    var (wav, _)  = await synthesizer.SpeakAsync(styleId,
         "0と2は" + (isMorphable ? "モーフィング可能です" : "モーフィング不可能です"));
     await PlaySoundAsync(wav);
 }
@@ -76,7 +75,7 @@ catch (VoicevoxClientException ex)
 {
     // 合成可能？
     var isMorphable = await synthesizer.CanMorphAsync(0, 1);
-    var wav = await synthesizer.SpeakAsync(styleId,
+    var (wav, _)  = await synthesizer.SpeakAsync(styleId,
         "0と1は" + (isMorphable ? "モーフィング可能です" : "モーフィング不可能です"));
     await PlaySoundAsync(wav);
 }
@@ -84,7 +83,6 @@ catch (VoicevoxClientException ex)
 
 {
     // モーフィングしてみる
-    var wav = await synthesizer.SpeakMorphingAsync(0, 2, 0.5M, "こんにちは、世界！");
+    var (wav, _)  = await synthesizer.SpeakMorphingAsync(0, 2, 0.5M, "こんにちは、世界！");
     await PlaySoundAsync(wav);
 }
-

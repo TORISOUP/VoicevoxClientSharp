@@ -105,7 +105,7 @@ namespace VoicevoxClientSharp
         /// <param name="pauseLengthScale">句読点などの無音時間（倍率）。</param>
         /// <param name="ct"></param>
         /// <returns>wavデータ</returns>
-        public async ValueTask<byte[]> SpeakAsync(
+        public async ValueTask<SynthesisResult> SpeakAsync(
             int styleId,
             string text,
             decimal speedScale = 1M,
@@ -136,7 +136,8 @@ namespace VoicevoxClientSharp
             audioQuery.PauseLengthScale = pauseLengthScale;
 
             // wavの作成
-            return await _rawApiClient.SynthesisAsync(styleId, audioQuery, ct: lcts.Token);
+            var wav = await _rawApiClient.SynthesisAsync(styleId, audioQuery, ct: lcts.Token);
+            return new SynthesisResult(wav, audioQuery);
         }
 
         /// <summary>
@@ -149,7 +150,7 @@ namespace VoicevoxClientSharp
         /// <param name="text">発話内容</param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        public async ValueTask<byte[]> SpeakWithPresetAsync(
+        public async ValueTask<SynthesisResult> SpeakWithPresetAsync(
             int presetId,
             string text,
             CancellationToken ct = default)
@@ -157,7 +158,8 @@ namespace VoicevoxClientSharp
             ThrowIfDisposed();
             using var lcts = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token, ct);
             var audioQuery = await _rawApiClient.CreateAudioQueryFromPresetAsync(text, presetId, ct: lcts.Token);
-            return await _rawApiClient.SynthesisAsync(presetId, audioQuery, ct: lcts.Token);
+            var wav = await _rawApiClient.SynthesisAsync(presetId, audioQuery, ct: lcts.Token);
+            return new SynthesisResult(wav, audioQuery);
         }
 
 
@@ -179,7 +181,7 @@ namespace VoicevoxClientSharp
         /// <param name="pauseLengthScale">句読点などの無音時間（倍率）。</param>
         /// <param name="ct"></param>
         /// <returns>wavデータ</returns>
-        public async ValueTask<byte[]> SpeakMorphingAsync(
+        public async ValueTask<SynthesisResult> SpeakMorphingAsync(
             int baseStyleId,
             int targetStyleId,
             decimal rate,
@@ -212,8 +214,9 @@ namespace VoicevoxClientSharp
             audioQuery.PauseLengthScale = pauseLengthScale;
 
             // wavの作成
-            return await _rawApiClient.SynthesisMorphingAsync(baseStyleId, targetStyleId, rate, audioQuery,
+            var wav = await _rawApiClient.SynthesisMorphingAsync(baseStyleId, targetStyleId, rate, audioQuery,
                 ct: lcts.Token);
+            return new SynthesisResult(wav, audioQuery);
         }
 
         /// <summary>
@@ -270,6 +273,49 @@ namespace VoicevoxClientSharp
                     _rawApiClient.Dispose();
                 }
             }
+        }
+    }
+
+    public readonly struct SynthesisResult : IEquatable<SynthesisResult>
+    {
+        /// <summary>
+        /// 合成した音声データ
+        /// </summary>
+        public byte[] Wav { get; }
+
+        /// <summary>
+        /// 音声合成に使用したクエリ
+        /// </summary>
+        public AudioQuery AudioQuery { get; }
+
+        public SynthesisResult(byte[] wav, AudioQuery audioQuery)
+        {
+            Wav = wav;
+            AudioQuery = audioQuery;
+        }
+
+        public bool Equals(SynthesisResult other)
+        {
+            return Wav.Equals(other.Wav) && AudioQuery.Equals(other.AudioQuery);
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is SynthesisResult other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return (Wav.GetHashCode() * 397) ^ AudioQuery.GetHashCode();
+            }
+        }
+        
+        public void Deconstruct(out byte[] wav, out AudioQuery audioQuery)
+        {
+            wav = Wav;
+            audioQuery = AudioQuery;
         }
     }
 }
