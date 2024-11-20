@@ -4,7 +4,7 @@ using VoicevoxClientSharp.ApiClient.Models;
 
 namespace VoicevoxClientSharpTest.IntegrationTest;
 
-public class QueryClientBaseSpec : BaseSpec
+public class QueryClientSpec : BaseSpec
 {
     [Test, Timeout(5000)]
     public async Task CreateAudioQueryAsyncTest()
