@@ -1,7 +1,7 @@
 using VoicevoxClientSharp.ApiClient;
 using VoicevoxClientSharp.ApiClient.Models;
 
-namespace VoicevoxClientSharpTest.IntegrationTest;
+namespace VoicevoxClientSharpTest.IntegrationTest.Voicevox;
 
 public class SpeakerClientSpeck : BaseSpec
 {

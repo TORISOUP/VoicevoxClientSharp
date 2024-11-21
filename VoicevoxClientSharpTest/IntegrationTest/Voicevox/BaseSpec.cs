@@ -5,14 +5,15 @@
 
 using NAudio.Wave;
 using VoicevoxClientSharp.ApiClient;
+using VoicevoxClientSharp.ApiClient.Models;
 
-namespace VoicevoxClientSharpTest.IntegrationTest;
+namespace VoicevoxClientSharpTest.IntegrationTest.Voicevox;
 
 public class BaseSpec
 {
-    private IVoicevoxRawApiClient _voicevoxRawApiClient;
-    protected IQueryClient QueryClient { get; private set; }
-    protected ISynthesisClient SynthesisClient { get; private set; }
+    private IVoicevoxApiClient _voicevoxApiClient;
+    protected IQueryClient<AudioQuery> QueryClient { get; private set; }
+    protected ISynthesisClient<AudioQuery> SynthesisClient { get; private set; }
     protected IMiscClient MiscClient { get; private set; }
     protected ISpeakerClient SpeakerClient { get; private set; }
     protected IPresetClient PresetClient { get; private set; }
@@ -24,21 +25,21 @@ public class BaseSpec
     [SetUp]
     public void Setup()
     {
-        _voicevoxRawApiClient = new VoicevoxRawApiClient("http://localhost:50021");
-        QueryClient = _voicevoxRawApiClient;
-        SynthesisClient = _voicevoxRawApiClient;
-        MiscClient = _voicevoxRawApiClient;
-        SpeakerClient = _voicevoxRawApiClient;
-        PresetClient = _voicevoxRawApiClient;
-        LibraryClient = _voicevoxRawApiClient;
-        UserDictionaryClient = _voicevoxRawApiClient;
-        SingClient = _voicevoxRawApiClient;
+        _voicevoxApiClient = new VoicevoxApiClient("http://localhost:50021");
+        QueryClient = _voicevoxApiClient;
+        SynthesisClient = _voicevoxApiClient;
+        MiscClient = _voicevoxApiClient;
+        SpeakerClient = _voicevoxApiClient;
+        PresetClient = _voicevoxApiClient;
+        LibraryClient = _voicevoxApiClient;
+        UserDictionaryClient = _voicevoxApiClient;
+        SingClient = _voicevoxApiClient;
     }
 
     [TearDown]
     public void TearDown()
     {
-        _voicevoxRawApiClient.Dispose();
+        _voicevoxApiClient.Dispose();
     }
 
     protected async ValueTask PlaySoundAsync(byte[] wav)

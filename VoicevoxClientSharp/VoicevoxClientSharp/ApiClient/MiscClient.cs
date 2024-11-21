@@ -54,7 +54,7 @@ namespace VoicevoxClientSharp.ApiClient
         ValueTask<EngineManifest> GetEngineManifestAsync(CancellationToken ct = default);
     }
 
-    public partial class VoicevoxRawApiClient
+    public partial class VoicevoxApiClient
     {
         /// <summary>
         ///     <inheritdoc />

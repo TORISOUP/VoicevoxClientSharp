@@ -5,13 +5,13 @@ using VoicevoxClientSharp.ApiClient.Models;
 
 namespace VoicevoxClientSharp.ApiClient
 {
-    public interface IQueryClient : IDisposable
+    public interface IQueryClient<T> : IDisposable
     {
         /// <summary>
         /// POST /audio_query
         /// 音声合成用のクエリを作成する
         /// </summary>
-        ValueTask<AudioQuery> CreateAudioQueryAsync(string text,
+        ValueTask<T> CreateAudioQueryAsync(string text,
             int speakerId,
             string? coreVersion = null,
             CancellationToken ct = default);
@@ -20,7 +20,7 @@ namespace VoicevoxClientSharp.ApiClient
         /// POST /audio_query_from_preset
         /// 音声合成用のクエリをプリセットを用いて作成する
         /// </summary>
-        ValueTask<AudioQuery> CreateAudioQueryFromPresetAsync(string text,
+        ValueTask<T> CreateAudioQueryFromPresetAsync(string text,
             int presetId,
             string? coreVersion = null,
             CancellationToken ct = default);
@@ -66,7 +66,7 @@ namespace VoicevoxClientSharp.ApiClient
             CancellationToken ct = default);
     }
 
-    public partial class VoicevoxRawApiClient
+    public partial class VoicevoxApiClient
     {
         /// <summary>
         ///     <inheritdoc />

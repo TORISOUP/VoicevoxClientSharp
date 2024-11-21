@@ -14,7 +14,7 @@ namespace VoicevoxClientSharp
     {
         private readonly object _gate = new object();
         private bool _isDisposed = false;
-        private readonly IVoicevoxRawApiClient _rawApiClient;
+        private readonly IVoicevoxApiClient _apiClient;
         private readonly bool _handleRawApiClient = false;
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
 
@@ -23,17 +23,17 @@ namespace VoicevoxClientSharp
         /// </summary>
         public VoicevoxSynthesizer()
         {
-            _rawApiClient = new VoicevoxRawApiClient();
+            _apiClient = new VoicevoxApiClient();
             _handleRawApiClient = true;
         }
 
         /// <summary>
         /// VOICEVOXの制御を簡易に行うためのPlayer
         /// </summary>
-        /// <param name="rawApiClient">ここで指定したIVoicevoxRawApiClientのDispose()呼び出しはしません。手動で寿命管理してください。</param>
-        public VoicevoxSynthesizer(IVoicevoxRawApiClient rawApiClient)
+        /// <param name="apiClient">ここで指定したIVoicevoxRawApiClientのDispose()呼び出しはしません。手動で寿命管理してください。</param>
+        public VoicevoxSynthesizer(IVoicevoxApiClient apiClient)
         {
-            _rawApiClient = rawApiClient;
+            _apiClient = apiClient;
             _handleRawApiClient = false;
         }
 
@@ -47,7 +47,7 @@ namespace VoicevoxClientSharp
             ThrowIfDisposed();
 
             using var lcts = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token, ct);
-            return await _rawApiClient.GetSpeakersAsync(ct: lcts.Token);
+            return await _apiClient.GetSpeakersAsync(ct: lcts.Token);
         }
 
         /// <summary>
@@ -63,10 +63,10 @@ namespace VoicevoxClientSharp
             ThrowIfDisposed();
 
             using var lcts = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token, ct);
-            var isInitialized = await _rawApiClient.IsInitializedSpeakerAsync(styleId, ct: lcts.Token);
+            var isInitialized = await _apiClient.IsInitializedSpeakerAsync(styleId, ct: lcts.Token);
             if (!isInitialized)
             {
-                await _rawApiClient.InitializeSpeakerAsync(styleId, ct: lcts.Token);
+                await _apiClient.InitializeSpeakerAsync(styleId, ct: lcts.Token);
             }
         }
 
@@ -123,7 +123,7 @@ namespace VoicevoxClientSharp
             using var lcts = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token, ct);
 
             // 音声合成クエリを作成
-            var audioQuery = await _rawApiClient.CreateAudioQueryAsync(text, styleId, ct: lcts.Token);
+            var audioQuery = await _apiClient.CreateAudioQueryAsync(text, styleId, ct: lcts.Token);
 
             // 音声クエリを指定パラメータで上書き
             audioQuery.SpeedScale = speedScale;
@@ -136,7 +136,7 @@ namespace VoicevoxClientSharp
             audioQuery.PauseLengthScale = pauseLengthScale;
 
             // wavの作成
-            var wav = await _rawApiClient.SynthesisAsync(styleId, audioQuery, ct: lcts.Token);
+            var wav = await _apiClient.SynthesisAsync(styleId, audioQuery, ct: lcts.Token);
             return new SynthesisResult(wav, audioQuery);
         }
 
@@ -157,8 +157,8 @@ namespace VoicevoxClientSharp
         {
             ThrowIfDisposed();
             using var lcts = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token, ct);
-            var audioQuery = await _rawApiClient.CreateAudioQueryFromPresetAsync(text, presetId, ct: lcts.Token);
-            var wav = await _rawApiClient.SynthesisAsync(presetId, audioQuery, ct: lcts.Token);
+            var audioQuery = await _apiClient.CreateAudioQueryFromPresetAsync(text, presetId, ct: lcts.Token);
+            var wav = await _apiClient.SynthesisAsync(presetId, audioQuery, ct: lcts.Token);
             return new SynthesisResult(wav, audioQuery);
         }
 
@@ -201,7 +201,7 @@ namespace VoicevoxClientSharp
             using var lcts = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token, ct);
 
             // 音声合成クエリを作成
-            var audioQuery = await _rawApiClient.CreateAudioQueryAsync(text, baseStyleId, ct: lcts.Token);
+            var audioQuery = await _apiClient.CreateAudioQueryAsync(text, baseStyleId, ct: lcts.Token);
 
             // 音声クエリを指定パラメータで上書き
             audioQuery.SpeedScale = speedScale;
@@ -214,7 +214,7 @@ namespace VoicevoxClientSharp
             audioQuery.PauseLengthScale = pauseLengthScale;
 
             // wavの作成
-            var wav = await _rawApiClient.SynthesisMorphingAsync(baseStyleId, targetStyleId, rate, audioQuery,
+            var wav = await _apiClient.SynthesisMorphingAsync(baseStyleId, targetStyleId, rate, audioQuery,
                 ct: lcts.Token);
             return new SynthesisResult(wav, audioQuery);
         }
@@ -230,7 +230,7 @@ namespace VoicevoxClientSharp
         {
             ThrowIfDisposed();
             using var lcts = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token, ct);
-            var result = await _rawApiClient.IsMorphableTargetsAsync(new[] { baseStyleId }, ct: lcts.Token);
+            var result = await _apiClient.IsMorphableTargetsAsync(new[] { baseStyleId }, ct: lcts.Token);
 
             if (result.Length == 0) return false;
 
@@ -270,7 +270,7 @@ namespace VoicevoxClientSharp
                 _cts.Dispose();
                 if (_handleRawApiClient)
                 {
-                    _rawApiClient.Dispose();
+                    _apiClient.Dispose();
                 }
             }
         }

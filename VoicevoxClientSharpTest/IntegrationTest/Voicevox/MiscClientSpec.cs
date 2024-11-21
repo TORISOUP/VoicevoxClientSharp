@@ -1,6 +1,4 @@
-using VoicevoxClientSharp.ApiClient;
-
-namespace VoicevoxClientSharpTest.IntegrationTest;
+namespace VoicevoxClientSharpTest.IntegrationTest.Voicevox;
 
 public class MiscClientBaseSpec : BaseSpec
 {

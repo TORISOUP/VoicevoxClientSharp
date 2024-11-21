@@ -1,6 +1,6 @@
 using VoicevoxClientSharp.ApiClient.Models;
 
-namespace VoicevoxClientSharpTest.IntegrationTest;
+namespace VoicevoxClientSharpTest.IntegrationTest.Voicevox;
 
 public class SingClientSpec : BaseSpec
 {

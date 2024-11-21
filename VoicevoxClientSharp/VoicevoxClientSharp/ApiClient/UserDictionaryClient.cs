@@ -87,7 +87,7 @@ namespace VoicevoxClientSharp.ApiClient
         );
     }
 
-    public partial class VoicevoxRawApiClient
+    public partial class VoicevoxApiClient
     {
         /// <summary>
         ///     <inheritdoc />

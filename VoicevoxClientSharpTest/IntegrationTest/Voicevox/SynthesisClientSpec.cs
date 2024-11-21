@@ -1,7 +1,6 @@
 using System.IO.Compression;
-using VoicevoxClientSharp.ApiClient.Models;
 
-namespace VoicevoxClientSharpTest.IntegrationTest;
+namespace VoicevoxClientSharpTest.IntegrationTest.Voicevox;
 
 public class SynthesisClientSpec : BaseSpec
 {

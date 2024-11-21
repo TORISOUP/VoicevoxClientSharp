@@ -55,7 +55,7 @@ namespace VoicevoxClientSharp.ApiClient
             CancellationToken ct = default);
     }
 
-    public partial class VoicevoxRawApiClient
+    public partial class VoicevoxApiClient
     {
         /// <summary>
         ///     <inheritdoc />

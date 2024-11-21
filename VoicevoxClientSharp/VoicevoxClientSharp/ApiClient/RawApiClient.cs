@@ -5,15 +5,17 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+using VoicevoxClientSharp.ApiClient.ForAvisSpeech;
+using VoicevoxClientSharp.ApiClient.Models;
 
 namespace VoicevoxClientSharp.ApiClient
 {
     /// <summary>
     /// VOICEVOX APIのクライアント
     /// </summary>
-    public interface IVoicevoxRawApiClient :
-        IQueryClient,
-        ISynthesisClient,
+    public interface IVoicevoxApiClient :
+        IQueryClient<AudioQuery>,
+        ISynthesisClient<AudioQuery>,
         IMiscClient,
         ISpeakerClient,
         ISingClient,
@@ -24,12 +26,26 @@ namespace VoicevoxClientSharp.ApiClient
     }
 
     /// <summary>
+    /// AvisSpeech APIのクライアント
+    /// </summary>
+    public interface IAvisSpeechApiClient :
+        IQueryClient<AvisSpeechAudioQuery>,
+        ISynthesisClient<AvisSpeechAudioQuery>,
+        IMiscClient,
+        ISpeakerClient,
+        IPresetClient,
+        ILibraryClient,
+        IUserDictionaryClient
+    {
+    }
+
+    /// <summary>
     /// VOICEVOX APIのクライアント実装
     /// それぞれのREST APIと1:1対応
     /// </summary>
-    public partial class VoicevoxRawApiClient : IVoicevoxRawApiClient
+    public partial class VoicevoxApiClient : IVoicevoxApiClient, IAvisSpeechApiClient
     {
-        private readonly string _baseUrl = "http://localhost:50021";
+        private readonly string _baseUrl = "http://localhost:50021"; // Voicevoxのデフォルトポート
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
 
 
@@ -63,25 +79,90 @@ namespace VoicevoxClientSharp.ApiClient
 
         #region Constructors
 
-        public VoicevoxRawApiClient()
+        /// <summary>
+        /// VOICEVOXに接続するクライアントを生成します。
+        /// </summary>
+        public static IVoicevoxApiClient Create()
+        {
+            return new VoicevoxApiClient();
+        }
+
+        /// <summary>
+        /// VOICEVOXに接続するクライアントを生成します。
+        /// </summary>
+        public static IVoicevoxApiClient Create(HttpClient httpClient)
+        {
+            return new VoicevoxApiClient(httpClient);
+        }
+
+        /// <summary>
+        /// VOICEVOXに接続するクライアントを生成します。
+        /// </summary>
+        public static IVoicevoxApiClient Create(string baseUrl)
+        {
+            return new VoicevoxApiClient(baseUrl);
+        }
+
+        /// <summary>
+        /// VOICEVOXに接続するクライアントを生成します。
+        /// </summary>
+        public static IVoicevoxApiClient Create(string baseUrl, HttpClient httpClient)
+        {
+            return new VoicevoxApiClient(baseUrl, httpClient);
+        }
+
+        /// <summary>
+        /// AviSpeechに接続するクライアントを生成します。
+        /// </summary>
+        public static IAvisSpeechApiClient CreateForAvisSpeech()
+        {
+            return new VoicevoxApiClient("http://localhost:10101");
+        }
+
+        /// <summary>
+        /// AviSpeechに接続するクライアントを生成します。
+        /// </summary>
+        public static IVoicevoxApiClient CreateForAvisSpeech(HttpClient httpClient)
+        {
+            return new VoicevoxApiClient("http://localhost:10101", httpClient);
+        }
+
+        /// <summary>
+        /// AviSpeechに接続するクライアントを生成します。
+        /// </summary>
+        public static IVoicevoxApiClient CreateForAvisSpeech(string baseUrl)
+        {
+            return new VoicevoxApiClient(baseUrl);
+        }
+
+        /// <summary>
+        /// AviSpeechに接続するクライアントを生成します。
+        /// </summary>
+        public static IVoicevoxApiClient CreateForAvisSpeech(string baseUrl, HttpClient httpClient)
+        {
+            return new VoicevoxApiClient(baseUrl, httpClient);
+        }
+
+
+        public VoicevoxApiClient()
         {
             _httpClient = new HttpClient();
             _handleHttpClient = true;
         }
 
-        public VoicevoxRawApiClient(HttpClient httpClient)
+        public VoicevoxApiClient(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }
 
-        public VoicevoxRawApiClient(string baseUrl)
+        public VoicevoxApiClient(string baseUrl)
         {
             _baseUrl = baseUrl;
             _httpClient = new HttpClient();
             _handleHttpClient = true;
         }
 
-        public VoicevoxRawApiClient(string baseUrl, HttpClient httpClient)
+        public VoicevoxApiClient(string baseUrl, HttpClient httpClient)
         {
             _baseUrl = baseUrl;
             _httpClient = httpClient;

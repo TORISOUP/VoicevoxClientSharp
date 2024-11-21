@@ -7,7 +7,7 @@ using VoicevoxClientSharp.ApiClient.Models;
 
 namespace VoicevoxClientSharp.ApiClient
 {
-    public interface ISynthesisClient : IDisposable
+    public interface ISynthesisClient<T> : IDisposable
     {
         /// <summary>
         /// POST /synthesis
@@ -20,7 +20,7 @@ namespace VoicevoxClientSharp.ApiClient
         /// <param name="ct"></param>
         /// <returns>wav</returns>
         ValueTask<byte[]> SynthesisAsync(int speakerId,
-            AudioQuery audioQuery,
+            T audioQuery,
             bool? enableInterrogativeUpspeak = true,
             string? coreVersion = null,
             CancellationToken ct = default);
@@ -37,7 +37,7 @@ namespace VoicevoxClientSharp.ApiClient
         /// <param name="ct"></param>
         /// <returns>wav</returns>
         ValueTask<byte[]> CancellableSynthesisAsync(int speakerId,
-            AudioQuery audioQuery,
+            T audioQuery,
             bool? enableInterrogativeUpspeak = true,
             string? coreVersion = null,
             CancellationToken ct = default);
@@ -52,7 +52,7 @@ namespace VoicevoxClientSharp.ApiClient
         /// <param name="ct"></param>
         /// <returns>zip圧縮されたwavファイル群</returns>
         ValueTask<byte[]> MultiSpeakerSynthesisAsync(int speakerId,
-            AudioQuery[] audioQueries,
+            T[] audioQueries,
             string? coreVersion = null,
             CancellationToken ct = default);
 
@@ -96,7 +96,7 @@ namespace VoicevoxClientSharp.ApiClient
             CancellationToken ct = default);
     }
 
-    public partial class VoicevoxRawApiClient
+    public partial class VoicevoxApiClient
     {
         /// <summary>
         ///     <inheritdoc />

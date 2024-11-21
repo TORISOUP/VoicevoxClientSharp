@@ -78,7 +78,7 @@ namespace VoicevoxClientSharp.ApiClient
         #endregion
     }
 
-    public partial class VoicevoxRawApiClient
+    public partial class VoicevoxApiClient
     {
         /// <summary>
         ///     <inheritdoc />
