@@ -59,36 +59,4 @@ public class SpeakerClientSpeck : BaseSpec
         Assert.IsTrue(resultUrl.Portrait.StartsWith("http"));
     }
 
-    [Test, Timeout(5000)]
-    public async Task GetSingersAsyncTest()
-    {
-        var result = await SpeakerClient.GetSingersAsync();
-        Assert.IsNotNull(result);
-        Assert.Greater(result.Length, 0);
-        Assert.IsNotNull(result[0].Styles);
-        Assert.Greater(result[0].Styles.Length, 0);
-    }
-
-    [Test, Timeout(5000)]
-    public async Task GetSingerInfoAsyncTest()
-    {
-        var speakers = await SpeakerClient.GetSingersAsync();
-        Assert.IsNotNull(speakers);
-        Assert.Greater(speakers.Length, 0);
-        var speakerId = speakers[0].SpeakerUuid;
-
-        // base64
-        var resultBase64 = await SpeakerClient.GetSingerInfoAsync(speakerId);
-        Assert.IsNotNull(resultBase64);
-        Assert.IsNotNull(resultBase64.Portrait);
-        // httpから始まらない
-        Assert.IsFalse(resultBase64.Portrait.StartsWith("http"));
-
-        // url
-        var resultUrl = await SpeakerClient.GetSingerInfoAsync(speakerId, ResourceFormat.Url);
-        Assert.IsNotNull(resultUrl);
-        Assert.IsNotNull(resultUrl.Portrait);
-        // httpから始まる
-        Assert.IsTrue(resultUrl.Portrait.StartsWith("http"));
-    }
 }

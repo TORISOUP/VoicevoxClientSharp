@@ -75,27 +75,6 @@ public class SynthesisClientSpec : BaseSpec
     }
 
     [Test, Timeout(10000)]
-    public async Task PostFrameSynthesisAsyncTest()
-    {
-        var singers = await SpeakerClient.GetSingersAsync();
-        var styleId = singers[0].Styles[0].Id;
-
-        // この結果を使って合成する
-        var score = new Score(
-            new Note(key: null, frameLength: 15, lyric: "", id: null),
-            new Note(key: 60, frameLength: 45, lyric: "ド", id: null),
-            new Note(key: 62, frameLength: 45, lyric: "レ", id: null),
-            new Note(key: null, frameLength: 15, lyric: "", id: null)
-        );
-        var frameAudioQuery = await QueryClient.CreateSingFrameAudioQueryAsync(score, styleId);
-
-        var result = await SynthesisClient.FrameSynthesisAsync(styleId, frameAudioQuery);
-
-        await PlaySoundAsync(result);
-        Assert.Pass();
-    }
-
-    [Test, Timeout(10000)]
     public async Task PostMorphableTargetsAsyncTest()
     {
         var styleId = await GetDefaultStyleIdAsync();

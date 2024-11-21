@@ -18,6 +18,8 @@ public class BaseSpec
     protected IPresetClient PresetClient { get; private set; }
     protected ILibraryClient LibraryClient { get; private set; }
     protected IUserDictionaryClient UserDictionaryClient { get; private set; }
+    
+    protected ISingClient SingClient { get; private set; }
 
     [SetUp]
     public void Setup()
@@ -30,6 +32,7 @@ public class BaseSpec
         PresetClient = _voicevoxRawApiClient;
         LibraryClient = _voicevoxRawApiClient;
         UserDictionaryClient = _voicevoxRawApiClient;
+        SingClient = _voicevoxRawApiClient;
     }
 
     [TearDown]

@@ -53,30 +53,6 @@ namespace VoicevoxClientSharp.ApiClient
             ResourceFormat? resourceFormat = ResourceFormat.Base64,
             string? coreVersion = null,
             CancellationToken ct = default);
-
-        /// <summary>
-        /// GET /singers
-        /// 歌えるキャラクターの情報の一覧を返します。
-        /// </summary>
-        /// <param name="coreVersion"></param>
-        /// <param name="ct"></param>
-        /// <returns></returns>
-        ValueTask<Speaker[]> GetSingersAsync(string? coreVersion = null, CancellationToken ct = default);
-
-        /// <summary>
-        /// GET /singer_info
-        /// UUID で指定された歌えるキャラクターの情報を返します。 画像や音声はresourceFormatで指定した形式で返されます。
-        /// </summary>
-        /// <param name="speakerUuId"></param>
-        /// <param name="resourceFormat"></param>
-        /// <param name="coreVersion"></param>
-        /// <param name="ct"></param>
-        /// <returns></returns>
-        ValueTask<SpeakerInfo> GetSingerInfoAsync(
-            string speakerUuId,
-            ResourceFormat? resourceFormat = ResourceFormat.Base64,
-            string? coreVersion = null,
-            CancellationToken ct = default);
     }
 
     public partial class VoicevoxRawApiClient
@@ -172,43 +148,5 @@ namespace VoicevoxClientSharp.ApiClient
             return GetAsync<SpeakerInfo>(url, ct);
         }
 
-        /// <summary>
-        ///     <inheritdoc />
-        /// </summary>
-        public ValueTask<Speaker[]> GetSingersAsync(string? coreVersion = null, CancellationToken ct = default)
-        {
-            var queryString = CreateQueryString(
-                ("core_version", coreVersion)
-            );
-
-            var url = $"{_baseUrl}/singers?{queryString}";
-            return GetAsync<Speaker[]>(url, ct);
-        }
-
-        /// <summary>
-        ///     <inheritdoc />
-        /// </summary>
-        public ValueTask<SpeakerInfo> GetSingerInfoAsync(string speakerUuId,
-            ResourceFormat? resourceFormat,
-            string? coreVersion = null,
-            CancellationToken ct = default)
-        {
-            var resourceFormatStr = resourceFormat switch
-            {
-                ResourceFormat.Base64 => "base64",
-                ResourceFormat.Url => "url",
-                null => "base64",
-                _ => throw new ArgumentOutOfRangeException(nameof(resourceFormat), resourceFormat, null)
-            };
-
-            var queryString = CreateQueryString(
-                ("speaker_uuid", speakerUuId),
-                ("resource_format", resourceFormatStr),
-                ("core_version", coreVersion)
-            );
-
-            var url = $"{_baseUrl}/singer_info?{queryString}";
-            return GetAsync<SpeakerInfo>(url, ct);
-        }
     }
 }

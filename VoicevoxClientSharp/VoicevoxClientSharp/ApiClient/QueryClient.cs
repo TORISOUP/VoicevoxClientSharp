@@ -26,15 +26,6 @@ namespace VoicevoxClientSharp.ApiClient
             CancellationToken ct = default);
 
         /// <summary>
-        /// POST /sing_frame_audio_query
-        /// 歌唱音声合成用のクエリを作成する
-        /// </summary>
-        ValueTask<FrameAudioQuery> CreateSingFrameAudioQueryAsync(Score score,
-            int speakerId,
-            string? coreVersion = null,
-            CancellationToken ct = default);
-
-        /// <summary>
         /// POST /accent_phrases
         /// テキストからアクセント句を得る
         /// </summary>
@@ -71,17 +62,6 @@ namespace VoicevoxClientSharp.ApiClient
         ValueTask<AccentPhrase[]> FetchMoraPitchAsync(
             int speakerId,
             AccentPhrase[] accentPhrases,
-            string? coreVersion = null,
-            CancellationToken ct = default);
-
-        /// <summary>
-        /// POST /sing_frame_volume
-        /// 楽譜・歌唱音声合成用のクエリからフレームごとの音量を得る
-        /// </summary>
-        ValueTask<decimal[]> FetchSingFrameVolumeAsync(
-            int speakerId,
-            Score score,
-            FrameAudioQuery frameAudioQuery,
             string? coreVersion = null,
             CancellationToken ct = default);
     }
@@ -121,23 +101,6 @@ namespace VoicevoxClientSharp.ApiClient
             var url =
                 $"{_baseUrl}/audio_query_from_preset?{queryString}";
             return PostAsync<AudioQuery>(url, ct);
-        }
-
-        /// <summary>
-        ///     <inheritdoc />
-        /// </summary>
-        public ValueTask<FrameAudioQuery> CreateSingFrameAudioQueryAsync(Score score,
-            int speakerId,
-            string? coreVersion = null,
-            CancellationToken ct = default)
-        {
-            var queryString = CreateQueryString(
-                ("speaker", speakerId.ToString()),
-                ("core_version", coreVersion)
-            );
-
-            var url = $"{_baseUrl}/sing_frame_audio_query?{queryString}";
-            return PostAsync<Score, FrameAudioQuery>(url, score, ct);
         }
 
         /// <summary>
@@ -210,25 +173,6 @@ namespace VoicevoxClientSharp.ApiClient
 
             var url = $"{_baseUrl}/mora_pitch?{queryString}";
             return PostAsync<AccentPhrase[], AccentPhrase[]>(url, accentPhrases, ct);
-        }
-
-        /// <summary>
-        ///     <inheritdoc />
-        /// </summary>
-        public ValueTask<decimal[]> FetchSingFrameVolumeAsync(int speakerId,
-            Score score,
-            FrameAudioQuery frameAudioQuery,
-            string? coreVersion = null,
-            CancellationToken ct = default)
-        {
-            var request = new SingFrameVolumeRequest(score, frameAudioQuery);
-            var queryString = CreateQueryString(
-                ("speaker", speakerId.ToString()),
-                ("core_version", coreVersion)
-            );
-
-            var url = $"{_baseUrl}/sing_frame_volume?{queryString}";
-            return PostAsync<SingFrameVolumeRequest, decimal[]>(url, request, ct);
         }
     }
 }

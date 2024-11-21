@@ -56,19 +56,6 @@ namespace VoicevoxClientSharp.ApiClient
             string? coreVersion = null,
             CancellationToken ct = default);
 
-        /// <summary>
-        /// POST /frame_synthesis
-        /// 歌唱音声合成を行います。
-        /// </summary>
-        /// <param name="speakerId"></param>
-        /// <param name="frameAudioQuery"></param>
-        /// <param name="coreVersion"></param>
-        /// <param name="ct"></param>
-        /// <returns>wav</returns>
-        ValueTask<byte[]> FrameSynthesisAsync(int speakerId,
-            FrameAudioQuery frameAudioQuery,
-            string? coreVersion = null,
-            CancellationToken ct = default);
 
         /// <summary>
         /// POST /morphable_targets
@@ -161,22 +148,6 @@ namespace VoicevoxClientSharp.ApiClient
             );
             var url = $"{_baseUrl}/multi_synthesis?{queryString}";
             return PostAndByteResponseAsync(url, audioQueries, ct);
-        }
-
-        /// <summary>
-        ///     <inheritdoc />
-        /// </summary>
-        public ValueTask<byte[]> FrameSynthesisAsync(int speakerId,
-            FrameAudioQuery frameAudioQuery,
-            string? coreVersion = null,
-            CancellationToken ct = default)
-        {
-            var queryString = CreateQueryString(
-                ("speaker", speakerId.ToString()),
-                ("core_version", coreVersion)
-            );
-            var url = $"{_baseUrl}/frame_synthesis?{queryString}";
-            return PostAndByteResponseAsync(url, frameAudioQuery, ct);
         }
 
         /// <summary>

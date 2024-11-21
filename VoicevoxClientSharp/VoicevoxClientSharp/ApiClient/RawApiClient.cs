@@ -16,6 +16,7 @@ namespace VoicevoxClientSharp.ApiClient
         ISynthesisClient,
         IMiscClient,
         ISpeakerClient,
+        ISingClient,
         IPresetClient,
         ILibraryClient,
         IUserDictionaryClient
