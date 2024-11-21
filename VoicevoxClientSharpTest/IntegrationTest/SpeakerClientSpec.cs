@@ -6,9 +6,10 @@ namespace VoicevoxClientSharpTest.IntegrationTest;
 public class SpeakerClientSpeck : BaseSpec
 {
     [Test, Timeout(5000)]
-    public void InitializeSpeakerAsyncTest()
+    public async Task InitializeSpeakerAsyncTest()
     {
-        Assert.DoesNotThrowAsync(async () => await SpeakerClient.InitializeSpeakerAsync(0));
+        var styleId = await GetDefaultStyleIdAsync();
+        Assert.DoesNotThrowAsync(async () => await SpeakerClient.InitializeSpeakerAsync(styleId));
 
         Assert.ThrowsAsync<VoicevoxApiErrorException>(async () => { await SpeakerClient.InitializeSpeakerAsync(-1); });
     }
@@ -18,8 +19,9 @@ public class SpeakerClientSpeck : BaseSpec
     {
         Assert.DoesNotThrowAsync(async () =>
         {
-            await SpeakerClient.InitializeSpeakerAsync(0);
-            var result = await SpeakerClient.IsInitializedSpeakerAsync(0);
+            var styleId = await GetDefaultStyleIdAsync();
+            await SpeakerClient.InitializeSpeakerAsync(styleId);
+            var result = await SpeakerClient.IsInitializedSpeakerAsync(styleId);
             Assert.IsTrue(result);
         });
     }
@@ -56,7 +58,7 @@ public class SpeakerClientSpeck : BaseSpec
         // httpから始まる
         Assert.IsTrue(resultUrl.Portrait.StartsWith("http"));
     }
-    
+
     [Test, Timeout(5000)]
     public async Task GetSingersAsyncTest()
     {
@@ -70,20 +72,20 @@ public class SpeakerClientSpeck : BaseSpec
     [Test, Timeout(5000)]
     public async Task GetSingerInfoAsyncTest()
     {
-        var speakers = await SpeakerClient.GetSpeakersAsync();
+        var speakers = await SpeakerClient.GetSingersAsync();
         Assert.IsNotNull(speakers);
         Assert.Greater(speakers.Length, 0);
         var speakerId = speakers[0].SpeakerUuid;
 
         // base64
-        var resultBase64 = await SpeakerClient.GetSpeakerInfoAsync(speakerId);
+        var resultBase64 = await SpeakerClient.GetSingerInfoAsync(speakerId);
         Assert.IsNotNull(resultBase64);
         Assert.IsNotNull(resultBase64.Portrait);
         // httpから始まらない
         Assert.IsFalse(resultBase64.Portrait.StartsWith("http"));
 
         // url
-        var resultUrl = await SpeakerClient.GetSpeakerInfoAsync(speakerId, ResourceFormat.Url);
+        var resultUrl = await SpeakerClient.GetSingerInfoAsync(speakerId, ResourceFormat.Url);
         Assert.IsNotNull(resultUrl);
         Assert.IsNotNull(resultUrl.Portrait);
         // httpから始まる

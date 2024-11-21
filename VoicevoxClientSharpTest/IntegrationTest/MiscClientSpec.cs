@@ -7,10 +7,12 @@ public class MiscClientBaseSpec : BaseSpec
     [Test, Timeout(10000)]
     public async Task ConnectWavesAsyncTest()
     {
+        var styleId = await GetDefaultStyleIdAsync();
+        
         // この結果を使って合成する
-        var audioQuery = await QueryClient.CreateAudioQueryAsync("01", 0);
+        var audioQuery = await QueryClient.CreateAudioQueryAsync("01", styleId);
         // wavのbyte[]
-        var result = await SynthesisClient.SynthesisAsync(0, audioQuery);
+        var result = await SynthesisClient.SynthesisAsync(styleId, audioQuery);
         // base64エンコード
         var base64 = Convert.ToBase64String(result);
 

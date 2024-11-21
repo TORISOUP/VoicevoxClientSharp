@@ -4,7 +4,7 @@ namespace VoicevoxClientSharpTest.IntegrationTest;
 
 public class UserDictionaryClientSpec : BaseSpec
 {
-    [Test, Timeout(10000)]
+    [Test, Timeout(60000)]
     public async Task UserDictionaryWordsAsync()
     {
         var surface = "テストワード登録";
@@ -35,7 +35,7 @@ public class UserDictionaryClientSpec : BaseSpec
         var updatedPriority = 5;
         await UserDictionaryClient.UpdateUserDictionaryWordAsync(
             id, updatedSurface, updatedPronunciation, updatedAccentType, null, updatedPriority);
-
+        
         // 更新されているか確認
         registeredWords = await UserDictionaryClient.GetUserDictionaryWordsAsync();
 

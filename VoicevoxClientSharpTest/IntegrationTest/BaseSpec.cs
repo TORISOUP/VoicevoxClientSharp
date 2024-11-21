@@ -55,4 +55,10 @@ public class BaseSpec
             await Task.Delay(1000);
         }
     }
+    
+    protected async ValueTask<int> GetDefaultStyleIdAsync()
+    {
+        var speakers = await SpeakerClient.GetSpeakersAsync();
+        return speakers[0].Styles[0].Id;
+    }
 }

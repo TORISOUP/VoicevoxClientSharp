@@ -9,7 +9,10 @@ public class QueryClientSpec : BaseSpec
     [Test, Timeout(5000)]
     public async Task CreateAudioQueryAsyncTest()
     {
-        var result = await QueryClient.CreateAudioQueryAsync("こんにちは、世界！", 0);
+        var styleId = await GetDefaultStyleIdAsync();
+
+        
+        var result = await QueryClient.CreateAudioQueryAsync("こんにちは、世界！", styleId);
         Assert.IsNotNull(result);
         Assert.That(result.AccentPhrases.Count, Is.GreaterThan(0));
         Assert.That(result.AccentPhrases[0].Moras.Count, Is.GreaterThan(0));
@@ -20,7 +23,9 @@ public class QueryClientSpec : BaseSpec
     {
         try
         {
-            var result = await QueryClient.CreateAudioQueryFromPresetAsync("こんにちは、世界！", 0);
+            var styleId = await GetDefaultStyleIdAsync();
+
+            var result = await QueryClient.CreateAudioQueryFromPresetAsync("こんにちは、世界！", styleId);
             Assert.IsNotNull(result);
         }
         catch (VoicevoxApiErrorException e)
@@ -48,15 +53,19 @@ public class QueryClientSpec : BaseSpec
     [Test, Timeout(5000)]
     public async Task CreateAccentPhraseAsyncTest()
     {
-        var result = await QueryClient.CreateAccentPhraseAsync("こんにちは、世界！", 0);
+        var styleId = await GetDefaultStyleIdAsync();
+
+        var result = await QueryClient.CreateAccentPhraseAsync("こんにちは、世界！", styleId);
         Assert.IsNotNull(result);
     }
 
     [Test, Timeout(20000)]
     public async Task CreateMoraAsyncTests()
     {
+        var styleId = await GetDefaultStyleIdAsync();
+
         // ここで得た結果を使ってテストを続ける
-        var accentPhrases = await QueryClient.CreateAccentPhraseAsync("こんにちは、世界！", 0);
+        var accentPhrases = await QueryClient.CreateAccentPhraseAsync("こんにちは、世界！", styleId);
         Assert.IsNotNull(accentPhrases);
         Assert.IsNotNull(accentPhrases[0].Moras);
 
@@ -84,6 +93,9 @@ public class QueryClientSpec : BaseSpec
     [Test, Timeout(10000)]
     public async Task FetchSingFrameVolumeAsyncTest()
     {
+        var singer = await SpeakerClient.GetSingersAsync();
+        var styleId = singer[0].Styles[0].Id;
+        
         var score = new Score(
             new Note(key: null, frameLength: 15, lyric: "", id: null),
             new Note(key: 60, frameLength: 45, lyric: "ド", id: null),
@@ -92,9 +104,9 @@ public class QueryClientSpec : BaseSpec
         );
 
         // ここで得た結果を使ってテストを続ける
-        var frameAudioQuery = await QueryClient.CreateSingFrameAudioQueryAsync(score, 6000);
+        var frameAudioQuery = await QueryClient.CreateSingFrameAudioQueryAsync(score, styleId);
 
-        var result = await QueryClient.FetchSingFrameVolumeAsync(6000, score, frameAudioQuery);
+        var result = await QueryClient.FetchSingFrameVolumeAsync(styleId, score, frameAudioQuery);
         Assert.IsNotNull(result);
         Assert.That(result.Length, Is.GreaterThan(0));
     }
