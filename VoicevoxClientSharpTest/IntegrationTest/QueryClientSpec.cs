@@ -94,7 +94,9 @@ public class QueryClientSpec : BaseSpec
     public async Task FetchSingFrameVolumeAsyncTest()
     {
         var singer = await SpeakerClient.GetSingersAsync();
-        var styleId = singer[0].Styles[0].Id;
+        var styleId = singer.SelectMany(x => x.Styles)
+            .FirstOrDefault(x => x.Type == SpeakerType.Sing)!
+            .Id;
         
         var score = new Score(
             new Note(key: null, frameLength: 15, lyric: "", id: null),
