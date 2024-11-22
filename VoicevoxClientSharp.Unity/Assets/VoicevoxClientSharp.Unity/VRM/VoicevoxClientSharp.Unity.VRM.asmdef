@@ -1,0 +1,24 @@
+{
+    "name": "VoicevoxClientSharp.Unity.VRM",
+    "rootNamespace": "",
+    "references": [
+        "GUID:80b33a69465760048847060532491e74",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:e47c917724578cc43b5506c17a27e9a0"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.vrmc.vrm",
+            "expression": "",
+            "define": "USE_VRM"
+        }
+    ],
+    "noEngineReferences": false
+}
