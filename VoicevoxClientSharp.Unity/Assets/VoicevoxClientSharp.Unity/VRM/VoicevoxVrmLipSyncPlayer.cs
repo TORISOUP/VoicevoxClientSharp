@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using TreeEditor;
 using UnityEngine;
 using UniVRM10;
 using VoicevoxClientSharp.ApiClient.Models;
@@ -35,6 +36,8 @@ namespace VoicevoxClientSharp.Unity.VRM
 
         private readonly Dictionary<ExpressionKey, float> _expressionWeights = new Dictionary<ExpressionKey, float>();
 
+        public string CurrentText { get; private set; }
+
         private void Initaizlize()
         {
             if (VrmInstance == null)
@@ -56,10 +59,12 @@ namespace VoicevoxClientSharp.Unity.VRM
             try
             {
                 await _semaphoreSlim.WaitAsync(lcts.Token);
+                IsPlaying = true;
                 await LipSyncAsync(synthesisResult, VrmInstance.Runtime.Expression, lcts.Token);
             }
             finally
             {
+                IsPlaying = false;
                 _semaphoreSlim.Release();
             }
         }
@@ -85,19 +90,22 @@ namespace VoicevoxClientSharp.Unity.VRM
                 foreach (var mora in accentPhrase.Moras)
                 {
                     // モーラを再生
+                    CurrentText = mora.Text;
                     await PlayMoraAsync(mora, expression, ct);
                 }
 
                 if (accentPhrase.PauseMora != null)
                 {
+                    CurrentText = "";
                     // PauseMoraを再生
                     await PlayPauseMoraAsync(accentPhrase.PauseMora, expression, ct);
                 }
             }
-            
+
             // 最後までいったら閉じる
             SetFaceToNeutral();
             expression.SetWeightsNonAlloc(_expressionWeights);
+            CurrentText = "";
         }
 
 
@@ -137,23 +145,28 @@ namespace VoicevoxClientSharp.Unity.VRM
             var ee = _expressionWeights[ExpressionKey.Ee];
             var oh = _expressionWeights[ExpressionKey.Oh];
 
-            while (elapsedTime < consonantLength)
+            var targetElapsedTime = _expectedTotalTime + consonantLength;
+            var waitingTime = (decimal)Mathf.Max((float)(targetElapsedTime - _accurateTotalTime), 0);
+            var startTime = Time.time;
+
+            while ((Time.time - startTime) < (float)waitingTime)
             {
                 // 破裂音系の場合のみ動かす
                 if (isNeutral)
                 {
                     // 指定フレームを消費して口を閉じる
-                    _expressionWeights[ExpressionKey.Aa] = Mathf.Lerp(aa, 0.0f, (float)(elapsedTime / consonantLength));
-                    _expressionWeights[ExpressionKey.Ih] = Mathf.Lerp(ih, 0.0f, (float)(elapsedTime / consonantLength));
-                    _expressionWeights[ExpressionKey.Ou] = Mathf.Lerp(ou, 0.0f, (float)(elapsedTime / consonantLength));
-                    _expressionWeights[ExpressionKey.Ee] = Mathf.Lerp(ee, 0.0f, (float)(elapsedTime / consonantLength));
-                    _expressionWeights[ExpressionKey.Oh] = Mathf.Lerp(oh, 0.0f, (float)(elapsedTime / consonantLength));
+                    _expressionWeights[ExpressionKey.Aa] = Mathf.Lerp(aa, 0.0f, (float)(elapsedTime / waitingTime));
+                    _expressionWeights[ExpressionKey.Ih] = Mathf.Lerp(ih, 0.0f, (float)(elapsedTime / waitingTime));
+                    _expressionWeights[ExpressionKey.Ou] = Mathf.Lerp(ou, 0.0f, (float)(elapsedTime / waitingTime));
+                    _expressionWeights[ExpressionKey.Ee] = Mathf.Lerp(ee, 0.0f, (float)(elapsedTime / waitingTime));
+                    _expressionWeights[ExpressionKey.Oh] = Mathf.Lerp(oh, 0.0f, (float)(elapsedTime / waitingTime));
                     expression.SetWeightsNonAlloc(_expressionWeights);
                 }
 
                 await UniTask.Yield(PlayerLoopTiming.Update, ct);
                 elapsedTime += (decimal)Time.deltaTime;
             }
+
 
             // 最後までいったら閉じる
             SetFaceToNeutral();
@@ -225,19 +238,23 @@ namespace VoicevoxClientSharp.Unity.VRM
             }
 
 
-            while (elapsedTime < vowelLength)
+            var targetElapsedTime = _expectedTotalTime + vowelLength;
+            var waitingTime = (decimal)Mathf.Max((float)(targetElapsedTime - _accurateTotalTime), 0);
+            var startTime = Time.time;
+
+            while ((Time.time - startTime) < (float)waitingTime)
             {
                 // 指定フレームを消費して口を閉じる
                 _expressionWeights[ExpressionKey.Aa] =
-                    Mathf.Lerp(caa, taa, (float)(elapsedTime / vowelLength));
+                    Mathf.Lerp(caa, taa, (float)(elapsedTime / waitingTime));
                 _expressionWeights[ExpressionKey.Ih] =
-                    Mathf.Lerp(cih, tih, (float)(elapsedTime / vowelLength));
+                    Mathf.Lerp(cih, tih, (float)(elapsedTime / waitingTime));
                 _expressionWeights[ExpressionKey.Ou] =
-                    Mathf.Lerp(cou, tou, (float)(elapsedTime / vowelLength));
+                    Mathf.Lerp(cou, tou, (float)(elapsedTime / waitingTime));
                 _expressionWeights[ExpressionKey.Ee] =
-                    Mathf.Lerp(cee, tee, (float)(elapsedTime / vowelLength));
+                    Mathf.Lerp(cee, tee, (float)(elapsedTime / waitingTime));
                 _expressionWeights[ExpressionKey.Oh] =
-                    Mathf.Lerp(coh, toh, (float)(elapsedTime / vowelLength));
+                    Mathf.Lerp(coh, toh, (float)(elapsedTime / waitingTime));
                 expression.SetWeightsNonAlloc(_expressionWeights);
 
                 await UniTask.Yield(PlayerLoopTiming.Update, ct);
@@ -285,7 +302,9 @@ namespace VoicevoxClientSharp.Unity.VRM
             // 予想終了時間より、実際の待機時間を計算する
             var waitTime =　(decimal)Mathf.Max((float)(expectedEndTime - _accurateTotalTime), 0);
 
-            while (elapsedTime < waitTime)
+            var startTime = Time.time;
+
+            while ((Time.time - startTime) < (float)waitTime)
             {
                 _expressionWeights[ExpressionKey.Aa]
                     = Mathf.Lerp(aa, 0.0f, rate * (float)(elapsedTime / mora.VowelLength));
@@ -307,6 +326,10 @@ namespace VoicevoxClientSharp.Unity.VRM
             // 最後までいったら閉じる
             SetFaceToNeutral();
             expression.SetWeightsNonAlloc(_expressionWeights);
+
+            // 時間を加算
+            _expectedTotalTime += mora.VowelLength;
+            _accurateTotalTime += elapsedTime;
         }
 
         private void SetFaceToNeutral()

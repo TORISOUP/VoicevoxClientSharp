@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
@@ -16,8 +17,7 @@ namespace VoicevoxClientSharp.Unity
         /// <summary>
         /// 再生時に同時に使用するオプション
         /// </summary>
-        [SerializeField]
-        private OptionalVoicevoxPlayer[] _optionalVoicevoxPlayers;
+        public List<OptionalVoicevoxPlayer> OptionalVoicevoxPlayers;
 
         private readonly SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);
 
@@ -48,7 +48,7 @@ namespace VoicevoxClientSharp.Unity
                 AudioSource.Play();
 
                 // 再生完了まで待機
-                if (_optionalVoicevoxPlayers == null || _optionalVoicevoxPlayers.Length == 0)
+                if (OptionalVoicevoxPlayers == null || OptionalVoicevoxPlayers.Count == 0)
                 {
                     await UniTask.WaitUntil(() => !AudioSource.isPlaying, cancellationToken: ct2);
                 }
@@ -56,7 +56,7 @@ namespace VoicevoxClientSharp.Unity
                 {
                     // オプションの再生を同時に実行
                     var audioTask = UniTask.WaitUntil(() => !AudioSource.isPlaying, cancellationToken: ct2);
-                    var optionalTasks = _optionalVoicevoxPlayers.Select(player => player.PlayAsync(result, ct2))
+                    var optionalTasks = OptionalVoicevoxPlayers.Select(player => player.PlayAsync(result, ct2))
                         .ToArray();
                     await UniTask.WhenAll(optionalTasks.Append(audioTask).ToArray());
                 }
