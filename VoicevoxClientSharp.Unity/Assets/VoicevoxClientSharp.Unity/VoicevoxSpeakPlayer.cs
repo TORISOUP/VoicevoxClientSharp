@@ -20,7 +20,7 @@ namespace VoicevoxClientSharp.Unity
         public List<OptionalVoicevoxPlayer> OptionalVoicevoxPlayers;
 
         private readonly SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);
-
+        private bool _isDestroyed;
         public bool IsPlaying { get; private set; }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace VoicevoxClientSharp.Unity
             finally
             {
                 if (audioClip != null) Destroy(audioClip);
-                _semaphoreSlim.Release(1);
+                if (!_isDestroyed) _semaphoreSlim.Release(1);
                 IsPlaying = false;
             }
         }
@@ -74,6 +74,7 @@ namespace VoicevoxClientSharp.Unity
         {
             try
             {
+                _isDestroyed = true;
                 _semaphoreSlim.Dispose();
             }
             catch

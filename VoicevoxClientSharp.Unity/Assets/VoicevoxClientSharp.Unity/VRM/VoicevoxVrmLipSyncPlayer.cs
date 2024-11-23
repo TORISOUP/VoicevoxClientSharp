@@ -36,9 +36,12 @@ namespace VoicevoxClientSharp.Unity.VRM
 
         private readonly Dictionary<ExpressionKey, float> _expressionWeights = new Dictionary<ExpressionKey, float>();
 
+        /// <summary>
+        /// 現在のテキスト
+        /// </summary>
         public string CurrentText { get; private set; }
 
-        private void Initaizlize()
+        private void Initialize()
         {
             if (VrmInstance == null)
             {
@@ -48,7 +51,7 @@ namespace VoicevoxClientSharp.Unity.VRM
 
         public override async UniTask PlayAsync(SynthesisResult synthesisResult, CancellationToken cancellationToken)
         {
-            Initaizlize();
+            Initialize();
 
             // 外から渡されたCancellationTokenと、VoicevoxVrmLipSyncPlayerと、Vrm10InstanceのCancellationTokenを合成
             using var lcts = CancellationTokenSource.CreateLinkedTokenSource(
@@ -85,20 +88,34 @@ namespace VoicevoxClientSharp.Unity.VRM
             expression.SetWeightsNonAlloc(_expressionWeights);
 
             var audioQuery = result.AudioQuery;
+
+            // prePhonemeLength分だけ待機
+            var waitStartTime = Time.time;
+            await UniTask.Delay(TimeSpan.FromSeconds((double)(audioQuery.PrePhonemeLength / audioQuery.SpeedScale)),
+                DelayType.Realtime,
+                cancellationToken: ct);
+            _expectedTotalTime += audioQuery.PrePhonemeLength / audioQuery.SpeedScale;
+            _accurateTotalTime += (decimal)(Time.time - waitStartTime);
+
             foreach (var accentPhrase in audioQuery.AccentPhrases)
             {
                 foreach (var mora in accentPhrase.Moras)
                 {
                     // モーラを再生
                     CurrentText = mora.Text;
-                    await PlayMoraAsync(mora, expression, ct);
+                    await PlayMoraAsync(mora, audioQuery.SpeedScale, expression, ct);
                 }
 
                 if (accentPhrase.PauseMora != null)
                 {
                     CurrentText = "";
                     // PauseMoraを再生
-                    await PlayPauseMoraAsync(accentPhrase.PauseMora, expression, ct);
+                    await PlayPauseMoraAsync(
+                        accentPhrase.PauseMora,
+                        audioQuery.SpeedScale,
+                        audioQuery.PauseLength,
+                        audioQuery.PauseLengthScale,
+                        expression, ct);
                 }
             }
 
@@ -106,22 +123,30 @@ namespace VoicevoxClientSharp.Unity.VRM
             SetFaceToNeutral();
             expression.SetWeightsNonAlloc(_expressionWeights);
             CurrentText = "";
+
+            // postPhonemeLength分だけ待機
+            waitStartTime = Time.time;
+            await UniTask.Delay(TimeSpan.FromSeconds((double)(audioQuery.PostPhonemeLength / audioQuery.SpeedScale)),
+                cancellationToken: ct);
+            _expectedTotalTime += audioQuery.PostPhonemeLength / audioQuery.SpeedScale;
+            _accurateTotalTime += (decimal)(Time.time - waitStartTime);
         }
 
 
         private async UniTask PlayMoraAsync(
             Mora mora,
+            decimal speedScale,
             Vrm10RuntimeExpression expression,
             CancellationToken ct)
         {
             // 子音が存在する場合はそれを再生反映する
             if (mora.Consonant != null)
             {
-                await PlayConsonantAsync(mora.Consonant, mora.ConsonantLength!.Value, expression, ct);
+                await PlayConsonantAsync(mora.Consonant, mora.ConsonantLength!.Value, speedScale, expression, ct);
             }
 
             // 母音を再生反映する
-            await PlayVowelAsync(mora.Vowel, mora.VowelLength, expression, ct);
+            await PlayVowelAsync(mora.Vowel, mora.VowelLength, speedScale, expression, ct);
         }
 
         /// <summary>
@@ -130,6 +155,7 @@ namespace VoicevoxClientSharp.Unity.VRM
         private async UniTask PlayConsonantAsync(
             string consonant,
             decimal consonantLength,
+            decimal speedScale,
             Vrm10RuntimeExpression expression,
             CancellationToken ct)
         {
@@ -145,7 +171,8 @@ namespace VoicevoxClientSharp.Unity.VRM
             var ee = _expressionWeights[ExpressionKey.Ee];
             var oh = _expressionWeights[ExpressionKey.Oh];
 
-            var targetElapsedTime = _expectedTotalTime + consonantLength;
+            var length = consonantLength / speedScale;
+            var targetElapsedTime = _expectedTotalTime + length;
             var waitingTime = (decimal)Mathf.Max((float)(targetElapsedTime - _accurateTotalTime), 0);
             var startTime = Time.time;
 
@@ -167,13 +194,15 @@ namespace VoicevoxClientSharp.Unity.VRM
                 elapsedTime += (decimal)Time.deltaTime;
             }
 
-
-            // 最後までいったら閉じる
-            SetFaceToNeutral();
-            expression.SetWeightsNonAlloc(_expressionWeights);
+            if (isNeutral)
+            {
+                // 最後までいったら閉じる
+                SetFaceToNeutral();
+                expression.SetWeightsNonAlloc(_expressionWeights);
+            }
 
             // 時間を加算
-            _expectedTotalTime += consonantLength;
+            _expectedTotalTime += length;
             _accurateTotalTime += elapsedTime;
         }
 
@@ -184,17 +213,18 @@ namespace VoicevoxClientSharp.Unity.VRM
         private async UniTask PlayVowelAsync(
             string vowel,
             decimal vowelLength,
+            decimal speedScale,
             Vrm10RuntimeExpression expression,
             CancellationToken ct)
         {
             var elapsedTime = 0M;
 
-            // 今の数値
-            var caa = _expressionWeights[ExpressionKey.Aa];
-            var cih = _expressionWeights[ExpressionKey.Ih];
-            var cou = _expressionWeights[ExpressionKey.Ou];
-            var cee = _expressionWeights[ExpressionKey.Ee];
-            var coh = _expressionWeights[ExpressionKey.Oh];
+            // 今の数値をちょっと小さくする
+            var caa = _expressionWeights[ExpressionKey.Aa] * 0.8f;
+            var cih = _expressionWeights[ExpressionKey.Ih] * 0.8f;
+            var cou = _expressionWeights[ExpressionKey.Ou] * 0.8f;
+            var cee = _expressionWeights[ExpressionKey.Ee] * 0.8f;
+            var coh = _expressionWeights[ExpressionKey.Oh] * 0.8f;
 
             // 目標値
             var taa = 0f;
@@ -237,14 +267,13 @@ namespace VoicevoxClientSharp.Unity.VRM
                     break;
             }
 
-
-            var targetElapsedTime = _expectedTotalTime + vowelLength;
+            var length = vowelLength / speedScale;
+            var targetElapsedTime = _expectedTotalTime + length;
             var waitingTime = (decimal)Mathf.Max((float)(targetElapsedTime - _accurateTotalTime), 0);
             var startTime = Time.time;
 
             while ((Time.time - startTime) < (float)waitingTime)
             {
-                // 指定フレームを消費して口を閉じる
                 _expressionWeights[ExpressionKey.Aa] =
                     Mathf.Lerp(caa, taa, (float)(elapsedTime / waitingTime));
                 _expressionWeights[ExpressionKey.Ih] =
@@ -269,7 +298,7 @@ namespace VoicevoxClientSharp.Unity.VRM
             expression.SetWeightsNonAlloc(_expressionWeights);
 
             // 時間を加算
-            _expectedTotalTime += vowelLength;
+            _expectedTotalTime += length;
             _accurateTotalTime += elapsedTime;
         }
 
@@ -278,6 +307,9 @@ namespace VoicevoxClientSharp.Unity.VRM
         /// </summary>
         private async UniTask PlayPauseMoraAsync(
             Mora mora,
+            decimal speedScale,
+            decimal? pauseLength,
+            decimal? pauseLengthScale,
             Vrm10RuntimeExpression expression,
             CancellationToken ct)
         {
@@ -296,8 +328,10 @@ namespace VoicevoxClientSharp.Unity.VRM
             // 待機時間より短く口を閉じる
             var rate = 2.0f;
 
+            var lenght = (pauseLength ?? mora.VowelLength) * (pauseLengthScale ?? 1M) / speedScale;
+
             // 予想終了時間
-            var expectedEndTime = _expectedTotalTime + mora.VowelLength;
+            var expectedEndTime = _expectedTotalTime + lenght;
 
             // 予想終了時間より、実際の待機時間を計算する
             var waitTime =　(decimal)Mathf.Max((float)(expectedEndTime - _accurateTotalTime), 0);
@@ -307,15 +341,15 @@ namespace VoicevoxClientSharp.Unity.VRM
             while ((Time.time - startTime) < (float)waitTime)
             {
                 _expressionWeights[ExpressionKey.Aa]
-                    = Mathf.Lerp(aa, 0.0f, rate * (float)(elapsedTime / mora.VowelLength));
+                    = Mathf.Lerp(aa, 0.0f, rate * (float)(elapsedTime / lenght));
                 _expressionWeights[ExpressionKey.Ih]
-                    = Mathf.Lerp(ih, 0.0f, rate * (float)(elapsedTime / mora.VowelLength));
+                    = Mathf.Lerp(ih, 0.0f, rate * (float)(elapsedTime / lenght));
                 _expressionWeights[ExpressionKey.Ou]
-                    = Mathf.Lerp(ou, 0.0f, rate * (float)(elapsedTime / mora.VowelLength));
+                    = Mathf.Lerp(ou, 0.0f, rate * (float)(elapsedTime / lenght));
                 _expressionWeights[ExpressionKey.Ee]
-                    = Mathf.Lerp(ee, 0.0f, rate * (float)(elapsedTime / mora.VowelLength));
+                    = Mathf.Lerp(ee, 0.0f, rate * (float)(elapsedTime / lenght));
                 _expressionWeights[ExpressionKey.Oh]
-                    = Mathf.Lerp(oh, 0.0f, rate * (float)(elapsedTime / mora.VowelLength));
+                    = Mathf.Lerp(oh, 0.0f, rate * (float)(elapsedTime / lenght));
                 expression.SetWeightsNonAlloc(_expressionWeights);
 
 
@@ -328,7 +362,7 @@ namespace VoicevoxClientSharp.Unity.VRM
             expression.SetWeightsNonAlloc(_expressionWeights);
 
             // 時間を加算
-            _expectedTotalTime += mora.VowelLength;
+            _expectedTotalTime += lenght;
             _accurateTotalTime += elapsedTime;
         }
 
