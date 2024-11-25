@@ -45,7 +45,7 @@ namespace VoicevoxClientSharp.ApiClient
     /// </summary>
     public partial class VoicevoxApiClient : IVoicevoxApiClient, IAvisSpeechApiClient
     {
-        private readonly string _baseUrl = "http://localhost:50021"; // Voicevoxのデフォルトポート
+        private readonly string _baseUrl; // Voicevoxのデフォルトポート
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
 
 
@@ -76,6 +76,10 @@ namespace VoicevoxClientSharp.ApiClient
                 _httpClient.Dispose();
             }
         }
+
+        public IVoicevoxApiClient AsVoicevoxApiClient => this;
+        
+        public IAvisSpeechApiClient AsAvisSpeechApiClient => this;
 
         #region Constructors
 
@@ -144,17 +148,39 @@ namespace VoicevoxClientSharp.ApiClient
         }
 
 
+        /// <summary>
+        /// APIクライアントを生成します。
+        /// 
+        /// VOICEVOXに接続する場合はIVoicevoxApiClientにキャストするか、VoicevoxApiClient.Createを使用してください。
+        /// AviSpeechに接続する場合はIAvisSpeechApiClientにキャストするか、VoicevoxApiClient.CreateForAvisSpeechを使用してください。
+        /// </summary>
         public VoicevoxApiClient()
         {
             _httpClient = new HttpClient();
             _handleHttpClient = true;
+            _baseUrl = "http://localhost:50021";
         }
 
+        /// <summary>
+        /// APIクライアントを生成します。
+        /// 
+        /// VOICEVOXに接続する場合はIVoicevoxApiClientにキャストするか、VoicevoxApiClient.Createを使用してください。
+        /// AviSpeechに接続する場合はIAvisSpeechApiClientにキャストするか、VoicevoxApiClient.CreateForAvisSpeechを使用してください。
+        /// </summary>
+        /// <param name="httpClient">通信に用いるHttpClientを指定します。このHttpClientのDispose()はVoicevoxApiClientでは管理しません。</param>
         public VoicevoxApiClient(HttpClient httpClient)
         {
             _httpClient = httpClient;
+            _baseUrl = "http://localhost:50021";
         }
 
+        /// <summary>
+        /// APIクライアントを生成します。
+        /// 
+        /// VOICEVOXに接続する場合はIVoicevoxApiClientにキャストするか、VoicevoxApiClient.Createを使用してください。
+        /// AviSpeechに接続する場合はIAvisSpeechApiClientにキャストするか、VoicevoxApiClient.CreateForAvisSpeechを使用してください。
+        /// </summary>
+        /// <param name="baseUrl">接続先</param>
         public VoicevoxApiClient(string baseUrl)
         {
             _baseUrl = baseUrl;
@@ -162,6 +188,14 @@ namespace VoicevoxClientSharp.ApiClient
             _handleHttpClient = true;
         }
 
+        /// <summary>
+        /// APIクライアントを生成します。
+        /// 
+        /// VOICEVOXに接続する場合はIVoicevoxApiClientにキャストするか、VoicevoxApiClient.Createを使用してください。
+        /// AviSpeechに接続する場合はIAvisSpeechApiClientにキャストするか、VoicevoxApiClient.CreateForAvisSpeechを使用してください。
+        /// </summary>
+        /// <param name="httpClient">通信に用いるHttpClientを指定します。このHttpClientのDispose()はVoicevoxApiClientでは管理しません。</param>
+        /// <param name="baseUrl">接続先</param>
         public VoicevoxApiClient(string baseUrl, HttpClient httpClient)
         {
             _baseUrl = baseUrl;

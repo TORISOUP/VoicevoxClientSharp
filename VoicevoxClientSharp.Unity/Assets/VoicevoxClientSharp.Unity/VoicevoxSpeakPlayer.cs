@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -22,6 +23,23 @@ namespace VoicevoxClientSharp.Unity
         private readonly SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);
         private bool _isDestroyed;
         public bool IsPlaying { get; private set; }
+
+        private void Start()
+        {
+            if (AudioSource == null)
+            {
+                AudioSource = gameObject.GetComponent<AudioSource>();
+            }
+
+            var optionals = GetComponents<OptionalVoicevoxPlayer>();
+            foreach (var opt in optionals)
+            {
+                if (!OptionalVoicevoxPlayers.Contains(opt))
+                {
+                    OptionalVoicevoxPlayers.Add(opt);
+                }
+            }
+        }
 
         /// <summary>
         /// SynthesisResultで音声の再生を行う

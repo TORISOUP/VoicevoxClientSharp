@@ -19,7 +19,7 @@ namespace VoicevoxClientSharp
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
 
         /// <summary>
-        /// VOICEVOXの制御を簡易に行うためのPlayer
+        /// VOICEVOXで発話音声の合成を制御するクラス
         /// </summary>
         public VoicevoxSynthesizer()
         {
@@ -28,9 +28,9 @@ namespace VoicevoxClientSharp
         }
 
         /// <summary>
-        /// VOICEVOXの制御を簡易に行うためのPlayer
+        /// VOICEVOXで発話音声の合成を制御するクラス
         /// </summary>
-        /// <param name="apiClient">ここで指定したIVoicevoxRawApiClientのDispose()呼び出しはしません。手動で寿命管理してください。</param>
+        /// <param name="apiClient">ここで指定したIVoicevoxApiClientのDispose()呼び出しはしません。手動で寿命管理してください。</param>
         public VoicevoxSynthesizer(IVoicevoxApiClient apiClient)
         {
             _apiClient = apiClient;
@@ -276,6 +276,9 @@ namespace VoicevoxClientSharp
         }
     }
 
+    /// <summary>
+    /// VOICEVOXの発話音声の合成結果
+    /// </summary>
     public readonly struct SynthesisResult : IEquatable<SynthesisResult>
     {
         /// <summary>
