@@ -105,7 +105,7 @@ namespace VoicevoxClientSharp
         /// <param name="pauseLengthScale">句読点などの無音時間（倍率）。</param>
         /// <param name="ct"></param>
         /// <returns>wavデータ</returns>
-        public async ValueTask<SynthesisResult> SpeakAsync(
+        public async ValueTask<SynthesisResult> SynthesizeSpeechAsync(
             int styleId,
             string text,
             decimal speedScale = 1M,
@@ -150,7 +150,7 @@ namespace VoicevoxClientSharp
         /// <param name="text">発話内容</param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        public async ValueTask<SynthesisResult> SpeakWithPresetAsync(
+        public async ValueTask<SynthesisResult> SynthesizeSpeechWithPresetAsync(
             int presetId,
             string text,
             CancellationToken ct = default)
