@@ -102,17 +102,17 @@ namespace VoicevoxClientSharp.ApiClient
         /// <summary>
         /// VOICEVOXに接続するクライアントを生成します。
         /// </summary>
-        public static IVoicevoxApiClient Create(string baseUrl)
+        public static IVoicevoxApiClient Create(string baseUri)
         {
-            return new VoicevoxApiClient(baseUrl);
+            return new VoicevoxApiClient(baseUri);
         }
 
         /// <summary>
         /// VOICEVOXに接続するクライアントを生成します。
         /// </summary>
-        public static IVoicevoxApiClient Create(string baseUrl, HttpClient httpClient)
+        public static IVoicevoxApiClient Create(string baseUri, HttpClient httpClient)
         {
-            return new VoicevoxApiClient(baseUrl, httpClient);
+            return new VoicevoxApiClient(baseUri, httpClient);
         }
 
         /// <summary>
