@@ -1,7 +1,6 @@
 # VoicevoxClientSharp
 
 [VOIVEVOX.exe](https://voicevox.hiroshiba.jp/)および[voicevox_engine](https://github.com/VOICEVOX/voicevox_engine)および[AvisSpeech](https://aivis-project.com/)をC#から制御するためのクライアントライブラリです。 
-.NET Standard 2.0向けに作成されています。
 
 
 * 対象プラットフォーム: `.NET Standard 2.0`
@@ -10,13 +9,13 @@
   * Unity 2018.4以降
   * etc.
 
-* 対象のVOICEVOXエンジンバージョン: `0.21.1`
-* 対象のAvisSpeechバージョン: `1.0.0`
+* 対応VOICEVOXエンジンバージョン: `0.21.1`
+* 対応AvisSpeechバージョン: `1.0.0`
 
 
-またUnity用のプラグインも提供しています。さらに、[VRM](https://vrm.dev/)と連携して使用することもできます。
+またUnityでの動作をサポートするプラグインも別途配布しています。そちらを使用することで[VRM](https://vrm.dev/)と連携して使用することもできます。
 
-* 対象のVRMバージョン: `v0.128.0`
+* 対応VRMバージョン: `v0.128.0`
 
 
 ## インストール方法
@@ -39,17 +38,18 @@ Install-Package VoicevoxClientSharp
 
 ## 使い方
 
-テキストより音声合成を行うことが目的の場合は`VoicevoxSynthesizer`を使用するのが便利です。  
-一方で、VOICEVOXが提供するREST APIを個別に実行したい場合は`VoicevoxApiClient`を使用してください。
+テキストから音声合成を簡単にやりたい → `VoicevoxSynthesizer`  
+VOICEVOXが提供するREST APIを個別に実行したい → `VoicevoxApiClient`
 
-### VoicevoxSynthesizer : 音声合成の簡易に行うためのクラス
+### A.VoicevoxSynthesizer : 音声合成の簡易に行うためのクラス
 
 `VoicevoxSynthesizer`を用いることでテキストから音声合成を簡単に実行できます。
 また音声合成に必要な下準備も簡易ですが行うことができます。
 
-#### 基本的な使い方
-
 ※ **VoicevoxSynthesizerはAvisSpeechには対応していません。VOICEVOX専用です。**
+
+#### A-1. 基本的な使い方
+
 
 ```cs
 // VoicevoxSynthesizerの初期化
@@ -89,7 +89,7 @@ public readonly struct SynthesisResult : IEquatable<SynthesisResult>
 }
 ```
 
-#### 音声合成のパラメータ指定
+#### A-2. 音声合成のパラメータ指定
 
 ```csharp
 // 個別のパラメータを指定した音声合成も可能
@@ -102,12 +102,13 @@ var result = await synthesizer.SynthesizeSpeechAsync(styleId, "こんにちは�
         postPhonemeLength: 0.1M,
         pauseLength: 0.1M,
         pauseLengthScale: 1.5M);
-
+```
+```cs
 // VOICEVOXに登録されたプリセットを用いて音声合成も可能
 result = await synthesizer.SynthesizeSpeechWithPresetAsync(presetId: 1, "こんにちは、世界！");
 ```
 
-#### モーフィング
+#### A-3. モーフィング
 
 ```cs
 // 2つのスタイルが合成可能であるか
@@ -119,24 +120,23 @@ if (isMorphable)
 }
 ```
 
-#### 接続先の変更
+#### A-4. 接続先の変更
 
 コンストラクタ引数を何も指定しない場合は`http://localhost:50021`を接続先として初期化します。
 接続先を変更したい場合は`VoicevoxApiClient`を手動で生成し、`VoicevoxSynthesizer`のコンストラクタに渡してください。
 
 ```cs
-// 接続先を指定したい場合はVoicevoxApiClientを手動で生成し、
-// それをコンストラクタ引数に渡してください
+// 接続先を指定したい場合はVoicevoxApiClientを手動で生成し、コンストラクタに渡してください
 var apiClient = VoicevoxApiClient.Create(baseUri: "http://localhost:50021");
 using var synthesizer = new VoicevoxSynthesizer(apiClient);
 ```
 
-### VoicevoxApiClient : REST APIを実行するシンプルなクライアント実装
+### B. VoicevoxApiClient : REST APIを実行するシンプルなクライアント実装
 
 `VoicevoxApiClient`はVOICEVOX（およびAvisSpeech）が提供するREST APIと1:1に対応した"シンプル"なクライアントです。
 
 
-#### 使い方
+#### B-1. 使い方
 
 [VOICEVOXのAPIドキュメント](https://voicevox.github.io/voicevox_engine/api/)を参考に、実行したいAPIに対応したメソッドを呼び出してください。
 
@@ -182,6 +182,7 @@ using var synthesizer = new VoicevoxSynthesizer(apiClient);
 | `/import_user_dict`                          | POST        | `ImportUserDictionaryWordsAsync`             | 他のユーザー辞書をインポートする                |
 
 
+##### 使用例：音声合成をVoicevoxApiClientで行う
 
 ```cs
 // APIクライアントを生成
@@ -205,23 +206,16 @@ byte[] wav = await apiClient.SynthesisAsync(styleId, audioQuery);
 ```
 
 
+#### B-2. 初期化:VOICEVOXにつなぐ
 
-
-
-#### 初期化について
-
-VOICEVOXに接続する場合は`VoicevoxApiClient`をそのまま利用できます。**AvisSpeechに接続する場合は`IAvisSpeechApiClient`にキャストするか、専用のファクトリーメソッドを使用してください。**
+VOICEVOXと通信する場合は`VoicevoxApiClient`をそのまま使用してください。
 
 ```cs
-// VOICEVOXに接続する場合はコンストラクタを利用してもよいし
+// VOICEVOXに接続する
 using var voicevoxApiClient1 = new VoicevoxApiClient();
+
 // VoicevoxApiClient.Createを使用してもよい
 using var voicevoxApiClient2 = VoicevoxApiClient.Create();
-
-// AviSpeechに接続する場合はIAvisSpeechApiClientに明示的にキャストするか
-using var avisSpeechApiClient1 = new VoicevoxApiClient() as IAvisSpeechApiClient;
-// VoicevoxApiClient.CreateForAvisSpeechを使用してください
-using var avisSpeechApiClient2 = VoicevoxApiClient.CreateForAvisSpeech();
 ```
 
 また、引数として接続先情報と`HttpClient`を指定できます。接続方法をカスタムしたい場合に利用してください。
@@ -230,12 +224,14 @@ using var avisSpeechApiClient2 = VoicevoxApiClient.CreateForAvisSpeech();
 ```cs
 // デフォルトの接続先で初期化 : http://localhost:50021
 using var apiClient = VoicevoxApiClient.Create();
+```
 
-
+```cs
 // 接続先を指定して初期化
-using var apiClient2 = VoicevoxApiClient.Create(baseUri: "http://localhost:50021");
+using var apiClient = VoicevoxApiClient.Create(baseUri: "http://localhost:50021");
+```
 
-
+```cs
 // HttpClientを指定
 var httpClient = new HttpClient()
 {
@@ -243,9 +239,48 @@ var httpClient = new HttpClient()
     Timeout = TimeSpan.FromSeconds(5)
 };
 // HttpClientを指定して生成
-using var apiClient3 = VoicevoxApiClient.Create(httpClient);
+var apiClient = VoicevoxApiClient.Create(httpClient);
 
+// ...
 
-// HttpClientと接続先を指定
-using var apiClient4 = VoicevoxApiClient.Create(baseUri: "http://localhost:50021", httpClient);
+// VoicevoxApiClientのDispose()
+apiClient.Dispose();
+
+// HttpClientのケアは行わないので不要になったタイミングで手動Dispose()が必要
+httpClient.Dispose();
 ```
+
+```cs
+// HttpClientと接続先を指定することも可能
+using var apiClient = VoicevoxApiClient.Create(baseUri: "http://localhost:50021", httpClient);
+```
+
+
+#### B-3. 初期化:AviSpeechにつなぐ
+
+AviSpeechに接続する場合は、`VoicevoxApiClient`を`IAvisSpeechApiClient`インタフェースに明示的にキャストする必要があります。
+
+```cs
+// IAvisSpeechApiClientに明示的にキャスト
+using var avisSpeechApiClient1 = new VoicevoxApiClient() as IAvisSpeechApiClient;
+
+// VoicevoxApiClient.CreateForAvisSpeechを使用してもよい
+using var avisSpeechApiClient2 = VoicevoxApiClient.CreateForAvisSpeech();
+```
+
+## Unity向けの追加機能
+
+Unityにおいても上記`VoicevoxSynthesizer`および`VoicevoxApiClient`が使用可能です。  
+加えて`VoicevoxClientSharp.Unity`プラグインを導入することで次の機能が使用可能になります。
+
+
+### VoicevoxSpeakPlayer : Unity上での発話制御コンポーネント
+
+### VoicevoxVrmLipSyncPlayer : VRMアバターをリップシンクするコンポーネント
+
+### OptionalVoicevoxPlayer : VoicevoxSpeakPlayerと連携するためのベースクラス
+
+
+### VoicevoxClientSharpHelper : StyleId確認用のエディタ拡張
+
+

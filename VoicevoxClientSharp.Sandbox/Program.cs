@@ -17,28 +17,26 @@ static async ValueTask PlaySoundAsync(byte[] wav)
 
 {
 // APIクライアントを生成
-using var apiClient = VoicevoxApiClient.Create();
+    using var apiClient = VoicevoxApiClient.Create();
 
 // GET /speakers
 // スピーカー一覧を取得
-var speakers = await apiClient.GetSpeakersAsync();
+    var speakers = await apiClient.GetSpeakersAsync();
 
 // スピーカー名とスタイル名からスタイルIDを取得
-var speaker = speakers.FirstOrDefault(s => s.Name == "ずんだもん");
-var styleId = speaker?.Styles.FirstOrDefault(x => x.Name == "あまあま")!.Id ?? 0;
+    var speaker = speakers.FirstOrDefault(s => s.Name == "ずんだもん");
+    var styleId = speaker?.Styles.FirstOrDefault(x => x.Name == "あまあま")!.Id ?? 0;
 
 // POST /audio_query
 // 音声合成用のクエリを作成
-var audioQuery = await apiClient.CreateAudioQueryAsync("こんにちは、世界！", styleId);
+    var audioQuery = await apiClient.CreateAudioQueryAsync("こんにちは、世界！", styleId);
 
 // POST /synthesis
 // 音声合成を実行
-byte[] wav = await apiClient.SynthesisAsync(styleId, audioQuery);
+    byte[] wav = await apiClient.SynthesisAsync(styleId, audioQuery);
 }
 
-
 // --------------------------------------------
-
 {
     // コンストラクタ引数未指定の場合はデフォルト設定で初期化します
     // デフォルト設定
