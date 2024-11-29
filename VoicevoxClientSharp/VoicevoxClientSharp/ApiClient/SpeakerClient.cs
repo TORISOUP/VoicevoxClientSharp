@@ -15,12 +15,12 @@ namespace VoicevoxClientSharp.ApiClient
         /// <param name="skipReinit"></param>
         /// <param name="speaker">既に初期化済みのスタイルの再初期化をスキップするかどうか</param>
         /// <param name="coreVersion"></param>
-        /// <param name="ct"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         ValueTask InitializeSpeakerAsync(int speaker,
             bool? skipReinit = false,
             string? coreVersion = null,
-            CancellationToken ct = default);
+            CancellationToken cancellationToken = default);
 
         /// <summary>
         /// GET /is_initialized_speaker
@@ -28,16 +28,16 @@ namespace VoicevoxClientSharp.ApiClient
         /// </summary>
         ValueTask<bool> IsInitializedSpeakerAsync(int speaker,
             string? coreVersion = null,
-            CancellationToken ct = default);
+            CancellationToken cancellationToken = default);
 
         /// <summary>
         /// GET /speakers
         /// 喋れるキャラクターの情報の一覧を返します。
         /// </summary>
         /// <param name="coreVersion"></param>
-        /// <param name="ct"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        ValueTask<Speaker[]> GetSpeakersAsync(string? coreVersion = null, CancellationToken ct = default);
+        ValueTask<Speaker[]> GetSpeakersAsync(string? coreVersion = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// GET /speaker_info
@@ -46,13 +46,13 @@ namespace VoicevoxClientSharp.ApiClient
         /// <param name="speakerUuId"></param>
         /// <param name="resourceFormat"></param>
         /// <param name="coreVersion"></param>
-        /// <param name="ct"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         ValueTask<SpeakerInfo> GetSpeakerInfoAsync(
             string speakerUuId,
             ResourceFormat? resourceFormat = ResourceFormat.Base64,
             string? coreVersion = null,
-            CancellationToken ct = default);
+            CancellationToken cancellationToken = default);
     }
 
     public partial class VoicevoxApiClient
@@ -63,7 +63,7 @@ namespace VoicevoxClientSharp.ApiClient
         public async ValueTask InitializeSpeakerAsync(int speaker,
             bool? skipReinit,
             string? coreVersion = null,
-            CancellationToken ct = default)
+            CancellationToken cancellationToken = default)
         {
             var queryString = CreateQueryString(
                 ("speaker", speaker.ToString()),
@@ -73,7 +73,7 @@ namespace VoicevoxClientSharp.ApiClient
 
             var url = $"{_baseUrl}/initialize_speaker?{queryString}";
 
-            var response = await _httpClient.PostAsync(url, null, ct);
+            var response = await _httpClient.PostAsync(url, null, cancellationToken);
 
             if (response.IsSuccessStatusCode)
             {
@@ -89,7 +89,7 @@ namespace VoicevoxClientSharp.ApiClient
         /// </summary>
         public async ValueTask<bool> IsInitializedSpeakerAsync(int speaker,
             string? coreVersion = null,
-            CancellationToken ct = default)
+            CancellationToken cancellationToken = default)
         {
             var queryString = CreateQueryString(
                 ("speaker", speaker.ToString()),
@@ -97,7 +97,7 @@ namespace VoicevoxClientSharp.ApiClient
             );
 
             var url = $"{_baseUrl}/is_initialized_speaker?{queryString}";
-            var response = await _httpClient.GetAsync(url, ct);
+            var response = await _httpClient.GetAsync(url, cancellationToken);
             if ((int)response.StatusCode >= 400)
             {
                 var errorJson = await response.Content.ReadAsStringAsync();
@@ -111,14 +111,14 @@ namespace VoicevoxClientSharp.ApiClient
         /// <summary>
         ///     <inheritdoc />
         /// </summary>
-        public ValueTask<Speaker[]> GetSpeakersAsync(string? coreVersion = null, CancellationToken ct = default)
+        public ValueTask<Speaker[]> GetSpeakersAsync(string? coreVersion = null, CancellationToken cancellationToken = default)
         {
             var queryString = CreateQueryString(
                 ("core_version", coreVersion)
             );
 
             var url = $"{_baseUrl}/speakers?{queryString}";
-            return GetAsync<Speaker[]>(url, ct);
+            return GetAsync<Speaker[]>(url, cancellationToken);
         }
 
         /// <summary>
@@ -128,7 +128,7 @@ namespace VoicevoxClientSharp.ApiClient
             string speakerUuId,
             ResourceFormat? resourceFormat = ResourceFormat.Base64,
             string? coreVersion = null,
-            CancellationToken ct = default)
+            CancellationToken cancellationToken = default)
         {
             var resourceFormatStr = resourceFormat switch
             {
@@ -145,7 +145,7 @@ namespace VoicevoxClientSharp.ApiClient
             );
 
             var url = $"{_baseUrl}/speaker_info?{queryString}";
-            return GetAsync<SpeakerInfo>(url, ct);
+            return GetAsync<SpeakerInfo>(url, cancellationToken);
         }
 
     }

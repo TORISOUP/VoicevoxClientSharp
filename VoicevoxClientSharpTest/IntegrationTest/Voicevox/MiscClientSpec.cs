@@ -49,14 +49,14 @@ public class MiscClientBaseSpec : BaseSpec
     [Test, Timeout(5000)]
     public async Task GetVersionAsyncTest()
     {
-        var result = await MiscClient.GetVersionAsync(ct: CancellationToken.None);
+        var result = await MiscClient.GetVersionAsync(cancellationToken: CancellationToken.None);
         Assert.IsNotNull(result);
     }
 
     [Test, Timeout(5000)]
     public async Task GetCoreVersionsAsyncTest()
     {
-        var result = await MiscClient.GetCoreVersionsAsync(ct: CancellationToken.None);
+        var result = await MiscClient.GetCoreVersionsAsync(cancellationToken: CancellationToken.None);
         Assert.IsNotNull(result);
         Assert.Greater(result.Length, 0);
     }
@@ -64,7 +64,7 @@ public class MiscClientBaseSpec : BaseSpec
     [Test, Timeout(5000)]
     public async Task GetEngineManifestAsyncTest()
     {
-        var result = await MiscClient.GetEngineManifestAsync(ct: CancellationToken.None);
+        var result = await MiscClient.GetEngineManifestAsync(cancellationToken: CancellationToken.None);
         Assert.IsNotNull(result);
         Assert.IsNotNull(result.SupportedFeatures);
         Assert.Greater(result.DependencyLicenses.Length, 0);

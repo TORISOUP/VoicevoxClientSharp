@@ -16,7 +16,7 @@ namespace VoicevoxClientSharp.ApiClient
         ValueTask<FrameAudioQuery> CreateSingFrameAudioQueryAsync(Score score,
             int speakerId,
             string? coreVersion = null,
-            CancellationToken ct = default);
+            CancellationToken cancellationToken = default);
 
         /// <summary>
         /// POST /sing_frame_volume
@@ -27,7 +27,7 @@ namespace VoicevoxClientSharp.ApiClient
             Score score,
             FrameAudioQuery frameAudioQuery,
             string? coreVersion = null,
-            CancellationToken ct = default);
+            CancellationToken cancellationToken = default);
 
         #endregion
 
@@ -40,12 +40,12 @@ namespace VoicevoxClientSharp.ApiClient
         /// <param name="speakerId"></param>
         /// <param name="frameAudioQuery"></param>
         /// <param name="coreVersion"></param>
-        /// <param name="ct"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns>wav</returns>
         ValueTask<byte[]> FrameSynthesisAsync(int speakerId,
             FrameAudioQuery frameAudioQuery,
             string? coreVersion = null,
-            CancellationToken ct = default);
+            CancellationToken cancellationToken = default);
 
         #endregion
 
@@ -56,9 +56,9 @@ namespace VoicevoxClientSharp.ApiClient
         /// 歌えるキャラクターの情報の一覧を返します。
         /// </summary>
         /// <param name="coreVersion"></param>
-        /// <param name="ct"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        ValueTask<Speaker[]> GetSingersAsync(string? coreVersion = null, CancellationToken ct = default);
+        ValueTask<Speaker[]> GetSingersAsync(string? coreVersion = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// GET /singer_info
@@ -67,13 +67,13 @@ namespace VoicevoxClientSharp.ApiClient
         /// <param name="speakerUuId"></param>
         /// <param name="resourceFormat"></param>
         /// <param name="coreVersion"></param>
-        /// <param name="ct"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         ValueTask<SpeakerInfo> GetSingerInfoAsync(
             string speakerUuId,
             ResourceFormat? resourceFormat = ResourceFormat.Base64,
             string? coreVersion = null,
-            CancellationToken ct = default);
+            CancellationToken cancellationToken = default);
 
         #endregion
     }
@@ -86,7 +86,7 @@ namespace VoicevoxClientSharp.ApiClient
         public ValueTask<FrameAudioQuery> CreateSingFrameAudioQueryAsync(Score score,
             int speakerId,
             string? coreVersion = null,
-            CancellationToken ct = default)
+            CancellationToken cancellationToken = default)
         {
             var queryString = CreateQueryString(
                 ("speaker", speakerId.ToString()),
@@ -94,7 +94,7 @@ namespace VoicevoxClientSharp.ApiClient
             );
 
             var url = $"{_baseUrl}/sing_frame_audio_query?{queryString}";
-            return PostAsync<Score, FrameAudioQuery>(url, score, ct);
+            return PostAsync<Score, FrameAudioQuery>(url, score, cancellationToken);
         }
 
 
@@ -105,7 +105,7 @@ namespace VoicevoxClientSharp.ApiClient
             Score score,
             FrameAudioQuery frameAudioQuery,
             string? coreVersion = null,
-            CancellationToken ct = default)
+            CancellationToken cancellationToken = default)
         {
             var request = new SingFrameVolumeRequest(score, frameAudioQuery);
             var queryString = CreateQueryString(
@@ -114,7 +114,7 @@ namespace VoicevoxClientSharp.ApiClient
             );
 
             var url = $"{_baseUrl}/sing_frame_volume?{queryString}";
-            return PostAsync<SingFrameVolumeRequest, decimal[]>(url, request, ct);
+            return PostAsync<SingFrameVolumeRequest, decimal[]>(url, request, cancellationToken);
         }
 
 
@@ -124,28 +124,28 @@ namespace VoicevoxClientSharp.ApiClient
         public ValueTask<byte[]> FrameSynthesisAsync(int speakerId,
             FrameAudioQuery frameAudioQuery,
             string? coreVersion = null,
-            CancellationToken ct = default)
+            CancellationToken cancellationToken = default)
         {
             var queryString = CreateQueryString(
                 ("speaker", speakerId.ToString()),
                 ("core_version", coreVersion)
             );
             var url = $"{_baseUrl}/frame_synthesis?{queryString}";
-            return PostAndByteResponseAsync(url, frameAudioQuery, ct);
+            return PostAndByteResponseAsync(url, frameAudioQuery, cancellationToken);
         }
 
 
         /// <summary>
         ///     <inheritdoc />
         /// </summary>
-        public ValueTask<Speaker[]> GetSingersAsync(string? coreVersion = null, CancellationToken ct = default)
+        public ValueTask<Speaker[]> GetSingersAsync(string? coreVersion = null, CancellationToken cancellationToken = default)
         {
             var queryString = CreateQueryString(
                 ("core_version", coreVersion)
             );
 
             var url = $"{_baseUrl}/singers?{queryString}";
-            return GetAsync<Speaker[]>(url, ct);
+            return GetAsync<Speaker[]>(url, cancellationToken);
         }
 
         /// <summary>
@@ -154,7 +154,7 @@ namespace VoicevoxClientSharp.ApiClient
         public ValueTask<SpeakerInfo> GetSingerInfoAsync(string speakerUuId,
             ResourceFormat? resourceFormat,
             string? coreVersion = null,
-            CancellationToken ct = default)
+            CancellationToken cancellationToken = default)
         {
             var resourceFormatStr = resourceFormat switch
             {
@@ -171,7 +171,7 @@ namespace VoicevoxClientSharp.ApiClient
             );
 
             var url = $"{_baseUrl}/singer_info?{queryString}";
-            return GetAsync<SpeakerInfo>(url, ct);
+            return GetAsync<SpeakerInfo>(url, cancellationToken);
         }
     }
 }

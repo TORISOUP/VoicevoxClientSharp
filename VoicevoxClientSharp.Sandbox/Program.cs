@@ -64,13 +64,13 @@ static async ValueTask PlaySoundAsync(byte[] wav)
 
 // そのまま喋らせる
     {
-        var (wav, _) = await synthesizer.SynthesizeSpeechAsync(styleId, "こんにちは、世界！");
+        var (wav, _, _) = await synthesizer.SynthesizeSpeechAsync(styleId, "こんにちは、世界！");
         await PlaySoundAsync(wav);
     }
 
 // パラメータを上書きしてみる
     {
-        var (wav, _) = await synthesizer.SynthesizeSpeechAsync(styleId, "こんにちは、世界！",
+        var (wav, _, _) = await synthesizer.SynthesizeSpeechAsync(styleId, "こんにちは、世界！",
             speedScale: 1.1M,
             pitchScale: 0.1M,
             intonationScale: 1.1M,
@@ -84,7 +84,7 @@ static async ValueTask PlaySoundAsync(byte[] wav)
 
 // プリセットを使って喋らせる
     {
-        var (wav, _) = await synthesizer.SynthesizeSpeechWithPresetAsync(presetId: 1, "こんにちは、世界！");
+        var (wav, _, _) = await synthesizer.SynthesizeSpeechWithPresetAsync(presetId: 1, "こんにちは、世界！");
         await PlaySoundAsync(wav);
     }
 
@@ -92,13 +92,13 @@ static async ValueTask PlaySoundAsync(byte[] wav)
     try
     {
         // 存在しないプリセットを使ってみる
-        var (wav, _) = await synthesizer.SynthesizeSpeechWithPresetAsync(0, "こんにちは、世界！");
+        var (wav, _, _) = await synthesizer.SynthesizeSpeechWithPresetAsync(0, "こんにちは、世界！");
         await PlaySoundAsync(wav);
     }
     catch (VoicevoxClientException ex)
     {
         // 失敗するはず
-        var (wav, _) = await synthesizer.SynthesizeSpeechAsync(0, ex.Message);
+        var (wav, _, _) = await synthesizer.SynthesizeSpeechAsync(0, ex.Message);
         await PlaySoundAsync(wav);
     }
 
@@ -106,7 +106,7 @@ static async ValueTask PlaySoundAsync(byte[] wav)
     {
         // 合成可能？
         var isMorphable = await synthesizer.CanMorphAsync(baseStyleId: 0, targetStyleId: 2);
-        var (wav, _) = await synthesizer.SynthesizeSpeechAsync(styleId,
+        var (wav, _, _) = await synthesizer.SynthesizeSpeechAsync(styleId,
             "0と2は" + (isMorphable ? "モーフィング可能です" : "モーフィング不可能です"));
         await PlaySoundAsync(wav);
     }
@@ -114,7 +114,7 @@ static async ValueTask PlaySoundAsync(byte[] wav)
     {
         // 合成可能？
         var isMorphable = await synthesizer.CanMorphAsync(0, 1);
-        var (wav, _) = await synthesizer.SynthesizeSpeechAsync(styleId,
+        var (wav, _, _) = await synthesizer.SynthesizeSpeechAsync(styleId,
             "0と1は" + (isMorphable ? "モーフィング可能です" : "モーフィング不可能です"));
         await PlaySoundAsync(wav);
     }
@@ -122,7 +122,7 @@ static async ValueTask PlaySoundAsync(byte[] wav)
 
     {
         // モーフィングしてみる
-        var (wav, _) = await synthesizer.SpeakMorphingAsync(0, 2, 0.5M, "こんにちは、世界！");
+        var (wav, _, _) = await synthesizer.SpeakMorphingAsync(0, 2, 0.5M, "こんにちは、世界！");
         await PlaySoundAsync(wav);
     }
 }

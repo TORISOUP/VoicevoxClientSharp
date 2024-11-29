@@ -13,7 +13,7 @@ namespace VoicevoxClientSharp.ApiClient
         ValueTask<AvisSpeechAudioQuery> IQueryClient<AvisSpeechAudioQuery>.CreateAudioQueryAsync(string text,
             int speakerId,
             string? coreVersion,
-            CancellationToken ct)
+            CancellationToken cancellationToken)
         {
             var queryString = CreateQueryString(
                 ("text", text),
@@ -21,13 +21,13 @@ namespace VoicevoxClientSharp.ApiClient
                 ("core_version", coreVersion)
             );
             var url = $"{_baseUrl}/audio_query?{queryString}";
-            return PostAsync<AvisSpeechAudioQuery>(url, ct);
+            return PostAsync<AvisSpeechAudioQuery>(url, cancellationToken);
         }
 
         ValueTask<AvisSpeechAudioQuery> IQueryClient<AvisSpeechAudioQuery>.CreateAudioQueryFromPresetAsync(string text,
             int presetId,
             string? coreVersion,
-            CancellationToken ct)
+            CancellationToken cancellationToken)
         {
             var queryString = CreateQueryString(
                 ("text", text),
@@ -36,7 +36,7 @@ namespace VoicevoxClientSharp.ApiClient
             );
             var url =
                 $"{_baseUrl}/audio_query_from_preset?{queryString}";
-            return PostAsync<AvisSpeechAudioQuery>(url, ct);
+            return PostAsync<AvisSpeechAudioQuery>(url, cancellationToken);
         }
         
         
@@ -44,7 +44,7 @@ namespace VoicevoxClientSharp.ApiClient
             AvisSpeechAudioQuery audioQuery,
             bool? enableInterrogativeUpspeak,
             string? coreVersion,
-            CancellationToken ct)
+            CancellationToken cancellationToken)
         {
             var queryString = CreateQueryString(
                 ("speaker", speakerId.ToString()),
@@ -52,7 +52,7 @@ namespace VoicevoxClientSharp.ApiClient
                 ("enable_interrogative_upspeak", enableInterrogativeUpspeak?.ToString())
             );
             var url = $"{_baseUrl}/synthesis?{queryString}";
-            return PostAndByteResponseAsync(url, audioQuery, ct);
+            return PostAndByteResponseAsync(url, audioQuery, cancellationToken);
         }
 
         [Obsolete("This method is not implemented in AvisSpeech.")]
@@ -60,7 +60,7 @@ namespace VoicevoxClientSharp.ApiClient
             AvisSpeechAudioQuery audioQuery,
             bool? enableInterrogativeUpspeak,
             string? coreVersion,
-            CancellationToken ct)
+            CancellationToken cancellationToken)
         {
             // 未対応だが定義上は残している
             throw new NotImplementedException();
@@ -69,14 +69,14 @@ namespace VoicevoxClientSharp.ApiClient
         ValueTask<byte[]> ISynthesisClient<AvisSpeechAudioQuery>.MultiSpeakerSynthesisAsync(int speakerId,
             AvisSpeechAudioQuery[] audioQueries,
             string? coreVersion,
-            CancellationToken ct)
+            CancellationToken cancellationToken)
         {
             var queryString = CreateQueryString(
                 ("speaker", speakerId.ToString()),
                 ("core_version", coreVersion)
             );
             var url = $"{_baseUrl}/multi_synthesis?{queryString}";
-            return PostAndByteResponseAsync(url, audioQueries, ct);
+            return PostAndByteResponseAsync(url, audioQueries, cancellationToken);
         }
     }
 }

@@ -12,17 +12,17 @@ namespace VoicevoxClientSharp.ApiClient
         /// GET //downloadable_libraries
         /// ライブラリの情報の一覧を返します。
         /// </summary>
-        /// <param name="ct"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        ValueTask<DownloadableLibraryInfo[]> GetDownloadableLibrariesAsync(CancellationToken ct = default);
+        ValueTask<DownloadableLibraryInfo[]> GetDownloadableLibrariesAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// GET //installed_libraries
         /// インストールした音声ライブラリの情報を返します。
         /// </summary>
-        /// <param name="ct"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        ValueTask<InstalledLibraryInfo[]> GetInstalledLibrariesAsync(CancellationToken ct = default);
+        ValueTask<InstalledLibraryInfo[]> GetInstalledLibrariesAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// POST /install_library/{library_uuid}
@@ -31,18 +31,18 @@ namespace VoicevoxClientSharp.ApiClient
         /// </summary>
         /// <param name="libraryId"></param>
         /// <param name="libraryZip"></param>
-        /// <param name="ct"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        ValueTask InstallLibraryAsync(string libraryId, byte[] libraryZip, CancellationToken ct = default);
+        ValueTask InstallLibraryAsync(string libraryId, byte[] libraryZip, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// POST /uninstall_library/{library_uuid}
         /// 音声ライブラリをアンインストールします。
         /// </summary>
         /// <param name="libraryId"></param>
-        /// <param name="ct"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        ValueTask UninstallLibraryAsync(string libraryId, CancellationToken ct = default);
+        ValueTask UninstallLibraryAsync(string libraryId, CancellationToken cancellationToken = default);
     }
 
     public partial class VoicevoxApiClient
@@ -50,38 +50,38 @@ namespace VoicevoxClientSharp.ApiClient
         /// <summary>
         ///     <inheritdoc />
         /// </summary>
-        public ValueTask<DownloadableLibraryInfo[]> GetDownloadableLibrariesAsync(CancellationToken ct = default)
+        public ValueTask<DownloadableLibraryInfo[]> GetDownloadableLibrariesAsync(CancellationToken cancellationToken = default)
         {
             var url = $"{_baseUrl}/downloadable_libraries";
-            return GetAsync<DownloadableLibraryInfo[]>(url, ct);
+            return GetAsync<DownloadableLibraryInfo[]>(url, cancellationToken);
         }
 
         /// <summary>
         ///     <inheritdoc />
         /// </summary>
-        public ValueTask<InstalledLibraryInfo[]> GetInstalledLibrariesAsync(CancellationToken ct = default)
+        public ValueTask<InstalledLibraryInfo[]> GetInstalledLibrariesAsync(CancellationToken cancellationToken = default)
         {
             var url = $"{_baseUrl}/installed_libraries";
-            return GetAsync<InstalledLibraryInfo[]>(url, ct);
+            return GetAsync<InstalledLibraryInfo[]>(url, cancellationToken);
         }
 
         /// <summary>
         ///     <inheritdoc />
         /// </summary>
-        public async ValueTask InstallLibraryAsync(string libraryId, byte[] libraryZip, CancellationToken ct = default)
+        public async ValueTask InstallLibraryAsync(string libraryId, byte[] libraryZip, CancellationToken cancellationToken = default)
         {
             var url = $"{_baseUrl}/install_library/{libraryId}";
             var contents = new ByteArrayContent(libraryZip);
-            await _httpClient.PostAsync(url, contents, ct);
+            await _httpClient.PostAsync(url, contents, cancellationToken);
         }
 
         /// <summary>
         ///     <inheritdoc />
         /// </summary>
-        public async ValueTask UninstallLibraryAsync(string libraryId, CancellationToken ct = default)
+        public async ValueTask UninstallLibraryAsync(string libraryId, CancellationToken cancellationToken = default)
         {
             var url = $"{_baseUrl}/uninstall_library/{libraryId}";
-            await _httpClient.PostAsync(url, null, ct);
+            await _httpClient.PostAsync(url, null, cancellationToken);
         }
     }
 }

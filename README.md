@@ -270,17 +270,144 @@ using var avisSpeechApiClient2 = VoicevoxApiClient.CreateForAvisSpeech();
 
 ## Unity向けの追加機能
 
-Unityにおいても上記`VoicevoxSynthesizer`および`VoicevoxApiClient`が使用可能です。  
-加えて`VoicevoxClientSharp.Unity`プラグインを導入することで次の機能が使用可能になります。
+Unityにおいても`VoicevoxSynthesizer`および`VoicevoxApiClient`が使用可能です。  
 
+また追加で`VoicevoxClientSharp.Unity`プラグインを導入することで次の機能が使用可能になります。
 
 ### VoicevoxSpeakPlayer : Unity上での発話制御コンポーネント
 
+`VoicevoxSpeakPlayer`はVOICEVOXで合成した音声をUnityのAudioSourceを用いて再生するコンポーネントです。  
+GameObjectにアタッチし、AudioSourceをバインドしてから使用してください。
+
+![VoicevoxSpeakPlayer](img/VoicevoxSpeakPlayer.jpg)
+
+```cs:使用例
+using System.Threading;
+using Cysharp.Threading.Tasks;
+using UnityEngine;
+using VoicevoxClientSharp;
+using VoicevoxClientSharp.Unity;
+
+namespace Sandbox
+{
+    // 使用例
+    public class Sample : MonoBehaviour
+    {
+        // 設定済みのVoicevoxSpeakPlayerをバインドしておく
+        [SerializeField] private VoicevoxSpeakPlayer _voicevoxSpeakPlayer;
+
+        private readonly VoicevoxSynthesizer _voicevoxSynthesizer 
+            = new VoicevoxSynthesizer();
+
+        private void Start()
+        {
+            var cancellationToken = this.GetCancellationTokenOnDestroy();
+
+            // テキストを音声に変換して再生
+            SpeakAsync("こんにちは、世界", cancellationToken).Forget();
+        }
+
+        private async UniTask SpeakAsync(string text, CancellationToken ct)
+        {
+            // テキストをVoicevoxで音声合成
+            var synthesisResult = await _voicevoxSynthesizer.SynthesizeSpeechAsync(
+                0, text, cancellationToken: ct);
+            
+            // 音声を再生
+            await _voicevoxSpeakPlayer.PlayAsync(synthesisResult, ct);
+        }
+
+        private void OnDestroy()
+        {
+            _voicevoxSynthesizer.Dispose();
+        }
+    }
+}
+```
+
 ### VoicevoxVrmLipSyncPlayer : VRMアバターをリップシンクするコンポーネント
+
+`VoicevoxVrmLipSyncPlayer`はVRMアバターをVOICEVOXの音声再生に合わせてリップシンクするコンポーネントです。  
+[UniVRM](https://github.com/vrm-c/UniVRM)をUnityプロジェクトにインポートしている時のみ使用できます。
+
+![シードさん](img/seedsan.gif)
+
+
+
+#### 使い方
+
+1. `VoicevoxVrmLipSyncPlayer` を任意のGameObjectにアタッチする
+2. インスタンス化したVRMアバターの`Vrm10Instance`を`VoicevoxVrmLipSyncPlayer`にバインドする
+3. `VoicevoxVrmLipSyncPlayer`を`VoicevoxSpeakPlayer`にバインドする
+4. `VoicevoxSpeakPlayer`の`PlayAsync()`を実行する
+
+![VoicevoxVrmLipSyncPlayer](img/VoicevoxVrmLipSyncPlayer.jpg)
+（インスタンス化済みのVRMでセットアップする場合。動的にセットアップしてもOK）
+
+
+```cs
+using System.Threading;
+using Cysharp.Threading.Tasks;
+using UnityEngine;
+using UniVRM10;
+using VoicevoxClientSharp;
+using VoicevoxClientSharp.Unity;
+
+namespace Sandbox
+{
+    /// <summary>
+    /// すべてをスクリプトからセットアップする場合
+    /// </summary>
+    public sealed class LoadVrmAndSpeech : MonoBehaviour
+    {
+        [SerializeField] private string _vrmPath = "";
+
+        private readonly VoicevoxSynthesizer _voicevoxSynthesizer = new VoicevoxSynthesizer();
+
+        private void Start()
+        {
+            var cancellationToken = this.GetCancellationTokenOnDestroy();
+
+            LoadVrmAndSpeechAsync(_vrmPath, cancellationToken).Forget();
+        }
+
+        private async UniTask LoadVrmAndSpeechAsync(string path, CancellationToken ct)
+        {
+            // バイナリファイルを読み込んでVRMをロード
+            var vrm10Instance = await Vrm10.LoadPathAsync(path, ct: ct);
+            var vrmGameObject = vrm10Instance.gameObject;
+
+            // AudioSourceを用意
+            var audioSource = vrmGameObject.AddComponent<AudioSource>();
+
+            // VoicevoxSpeakPlayerを追加してAudioSourceを設定
+            var voicevoxSpeakPlayer = vrmGameObject.AddComponent<VoicevoxSpeakPlayer>();
+            voicevoxSpeakPlayer.AudioSource = audioSource;
+
+            // VoicevoxVrmLipSyncPlayerを追加して、VrmInstanceを設定
+            // VoicevoxVrmLipSyncPlayer自体は別のGameObjectにアタッチしてあっても良いが、
+            // VRMのGameObjectにアタッチしておいた方が管理しやすい
+            var voicevoxVrmLipSyncPlayer = vrmGameObject.AddComponent<VoicevoxVrmLipSyncPlayer>();
+            voicevoxVrmLipSyncPlayer.VrmInstance = vrm10Instance;
+
+            // VoicevoxSpeakPlayerにVoicevoxVrmLipSyncPlayerを追加
+            voicevoxSpeakPlayer.AddOptionalVoicevoxPlayer(voicevoxVrmLipSyncPlayer);
+
+            // テキストを音声に変換
+            var synthesisResult = await _voicevoxSynthesizer.SynthesizeSpeechAsync(
+                0, "こんにちは、世界", cancellationToken: ct);
+
+            // 音声を再生しながらリップシンク
+            await voicevoxSpeakPlayer.PlayAsync(synthesisResult, ct);
+        }
+    }
+}
+```
+
+
 
 ### OptionalVoicevoxPlayer : VoicevoxSpeakPlayerと連携するためのベースクラス
 
-
-### VoicevoxClientSharpHelper : StyleId確認用のエディタ拡張
+### エディタ拡張
 
 

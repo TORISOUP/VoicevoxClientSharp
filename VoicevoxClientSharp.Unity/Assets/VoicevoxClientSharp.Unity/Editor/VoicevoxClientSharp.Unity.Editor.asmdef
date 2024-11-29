@@ -3,7 +3,9 @@
     "rootNamespace": "",
     "references": [
         "GUID:f51ebe6a0ceec4240a699833d6309b23",
-        "GUID:80b33a69465760048847060532491e74"
+        "GUID:80b33a69465760048847060532491e74",
+        "GUID:dea9fb77f0db4bd4bbc1231c730fff1b",
+        "GUID:e47c917724578cc43b5506c17a27e9a0"
     ],
     "includePlatforms": [
         "Editor"
@@ -14,6 +16,12 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": [],
+    "versionDefines": [
+        {
+            "name": "com.vrmc.vrm",
+            "expression": "",
+            "define": "USE_VRM"
+        }
+    ],
     "noEngineReferences": false
 }

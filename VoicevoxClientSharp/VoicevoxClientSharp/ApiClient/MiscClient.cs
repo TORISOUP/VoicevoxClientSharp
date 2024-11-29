@@ -12,14 +12,14 @@ namespace VoicevoxClientSharp.ApiClient
         /// POST /connect_waves
         /// base64エンコードされたwavデータを一纏めにし、wavファイルで返します。
         /// </summary>
-        ValueTask<byte[]> PostConnectWavesAsync(string[] waves, CancellationToken ct = default);
+        ValueTask<byte[]> PostConnectWavesAsync(string[] waves, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// POST /validate_kana
         /// テキストがAquesTalk 風記法に従っているかどうかを判定します。
         /// </summary>
         ValueTask<(bool isOk, ParseKanaBadRequest? error)> PostValidateKanaAsync(string text,
-            CancellationToken ct = default);
+            CancellationToken cancellationToken = default);
 
         /// <summary>
         /// GET /supported_devices
@@ -27,31 +27,31 @@ namespace VoicevoxClientSharp.ApiClient
         /// </summary>
         ValueTask<SupportedDevicesInfo> GetSupportedDevicesAsync(
             string? coreVersion = null,
-            CancellationToken ct = default);
+            CancellationToken cancellationToken = default);
 
         /// <summary>
         /// GET /version
         /// エンジンのバージョンを取得します。
         /// </summary>
-        /// <param name="ct"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        ValueTask<string> GetVersionAsync(CancellationToken ct = default);
+        ValueTask<string> GetVersionAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// GET /core_versions
         /// 利用可能なコアのバージョン一覧を取得します。
         /// </summary>
-        /// <param name="ct"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        ValueTask<string[]> GetCoreVersionsAsync(CancellationToken ct = default);
+        ValueTask<string[]> GetCoreVersionsAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// GET /engine_manifest
         /// エンジンマニフェストを取得します。
         /// </summary>
-        /// <param name="ct"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        ValueTask<EngineManifest> GetEngineManifestAsync(CancellationToken ct = default);
+        ValueTask<EngineManifest> GetEngineManifestAsync(CancellationToken cancellationToken = default);
     }
 
     public partial class VoicevoxApiClient
@@ -59,17 +59,17 @@ namespace VoicevoxClientSharp.ApiClient
         /// <summary>
         ///     <inheritdoc />
         /// </summary>
-        public ValueTask<byte[]> PostConnectWavesAsync(string[] waves, CancellationToken ct)
+        public ValueTask<byte[]> PostConnectWavesAsync(string[] waves, CancellationToken cancellationToken)
         {
             var url = $"{_baseUrl}/connect_waves";
-            return PostAndByteResponseAsync(url, waves, ct);
+            return PostAndByteResponseAsync(url, waves, cancellationToken);
         }
 
         /// <summary>
         ///     <inheritdoc />
         /// </summary>
         public async ValueTask<(bool isOk, ParseKanaBadRequest? error)> PostValidateKanaAsync(string text,
-            CancellationToken ct)
+            CancellationToken cancellationToken)
         {
             var queryString = CreateQueryString(
                 ("text", text)
@@ -78,7 +78,7 @@ namespace VoicevoxClientSharp.ApiClient
 
             try
             {
-                var result = await PostAsync<bool>(url, ct);
+                var result = await PostAsync<bool>(url, cancellationToken);
                 if (result)
                 {
                     return (true, null);
@@ -105,20 +105,20 @@ namespace VoicevoxClientSharp.ApiClient
         ///     <inheritdoc />
         /// </summary>
         public ValueTask<SupportedDevicesInfo> GetSupportedDevicesAsync(string? coreVersion = null,
-            CancellationToken ct = default)
+            CancellationToken cancellationToken = default)
         {
             var queryString = CreateQueryString(
                 ("core_version", coreVersion)
             );
 
             var url = $"{_baseUrl}/supported_devices?{queryString}";
-            return GetAsync<SupportedDevicesInfo>(url, ct);
+            return GetAsync<SupportedDevicesInfo>(url, cancellationToken);
         }
 
-        public async ValueTask<string> GetVersionAsync(CancellationToken ct = default)
+        public async ValueTask<string> GetVersionAsync(CancellationToken cancellationToken = default)
         {
             var url = $"{_baseUrl}/version";
-            using var lcts = CancellationTokenSource.CreateLinkedTokenSource(ct, _cts.Token);
+            using var lcts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _cts.Token);
             var ct2 = lcts.Token;
 
             var response = await _httpClient.GetAsync(url, ct2);
@@ -131,16 +131,16 @@ namespace VoicevoxClientSharp.ApiClient
             return await response.Content.ReadAsStringAsync();
         }
 
-        public ValueTask<string[]> GetCoreVersionsAsync(CancellationToken ct = default)
+        public ValueTask<string[]> GetCoreVersionsAsync(CancellationToken cancellationToken = default)
         {
             var url = $"{_baseUrl}/core_versions";
-            return GetAsync<string[]>(url, ct);
+            return GetAsync<string[]>(url, cancellationToken);
         }
 
-        public ValueTask<EngineManifest> GetEngineManifestAsync(CancellationToken ct = default)
+        public ValueTask<EngineManifest> GetEngineManifestAsync(CancellationToken cancellationToken = default)
         {
             var url = $"{_baseUrl}/engine_manifest";
-            return GetAsync<EngineManifest>(url, ct);
+            return GetAsync<EngineManifest>(url, cancellationToken);
         }
     }
 }

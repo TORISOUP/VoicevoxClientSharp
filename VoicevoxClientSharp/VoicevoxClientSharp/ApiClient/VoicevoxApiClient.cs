@@ -209,8 +209,8 @@ namespace VoicevoxClientSharp.ApiClient
         internal async ValueTask<TResult> GetAsync<TResult>(string url, CancellationToken cancellationToken = default)
         {
             using var lcts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _cts.Token);
-            var ct = lcts.Token;
-            var response = await _httpClient.GetAsync(url, ct);
+            var ct2 = lcts.Token;
+            var response = await _httpClient.GetAsync(url, ct2);
             if ((int)response.StatusCode >= 400)
             {
                 var errorJson = await response.Content.ReadAsStringAsync();
@@ -231,8 +231,8 @@ namespace VoicevoxClientSharp.ApiClient
             CancellationToken cancellationToken = default)
         {
             using var lcts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _cts.Token);
-            var ct = lcts.Token;
-            var response = await _httpClient.PutAsync(url, null, ct);
+            var ct2 = lcts.Token;
+            var response = await _httpClient.PutAsync(url, null, ct2);
             if ((int)response.StatusCode >= 400)
             {
                 var errorJson = await response.Content.ReadAsStringAsync();
@@ -245,8 +245,8 @@ namespace VoicevoxClientSharp.ApiClient
             CancellationToken cancellationToken = default)
         {
             using var lcts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _cts.Token);
-            var ct = lcts.Token;
-            var response = await _httpClient.PostAsync(url, null, ct);
+            var ct2 = lcts.Token;
+            var response = await _httpClient.PostAsync(url, null, ct2);
             if ((int)response.StatusCode >= 400)
             {
                 var errorJson = await response.Content.ReadAsStringAsync();
@@ -268,10 +268,10 @@ namespace VoicevoxClientSharp.ApiClient
             CancellationToken cancellationToken = default)
         {
             using var lcts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _cts.Token);
-            var ct = lcts.Token;
+            var ct2 = lcts.Token;
             var requestJson = JsonSerializer.Serialize(request, _jsonSerializerOptions);
             var content = new StringContent(requestJson, Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync(url, content, ct);
+            var response = await _httpClient.PostAsync(url, content, ct2);
             if ((int)response.StatusCode >= 400)
             {
                 var errorJson = await response.Content.ReadAsStringAsync();
@@ -293,10 +293,10 @@ namespace VoicevoxClientSharp.ApiClient
             CancellationToken cancellationToken = default)
         {
             using var lcts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _cts.Token);
-            var ct = lcts.Token;
+            var ct2 = lcts.Token;
             var requestJson = JsonSerializer.Serialize(request, _jsonSerializerOptions);
             var content = new StringContent(requestJson, Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync(url, content, ct);
+            var response = await _httpClient.PostAsync(url, content, ct2);
             if ((int)response.StatusCode >= 400)
             {
                 var errorJson = await response.Content.ReadAsStringAsync();

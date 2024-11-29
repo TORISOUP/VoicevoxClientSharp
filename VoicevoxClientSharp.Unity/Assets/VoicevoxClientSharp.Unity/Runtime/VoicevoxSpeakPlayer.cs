@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -8,7 +7,7 @@ using VoicevoxClientSharp.Unity.Utilities;
 
 namespace VoicevoxClientSharp.Unity
 {
-    public class VoicevoxSpeakPlayer : MonoBehaviour
+    public sealed class VoicevoxSpeakPlayer : MonoBehaviour
     {
         /// <summary>
         /// 再生に用いるAudioSource
@@ -18,12 +17,15 @@ namespace VoicevoxClientSharp.Unity
         /// <summary>
         /// 再生時に同時に使用するオプション
         /// </summary>
-        public List<OptionalVoicevoxPlayer> OptionalVoicevoxPlayers;
+        [SerializeField] private List<OptionalVoicevoxPlayer> _optionalVoicevoxPlayers = new();
 
         private readonly SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);
         private bool _isDestroyed;
         public bool IsPlaying { get; private set; }
 
+        public IReadOnlyList<OptionalVoicevoxPlayer> OptionalVoicevoxPlayers => _optionalVoicevoxPlayers;
+        
+        
         private void Start()
         {
             if (AudioSource == null)
@@ -34,16 +36,16 @@ namespace VoicevoxClientSharp.Unity
             var optionals = GetComponents<OptionalVoicevoxPlayer>();
             foreach (var opt in optionals)
             {
-                if (!OptionalVoicevoxPlayers.Contains(opt))
+                if (!_optionalVoicevoxPlayers.Contains(opt))
                 {
-                    OptionalVoicevoxPlayers.Add(opt);
+                    _optionalVoicevoxPlayers.Add(opt);
                 }
             }
         }
 
         /// <summary>
-        /// SynthesisResultで音声の再生を行う
-        /// またOptionalVoicevoxPlayerを指定している場合はそれら全てを同時に実行し完了まで待機する
+        /// SynthesisResultを用いて音声の再生を行う
+        /// OptionalVoicevoxPlayerを指定している場合はそれら全てを同時に実行し完了まで待機する
         /// </summary>
         public async UniTask PlayAsync(SynthesisResult result, CancellationToken ct)
         {
@@ -66,7 +68,7 @@ namespace VoicevoxClientSharp.Unity
                 AudioSource.Play();
 
                 // 再生完了まで待機
-                if (OptionalVoicevoxPlayers == null || OptionalVoicevoxPlayers.Count == 0)
+                if (_optionalVoicevoxPlayers == null || _optionalVoicevoxPlayers.Count == 0)
                 {
                     await UniTask.WaitUntil(() => !AudioSource.isPlaying, cancellationToken: ct2);
                 }
@@ -74,7 +76,7 @@ namespace VoicevoxClientSharp.Unity
                 {
                     // オプションの再生を同時に実行
                     var audioTask = UniTask.WaitUntil(() => !AudioSource.isPlaying, cancellationToken: ct2);
-                    var optionalTasks = OptionalVoicevoxPlayers.Select(player => player.PlayAsync(result, ct2))
+                    var optionalTasks = _optionalVoicevoxPlayers.Select(player => player.PlayAsync(result, ct2))
                         .ToArray();
                     await UniTask.WhenAll(optionalTasks.Append(audioTask).ToArray());
                 }
@@ -87,6 +89,19 @@ namespace VoicevoxClientSharp.Unity
             }
         }
 
+        public void AddOptionalVoicevoxPlayer(OptionalVoicevoxPlayer player)
+        {
+            if (!_optionalVoicevoxPlayers.Contains(player))
+            {
+                _optionalVoicevoxPlayers.Add(player);
+            }
+        }
+        
+        public void RemoveOptionalVoicevoxPlayer(OptionalVoicevoxPlayer player)
+        {
+            _optionalVoicevoxPlayers.Remove(player);
+        }
+        
 
         private void OnDestroy()
         {

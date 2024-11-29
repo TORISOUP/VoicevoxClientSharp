@@ -14,7 +14,7 @@ namespace VoicevoxClientSharp.ApiClient
         ValueTask<T> CreateAudioQueryAsync(string text,
             int speakerId,
             string? coreVersion = null,
-            CancellationToken ct = default);
+            CancellationToken cancellationToken = default);
 
         /// <summary>
         /// POST /audio_query_from_preset
@@ -23,7 +23,7 @@ namespace VoicevoxClientSharp.ApiClient
         ValueTask<T> CreateAudioQueryFromPresetAsync(string text,
             int presetId,
             string? coreVersion = null,
-            CancellationToken ct = default);
+            CancellationToken cancellationToken = default);
 
         /// <summary>
         /// POST /accent_phrases
@@ -33,7 +33,7 @@ namespace VoicevoxClientSharp.ApiClient
             int speakerId,
             bool? isKana = false,
             string? coreVersion = null,
-            CancellationToken ct = default);
+            CancellationToken cancellationToken = default);
 
         /// <summary>
         /// POST /mora_data
@@ -43,7 +43,7 @@ namespace VoicevoxClientSharp.ApiClient
             int speakerId,
             AccentPhrase[] accentPhrases,
             string? coreVersion = null,
-            CancellationToken ct = default);
+            CancellationToken cancellationToken = default);
 
         /// <summary>
         /// POST /mora_length
@@ -53,7 +53,7 @@ namespace VoicevoxClientSharp.ApiClient
             int speakerId,
             AccentPhrase[] accentPhrases,
             string? coreVersion = null,
-            CancellationToken ct = default);
+            CancellationToken cancellationToken = default);
 
         /// <summary>
         /// POST /mora_pitch
@@ -63,7 +63,7 @@ namespace VoicevoxClientSharp.ApiClient
             int speakerId,
             AccentPhrase[] accentPhrases,
             string? coreVersion = null,
-            CancellationToken ct = default);
+            CancellationToken cancellationToken = default);
     }
 
     public partial class VoicevoxApiClient
@@ -74,7 +74,7 @@ namespace VoicevoxClientSharp.ApiClient
         public ValueTask<AudioQuery> CreateAudioQueryAsync(string text,
             int speakerId,
             string? coreVersion = null,
-            CancellationToken ct = default)
+            CancellationToken cancellationToken = default)
         {
             var queryString = CreateQueryString(
                 ("text", text),
@@ -82,7 +82,7 @@ namespace VoicevoxClientSharp.ApiClient
                 ("core_version", coreVersion)
             );
             var url = $"{_baseUrl}/audio_query?{queryString}";
-            return PostAsync<AudioQuery>(url, ct);
+            return PostAsync<AudioQuery>(url, cancellationToken);
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace VoicevoxClientSharp.ApiClient
         public ValueTask<AudioQuery> CreateAudioQueryFromPresetAsync(string text,
             int presetId,
             string? coreVersion = null,
-            CancellationToken ct = default)
+            CancellationToken cancellationToken = default)
         {
             var queryString = CreateQueryString(
                 ("text", text),
@@ -100,7 +100,7 @@ namespace VoicevoxClientSharp.ApiClient
             );
             var url =
                 $"{_baseUrl}/audio_query_from_preset?{queryString}";
-            return PostAsync<AudioQuery>(url, ct);
+            return PostAsync<AudioQuery>(url, cancellationToken);
         }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace VoicevoxClientSharp.ApiClient
             int speakerId,
             bool? isKana,
             string? coreVersion = null,
-            CancellationToken ct = default)
+            CancellationToken cancellationToken = default)
         {
             var queryString = CreateQueryString(
                 ("text", text),
@@ -121,7 +121,7 @@ namespace VoicevoxClientSharp.ApiClient
             var url =
                 $"{_baseUrl}/accent_phrases?{queryString}";
 
-            return PostAsync<AccentPhrase[]>(url, ct);
+            return PostAsync<AccentPhrase[]>(url, cancellationToken);
         }
 
         /// <summary>
@@ -130,7 +130,7 @@ namespace VoicevoxClientSharp.ApiClient
         public ValueTask<AccentPhrase[]> FetchMoraDataAsync(int speakerId,
             AccentPhrase[] accentPhrases,
             string? coreVersion = null,
-            CancellationToken ct = default)
+            CancellationToken cancellationToken = default)
         {
             var queryString = CreateQueryString(
                 ("speaker", speakerId.ToString()),
@@ -138,7 +138,7 @@ namespace VoicevoxClientSharp.ApiClient
             );
 
             var url = $"{_baseUrl}/mora_data?{queryString}";
-            return PostAsync<AccentPhrase[], AccentPhrase[]>(url, accentPhrases, ct);
+            return PostAsync<AccentPhrase[], AccentPhrase[]>(url, accentPhrases, cancellationToken);
         }
 
         /// <summary>
@@ -147,7 +147,7 @@ namespace VoicevoxClientSharp.ApiClient
         public ValueTask<AccentPhrase[]> FetchMoraLengthAsync(int speakerId,
             AccentPhrase[] accentPhrases,
             string? coreVersion = null,
-            CancellationToken ct = default)
+            CancellationToken cancellationToken = default)
         {
             var queryString = CreateQueryString(
                 ("speaker", speakerId.ToString()),
@@ -155,7 +155,7 @@ namespace VoicevoxClientSharp.ApiClient
             );
 
             var url = $"{_baseUrl}/mora_length?{queryString}";
-            return PostAsync<AccentPhrase[], AccentPhrase[]>(url, accentPhrases, ct);
+            return PostAsync<AccentPhrase[], AccentPhrase[]>(url, accentPhrases, cancellationToken);
         }
 
         /// <summary>
@@ -164,7 +164,7 @@ namespace VoicevoxClientSharp.ApiClient
         public ValueTask<AccentPhrase[]> FetchMoraPitchAsync(int speakerId,
             AccentPhrase[] accentPhrases,
             string? coreVersion = null,
-            CancellationToken ct = default)
+            CancellationToken cancellationToken = default)
         {
             var queryString = CreateQueryString(
                 ("speaker", speakerId.ToString()),
@@ -172,7 +172,7 @@ namespace VoicevoxClientSharp.ApiClient
             );
 
             var url = $"{_baseUrl}/mora_pitch?{queryString}";
-            return PostAsync<AccentPhrase[], AccentPhrase[]>(url, accentPhrases, ct);
+            return PostAsync<AccentPhrase[], AccentPhrase[]>(url, accentPhrases, cancellationToken);
         }
     }
 }

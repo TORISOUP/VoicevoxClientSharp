@@ -17,13 +17,13 @@ namespace VoicevoxClientSharp.ApiClient
         /// <param name="audioQuery"></param>
         /// <param name="enableInterrogativeUpspeak">疑問系のテキストが与えられたら語尾を自動調整する</param>
         /// <param name="coreVersion"></param>
-        /// <param name="ct"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns>wav</returns>
         ValueTask<byte[]> SynthesisAsync(int speakerId,
             T audioQuery,
             bool? enableInterrogativeUpspeak = true,
             string? coreVersion = null,
-            CancellationToken ct = default);
+            CancellationToken cancellationToken = default);
 
         /// <summary>
         /// POST /cancellable_synthesis
@@ -34,13 +34,13 @@ namespace VoicevoxClientSharp.ApiClient
         /// <param name="audioQuery"></param>
         /// <param name="enableInterrogativeUpspeak">疑問系のテキストが与えられたら語尾を自動調整する</param>
         /// <param name="coreVersion"></param>
-        /// <param name="ct"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns>wav</returns>
         ValueTask<byte[]> CancellableSynthesisAsync(int speakerId,
             T audioQuery,
             bool? enableInterrogativeUpspeak = true,
             string? coreVersion = null,
-            CancellationToken ct = default);
+            CancellationToken cancellationToken = default);
 
         /// <summary>
         /// POST /multi_synthesis
@@ -49,12 +49,12 @@ namespace VoicevoxClientSharp.ApiClient
         /// <param name="speakerId"></param>
         /// <param name="audioQueries"></param>
         /// <param name="coreVersion"></param>
-        /// <param name="ct"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns>zip圧縮されたwavファイル群</returns>
         ValueTask<byte[]> MultiSpeakerSynthesisAsync(int speakerId,
             T[] audioQueries,
             string? coreVersion = null,
-            CancellationToken ct = default);
+            CancellationToken cancellationToken = default);
 
 
         /// <summary>
@@ -67,12 +67,12 @@ namespace VoicevoxClientSharp.ApiClient
         /// </summary>
         /// <param name="speakerIds"></param>
         /// <param name="coreVersion"></param>
-        /// <param name="ct"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         ValueTask<IReadOnlyDictionary<string, MorphableTargetInfo>[]> IsMorphableTargetsAsync(
             int[] speakerIds,
             string? coreVersion = null,
-            CancellationToken ct = default);
+            CancellationToken cancellationToken = default);
 
         /// <summary>
         /// POST /synthesis_morphing
@@ -85,7 +85,7 @@ namespace VoicevoxClientSharp.ApiClient
         /// <param name="morphRate"></param>
         /// <param name="audioQuery"></param>
         /// <param name="coreVersion"></param>
-        /// <param name="ct"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns>wav</returns>
         ValueTask<byte[]> SynthesisMorphingAsync(
             int baseSpeakerId,
@@ -93,7 +93,7 @@ namespace VoicevoxClientSharp.ApiClient
             decimal morphRate,
             AudioQuery audioQuery,
             string? coreVersion = null,
-            CancellationToken ct = default);
+            CancellationToken cancellationToken = default);
     }
 
     public partial class VoicevoxApiClient
@@ -105,7 +105,7 @@ namespace VoicevoxClientSharp.ApiClient
             AudioQuery audioQuery,
             bool? enableInterrogativeUpspeak,
             string? coreVersion = null,
-            CancellationToken ct = default)
+            CancellationToken cancellationToken = default)
         {
             var queryString = CreateQueryString(
                 ("speaker", speakerId.ToString()),
@@ -113,7 +113,7 @@ namespace VoicevoxClientSharp.ApiClient
                 ("enable_interrogative_upspeak", enableInterrogativeUpspeak?.ToString())
             );
             var url = $"{_baseUrl}/synthesis?{queryString}";
-            return PostAndByteResponseAsync(url, audioQuery, ct);
+            return PostAndByteResponseAsync(url, audioQuery, cancellationToken);
         }
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace VoicevoxClientSharp.ApiClient
             AudioQuery audioQuery,
             bool? enableInterrogativeUpspeak,
             string? coreVersion = null,
-            CancellationToken ct = default)
+            CancellationToken cancellationToken = default)
         {
             var queryString = CreateQueryString(
                 ("speaker", speakerId.ToString()),
@@ -131,7 +131,7 @@ namespace VoicevoxClientSharp.ApiClient
                 ("enable_interrogative_upspeak", enableInterrogativeUpspeak?.ToString())
             );
             var url = $"{_baseUrl}/cancellable_synthesis?{queryString}";
-            return PostAndByteResponseAsync(url, audioQuery, ct);
+            return PostAndByteResponseAsync(url, audioQuery, cancellationToken);
         }
 
         /// <summary>
@@ -140,14 +140,14 @@ namespace VoicevoxClientSharp.ApiClient
         public ValueTask<byte[]> MultiSpeakerSynthesisAsync(int speakerId,
             AudioQuery[] audioQueries,
             string? coreVersion = null,
-            CancellationToken ct = default)
+            CancellationToken cancellationToken = default)
         {
             var queryString = CreateQueryString(
                 ("speaker", speakerId.ToString()),
                 ("core_version", coreVersion)
             );
             var url = $"{_baseUrl}/multi_synthesis?{queryString}";
-            return PostAndByteResponseAsync(url, audioQueries, ct);
+            return PostAndByteResponseAsync(url, audioQueries, cancellationToken);
         }
 
         /// <summary>
@@ -156,11 +156,11 @@ namespace VoicevoxClientSharp.ApiClient
         public async ValueTask<IReadOnlyDictionary<string, MorphableTargetInfo>[]> IsMorphableTargetsAsync(
             int[] speakerIds,
             string? coreVersion = null,
-            CancellationToken ct = default)
+            CancellationToken cancellationToken = default)
         {
             var queryString = CreateQueryString(("core_version", coreVersion));
             var url = $"{_baseUrl}/morphable_targets?{queryString}";
-            var result = await PostAsync<int[], Dictionary<string, MorphableTargetInfo>[]>(url, speakerIds, ct);
+            var result = await PostAsync<int[], Dictionary<string, MorphableTargetInfo>[]>(url, speakerIds, cancellationToken);
             return result.ToArray<IReadOnlyDictionary<string, MorphableTargetInfo>>();
         }
 
@@ -173,7 +173,7 @@ namespace VoicevoxClientSharp.ApiClient
             decimal morphRate,
             AudioQuery audioQuery,
             string? coreVersion = null,
-            CancellationToken ct = default)
+            CancellationToken cancellationToken = default)
         {
             morphRate = Math.Min(Math.Max(morphRate, 0M), 1.0M);
 
@@ -185,7 +185,7 @@ namespace VoicevoxClientSharp.ApiClient
             );
 
             var url = $"{_baseUrl}/synthesis_morphing?{queryString}";
-            return PostAndByteResponseAsync(url, audioQuery, ct);
+            return PostAndByteResponseAsync(url, audioQuery, cancellationToken);
         }
     }
 }

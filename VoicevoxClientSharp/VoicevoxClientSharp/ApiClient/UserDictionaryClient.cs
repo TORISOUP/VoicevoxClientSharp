@@ -17,7 +17,7 @@ namespace VoicevoxClientSharp.ApiClient
         /// </summary>
         /// <returns></returns>
         ValueTask<IReadOnlyDictionary<string, UserDictWord>>
-            GetUserDictionaryWordsAsync(CancellationToken ct = default);
+            GetUserDictionaryWordsAsync(CancellationToken cancellationToken = default);
 
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace VoicevoxClientSharp.ApiClient
         /// <param name="accentType">アクセント型（音が下がる場所を指す）</param>
         /// <param name="wordTypes">PROPER_NOUN（固有名詞）、COMMON_NOUN（普通名詞）、VERB（動詞）、ADJECTIVE（形容詞）、SUFFIX（語尾）のいずれか</param>
         /// <param name="priority">単語の優先度（0から10までの整数）。数字が大きいほど優先度が高くなる。1から9までの値を指定することを推奨</param>
-        /// <param name="ct"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns>WordUuid</returns>
         ValueTask<string> AddUserDictionaryWordAsync(
             string surface,
@@ -37,7 +37,7 @@ namespace VoicevoxClientSharp.ApiClient
             int accentType,
             WordTypes? wordTypes = null,
             int? priority = 5,
-            CancellationToken ct = default
+            CancellationToken cancellationToken = default
         );
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace VoicevoxClientSharp.ApiClient
         /// <param name="accentType">アクセント型（音が下がる場所を指す）</param>
         /// <param name="wordTypes">PROPER_NOUN（固有名詞）、COMMON_NOUN（普通名詞）、VERB（動詞）、ADJECTIVE（形容詞）、SUFFIX（語尾）のいずれか</param>
         /// <param name="priority">単語の優先度（0から10までの整数）。数字が大きいほど優先度が高くなる。1から9までの値を指定することを推奨</param>
-        /// <param name="ct"></param>
+        /// <param name="cancellationToken"></param>
         ValueTask UpdateUserDictionaryWordAsync(
             string wordUuid,
             string surface,
@@ -58,7 +58,7 @@ namespace VoicevoxClientSharp.ApiClient
             int accentType,
             WordTypes? wordTypes = null,
             int? priority = 5,
-            CancellationToken ct = default
+            CancellationToken cancellationToken = default
         );
 
         /// <summary>
@@ -66,10 +66,10 @@ namespace VoicevoxClientSharp.ApiClient
         /// ユーザー辞書に登録されている言葉を削除します。
         /// </summary>
         /// <param name="wordUuid">削除する言葉のUUID</param>
-        /// <param name="ct"></param>
+        /// <param name="cancellationToken"></param>
         ValueTask DeleteUserDictionaryWordAsync(
             string wordUuid,
-            CancellationToken ct = default
+            CancellationToken cancellationToken = default
         );
 
         /// <summary>
@@ -78,12 +78,12 @@ namespace VoicevoxClientSharp.ApiClient
         /// </summary>
         /// <param name="words"></param>
         /// <param name="overrideEntry">重複したエントリがあった場合、上書きするかどうか</param>
-        /// <param name="ct"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         ValueTask ImportUserDictionaryWordsAsync(
             IReadOnlyDictionary<string, UserDictWord> words,
             bool overrideEntry,
-            CancellationToken ct = default
+            CancellationToken cancellationToken = default
         );
     }
 
@@ -93,10 +93,10 @@ namespace VoicevoxClientSharp.ApiClient
         ///     <inheritdoc />
         /// </summary>
         public async ValueTask<IReadOnlyDictionary<string, UserDictWord>> GetUserDictionaryWordsAsync(
-            CancellationToken ct = default)
+            CancellationToken cancellationToken = default)
         {
             var url = $"{_baseUrl}/user_dict";
-            return await GetAsync<IReadOnlyDictionary<string, UserDictWord>>(url, ct);
+            return await GetAsync<IReadOnlyDictionary<string, UserDictWord>>(url, cancellationToken);
         }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace VoicevoxClientSharp.ApiClient
             int accentType,
             WordTypes? wordTypes = null,
             int? priority = 0,
-            CancellationToken ct = default)
+            CancellationToken cancellationToken = default)
         {
             var queryString = CreateQueryString(
                 ("surface", surface),
@@ -118,7 +118,7 @@ namespace VoicevoxClientSharp.ApiClient
             );
 
             var url = $"{_baseUrl}/user_dict_word?{queryString}";
-            return PostAsync<string>(url, ct);
+            return PostAsync<string>(url, cancellationToken);
         }
 
         /// <summary>
@@ -130,7 +130,7 @@ namespace VoicevoxClientSharp.ApiClient
             int accentType,
             WordTypes? wordTypes = null,
             int? priority = 5,
-            CancellationToken ct = default)
+            CancellationToken cancellationToken = default)
         {
             var queryString = CreateQueryString(
                 ("word_uuid ", wordUuid),
@@ -142,16 +142,16 @@ namespace VoicevoxClientSharp.ApiClient
             );
 
             var url = $"{_baseUrl}/user_dict_word/{wordUuid}?{queryString}";
-            return PutAsync(url, ct);
+            return PutAsync(url, cancellationToken);
         }
 
         /// <summary>
         ///     <inheritdoc />
         /// </summary>
-        public async ValueTask DeleteUserDictionaryWordAsync(string wordUuid, CancellationToken ct = default)
+        public async ValueTask DeleteUserDictionaryWordAsync(string wordUuid, CancellationToken cancellationToken = default)
         {
             var url = $"{_baseUrl}/user_dict_word/{wordUuid}";
-            using var lcts = CancellationTokenSource.CreateLinkedTokenSource(ct, _cts.Token);
+            using var lcts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _cts.Token);
             var ct2 = lcts.Token;
             var response = await _httpClient.DeleteAsync(url, ct2);
             if ((int)response.StatusCode >= 400)
@@ -167,12 +167,12 @@ namespace VoicevoxClientSharp.ApiClient
         public async ValueTask ImportUserDictionaryWordsAsync(
             IReadOnlyDictionary<string, UserDictWord> words,
             bool overrideEntry,
-            CancellationToken ct = default)
+            CancellationToken cancellationToken = default)
         {
             var queryString = CreateQueryString(("override", overrideEntry.ToString()));
 
             var url = $"{_baseUrl}/import_user_dict?{queryString}";
-            using var lcts = CancellationTokenSource.CreateLinkedTokenSource(ct, _cts.Token);
+            using var lcts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _cts.Token);
             var ct2 = lcts.Token;
             var requestJson = JsonSerializer.Serialize(words, _jsonSerializerOptions);
             var content = new StringContent(requestJson, Encoding.UTF8, "application/json");

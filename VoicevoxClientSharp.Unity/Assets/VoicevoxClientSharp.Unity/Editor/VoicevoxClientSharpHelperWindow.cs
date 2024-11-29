@@ -142,7 +142,7 @@ namespace VoicevoxClientSharp.Unity.Editor
             try
             {
                 await _semaphoreSlim.WaitAsync(ct);
-                _speakers = await _voicevoxApiClient.GetSpeakersAsync(ct: ct);
+                _speakers = await _voicevoxApiClient.GetSpeakersAsync(cancellationToken: ct);
             }
             catch (Exception e) when (!(e is OperationCanceledException))
             {

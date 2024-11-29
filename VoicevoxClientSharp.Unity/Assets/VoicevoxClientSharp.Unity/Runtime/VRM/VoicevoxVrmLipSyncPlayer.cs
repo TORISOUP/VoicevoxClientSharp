@@ -1,13 +1,14 @@
+#if USE_VRM
+
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using TreeEditor;
 using UnityEngine;
 using UniVRM10;
 using VoicevoxClientSharp.ApiClient.Models;
 
-namespace VoicevoxClientSharp.Unity.VRM
+namespace VoicevoxClientSharp.Unity
 {
     public sealed class VoicevoxVrmLipSyncPlayer : OptionalVoicevoxPlayer
     {
@@ -39,7 +40,12 @@ namespace VoicevoxClientSharp.Unity.VRM
         /// <summary>
         /// 現在のテキスト
         /// </summary>
-        public string CurrentText { get; private set; }
+        public string CurrentText { get; private set; } = "";
+
+        /// <summary>
+        /// 現在のモーラ
+        /// </summary>
+        public string CurrentMora { get; private set; } = "";
 
         private void Initialize()
         {
@@ -63,10 +69,13 @@ namespace VoicevoxClientSharp.Unity.VRM
             {
                 await _semaphoreSlim.WaitAsync(lcts.Token);
                 IsPlaying = true;
+                CurrentText = synthesisResult.Text;
                 await LipSyncAsync(synthesisResult, VrmInstance.Runtime.Expression, lcts.Token);
             }
             finally
             {
+                CurrentText = "";
+                CurrentMora = "";
                 IsPlaying = false;
                 _semaphoreSlim.Release();
             }
@@ -102,13 +111,13 @@ namespace VoicevoxClientSharp.Unity.VRM
                 foreach (var mora in accentPhrase.Moras)
                 {
                     // モーラを再生
-                    CurrentText = mora.Text;
+                    CurrentMora = mora.Text;
                     await PlayMoraAsync(mora, audioQuery.SpeedScale, expression, ct);
                 }
 
                 if (accentPhrase.PauseMora != null)
                 {
-                    CurrentText = "";
+                    CurrentMora = "";
                     // PauseMoraを再生
                     await PlayPauseMoraAsync(
                         accentPhrase.PauseMora,
@@ -390,3 +399,4 @@ namespace VoicevoxClientSharp.Unity.VRM
         }
     }
 }
+#endif
