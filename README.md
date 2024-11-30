@@ -18,6 +18,32 @@
 * 対応VRMバージョン: `v0.128.0`
 
 
+## 依存ライブラリ
+
+### VoicevoxClientSharp本体
+
+ * [System.Text.Json](https://www.nuget.org/packages/System.Text.Json)
+ * [System.Threading.Tasks.Extensions](https://www.nuget.org/packages/system.threading.tasks.extensions/)
+
+ ### VoicevoxClientSharp.Unity（Unity向けプラグイン）
+
+ * [System.Text.Json](https://www.nuget.org/packages/System.Text.Json)
+ * [System.Threading.Tasks.Extensions](https://www.nuget.org/packages/system.threading.tasks.extensions/)
+ * [UniTask](https://github.com/Cysharp/UniTask)
+
+ ### VoicevoxClientSharpTest(テストプロジェクト)
+
+ * [System.Text.Json](https://www.nuget.org/packages/System.Text.Json)
+ * [System.Threading.Tasks.Extensions](https://www.nuget.org/packages/system.threading.tasks.extensions/)
+ * [NAudio](https://www.nuget.org/packages/NAudio)
+ * [NUnit](https://www.nuget.org/packages/nunit)
+
+
+## LICENSE
+
+MIT
+
+
 ## インストール方法
 
 ### .NET環境向けのインストール方法
@@ -30,10 +56,25 @@ Install-Package VoicevoxClientSharp
 
 ### Unity向けのインストール方法
 
-1. NuGetより`VoicevoxClientSharp`をUnityプロジェクトに導入
+#### 1. UniTaskを導入する
+
+ [UniTaskのREADME](https://github.com/Cysharp/UniTask?tab=readme-ov-file#upm-package)を参考に、UnityプロジェクトにUniTaskを導入してください。
 
 
-2. `VoicevoxClientSharp.Unity`をUPMより参照してインストール
+#### 2. `VoicevoxClientSharp`をUnityプロジェクトに導入する
+
+Unityプロジェクトに`VoicevoxClientSharp`を導入してください。
+
+[NuGetForUnity](https://github.com/GlitchEnzo/NuGetForUnity?tab=readme-ov-file#how-do-i-install-nugetforunity)をUnityに導入し、そちらから`VoicevoxClientSharp`をインストールする方法を推奨します。
+
+
+#### 3. `VoicevoxClientSharp.Unity`をUPMより参照してインストール
+
+UPMより次のURLから`VoicevoxClientSharp.Unity`を導入してください。
+
+```
+```
+
 
 
 ## 使い方
@@ -86,6 +127,11 @@ public readonly struct SynthesisResult : IEquatable<SynthesisResult>
     /// 音声合成に使用したクエリ
     /// </summary>
     public AudioQuery AudioQuery { get; }
+
+    /// <summary>
+    /// 音声合成に使用したテキスト
+    /// </summary>
+    public string Text { get; }
 }
 ```
 
@@ -274,7 +320,11 @@ Unityにおいても`VoicevoxSynthesizer`および`VoicevoxApiClient`が使用�
 
 また追加で`VoicevoxClientSharp.Unity`プラグインを導入することで次の機能が使用可能になります。
 
+* `VoicevoxSpeakPlayer` : Unity上での発話制御コンポーネント
+* `VoicevoxVrmLipSyncPlayer` : VRMアバターをリップシンクするコンポーネント
+
 ### VoicevoxSpeakPlayer : Unity上での発話制御コンポーネント
+
 
 `VoicevoxSpeakPlayer`はVOICEVOXで合成した音声をUnityのAudioSourceを用いて再生するコンポーネントです。  
 GameObjectにアタッチし、AudioSourceをバインドしてから使用してください。
@@ -331,7 +381,6 @@ namespace Sandbox
 [UniVRM](https://github.com/vrm-c/UniVRM)をUnityプロジェクトにインポートしている時のみ使用できます。
 
 ![シードさん](img/seedsan.gif)
-
 
 
 #### 使い方
@@ -404,10 +453,197 @@ namespace Sandbox
 }
 ```
 
-
-
 ### OptionalVoicevoxPlayer : VoicevoxSpeakPlayerと連携するためのベースクラス
+
+`OptionalVoicevoxPlayer`は`VoicevoxSpeakPlayer`に連動させる機能を自分で拡張したい時に利用するベースクラスです。
+このクラスを継承したものを`VoicevoxSpeakPlayer`に登録して使用してください。
+
+```cs
+namespace VoicevoxClientSharp.Unity
+{
+    /// <summary>
+    /// VoicevoxSpeakPlayerと連携するためのクラス
+    /// </summary>
+    public abstract class OptionalVoicevoxPlayer : MonoBehaviour
+    {
+        /// <summary>
+        /// 再生中かどうか
+        /// </summary>
+        public bool IsPlaying { get; protected set; }
+        
+        /// <summary>
+        /// 再生を開始する
+        /// </summary>
+        public abstract UniTask PlayAsync(SynthesisResult synthesisResult, CancellationToken cancellationToken);
+    }
+}
+```
+
 
 ### エディタ拡張
 
+[VoicevoxClientSharp -> Open HelperWindow]より、VOICEVOXからスピーカー一覧を取得するエディタ拡張を開くことができます。
 
+![HelperWindow](img/HelperWindow.jpg)
+
+
+## 構成
+
+### 全体構成
+
+![class](img/class.jpg)
+
+APIクライントは`IVoicevoxApiClient`インタフェースにより抽象化が行われており、`VoicevoxSynthesizer`はこのインタフェースに依存しています。
+
+必要であれば`IVoicevoxApiClient`の実装を独自のものに差し替えて利用してください。
+
+### AvisSpeech対応
+
+![class2](img/class2.jpg)
+
+AvisSpeechと通信するクライアントは`IAvisSpeechApiClient`インタフェースにより抽象化されています。
+
+実装は共通した`VoicevoxApiClient`で行っていますが、`IVoicevoxApiClient`と`IAvisSpeechApiClient`で定義が異なるためインタフェースを介すことで適切なAPIのみが呼び出せるようになっています。そのため**VoicevoxApiClientはインスタンス化したあとはそれぞれのインタフェースにキャストして扱うことを推奨します。**
+
+```cs
+/// <summary>
+/// VOICEVOX用の定義
+/// </summary>
+public interface IVoicevoxApiClient :
+    IQueryClient<AudioQuery>,
+    ISynthesisClient<AudioQuery>,
+    IMiscClient,
+    ISpeakerClient,
+    ISingClient,
+    IPresetClient,
+    ILibraryClient,
+    IUserDictionaryClient
+{
+}
+
+/// <summary>
+/// AvisSpeech用の定義
+/// </summary>
+public interface IAvisSpeechApiClient :
+    IQueryClient<AvisSpeechAudioQuery>, // データ構造が異なる
+    ISynthesisClient<AvisSpeechAudioQuery>,　// データ構造が異なる
+    IMiscClient,
+    ISpeakerClient,
+    // ISingClient, AvisSpeechではSing系のAPIが利用できない
+    IPresetClient,
+    ILibraryClient,
+    IUserDictionaryClient
+{
+}
+```
+
+## 依存ライブラリのライセンス表記
+
+#### dotnet/runtime
+
+The MIT License (MIT)
+
+Copyright (c) .NET Foundation and Contributors
+
+All rights reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+#### dotnet/maintenance-packages
+
+The MIT License (MIT)
+
+Copyright (c) .NET Foundation and Contributors
+
+All rights reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+#### UniTask
+
+The MIT License (MIT)
+
+Copyright (c) 2019 Yoshifumi Kawai / Cysharp, Inc.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+#### NAudio
+
+Copyright 2020 Mark Heath
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+#### NUnit
+
+Copyright (c) 2024 Charlie Poole, Rob Prouse
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
