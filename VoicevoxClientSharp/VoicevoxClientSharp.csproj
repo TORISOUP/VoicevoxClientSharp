@@ -10,13 +10,14 @@
         <RepositoryUrl>https://github.com/TORISOUP/VoicevoxClientSharp</RepositoryUrl>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <Authors>TORISOUP</Authors>
         <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="System.Text.Json" Version="8.0.5"/>
         <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4"/>
-        <None Include="..\README.md" Pack="true" PackagePath="\"/>
+        <None Include="README.md" Pack="true" PackagePath="\"/>
     </ItemGroup>
 
 </Project>
