@@ -7,11 +7,6 @@ namespace VoicevoxClientSharp.ApiClient.Models
 {
     public sealed class SingFrameVolumeRequest : IEquatable<SingFrameVolumeRequest>
     {
-        [JsonConstructor]
-        public SingFrameVolumeRequest()
-        {
-        }
-        
         public SingFrameVolumeRequest(Score score, FrameAudioQuery frameAudioQuery)
         {
             Score = score;

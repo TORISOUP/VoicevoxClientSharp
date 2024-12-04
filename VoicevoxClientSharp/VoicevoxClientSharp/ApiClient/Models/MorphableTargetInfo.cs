@@ -11,11 +11,6 @@ namespace VoicevoxClientSharp.ApiClient.Models
     [DataContract(Name = "MorphableTargetInfo")]
     public sealed class MorphableTargetInfo : IEquatable<MorphableTargetInfo>
     {
-        [JsonConstructor]
-        public MorphableTargetInfo()
-        {
-        }
-
         /// <summary>
         /// 指定したキャラクターに対してモーフィングの可否
         /// </summary>

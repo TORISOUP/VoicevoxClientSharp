@@ -10,11 +10,6 @@ namespace VoicevoxClientSharp.ApiClient.Models
     /// </summary>
     public sealed class LibrarySpeaker : IEquatable<LibrarySpeaker>
     {
-        [JsonConstructor]
-        public LibrarySpeaker()
-        {
-        }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="LibrarySpeaker" /> class.
         /// </summary>

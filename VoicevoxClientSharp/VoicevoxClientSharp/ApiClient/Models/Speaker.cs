@@ -11,11 +11,6 @@ namespace VoicevoxClientSharp.ApiClient.Models
     [DataContract(Name = "Speaker")]
     public sealed class Speaker : IEquatable<Speaker>
     {
-        [JsonConstructor]
-        public Speaker()
-        {
-        }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="Speaker" /> class.
         /// </summary>

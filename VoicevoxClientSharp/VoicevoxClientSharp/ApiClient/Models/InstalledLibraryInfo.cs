@@ -11,11 +11,6 @@ namespace VoicevoxClientSharp.ApiClient.Models
     /// </summary>
     public sealed class InstalledLibraryInfo : IEquatable<InstalledLibraryInfo>
     {
-        [JsonConstructor]
-        public InstalledLibraryInfo()
-        {
-        }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="InstalledLibraryInfo" /> class.
         /// </summary>

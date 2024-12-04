@@ -11,11 +11,6 @@ namespace VoicevoxClientSharp.ApiClient.Models
     [DataContract(Name = "FramePhoneme")]
     public sealed class FramePhoneme : IEquatable<FramePhoneme>
     {
-        [JsonConstructor]
-        public FramePhoneme()
-        {
-        }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="FramePhoneme" /> class.
         /// </summary>
@@ -46,35 +41,6 @@ namespace VoicevoxClientSharp.ApiClient.Models
         [JsonPropertyName("note_id")] public string? NoteId { get; set; }
 
         /// <summary>
-        /// Returns true if FramePhoneme instances are equal
-        /// </summary>
-        /// <param name="input">Instance of FramePhoneme to be compared</param>
-        /// <returns>Boolean</returns>
-        public bool Equals(FramePhoneme input)
-        {
-            if (input == null)
-            {
-                return false;
-            }
-
-            return
-                (
-                    Phoneme == input.Phoneme ||
-                    (Phoneme != null &&
-                     Phoneme.Equals(input.Phoneme))
-                ) &&
-                (
-                    FrameLength == input.FrameLength ||
-                    FrameLength.Equals(input.FrameLength)
-                ) &&
-                (
-                    NoteId == input.NoteId ||
-                    (NoteId != null &&
-                     NoteId.Equals(input.NoteId))
-                );
-        }
-
-        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>
@@ -89,37 +55,33 @@ namespace VoicevoxClientSharp.ApiClient.Models
             return sb.ToString();
         }
 
-
-        /// <summary>
-        /// Returns true if objects are equal
-        /// </summary>
-        /// <param name="input">Object to be compared</param>
-        /// <returns>Boolean</returns>
-        public override bool Equals(object input)
+        public bool Equals(FramePhoneme? other)
         {
-            return Equals(input as FramePhoneme);
+            if (other is null)
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
+            return Phoneme == other.Phoneme && FrameLength == other.FrameLength && NoteId == other.NoteId;
         }
 
-        /// <summary>
-        /// Gets the hash code
-        /// </summary>
-        /// <returns>Hash code</returns>
+        public override bool Equals(object? obj)
+        {
+            return ReferenceEquals(this, obj) || obj is FramePhoneme other && Equals(other);
+        }
+
         public override int GetHashCode()
         {
-            unchecked // Overflow is fine, just wrap
+            unchecked
             {
-                var hashCode = 41;
-                if (Phoneme != null)
-                {
-                    hashCode = hashCode * 59 + Phoneme.GetHashCode();
-                }
-
-                hashCode = hashCode * 59 + FrameLength.GetHashCode();
-                if (NoteId != null)
-                {
-                    hashCode = hashCode * 59 + NoteId.GetHashCode();
-                }
-
+                var hashCode = Phoneme.GetHashCode();
+                hashCode = (hashCode * 397) ^ FrameLength;
+                hashCode = (hashCode * 397) ^ (NoteId != null ? NoteId.GetHashCode() : 0);
                 return hashCode;
             }
         }

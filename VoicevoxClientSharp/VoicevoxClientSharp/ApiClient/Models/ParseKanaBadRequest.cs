@@ -7,17 +7,12 @@ namespace VoicevoxClientSharp.ApiClient.Models
 {
     public sealed class ParseKanaBadRequest : IEquatable<ParseKanaBadRequest>
     {
-        [JsonConstructor]
-        public ParseKanaBadRequest()
-        {
-        }
-
         /// <summary>
         /// エラーメッセージ
         /// </summary>
         /// <value>エラーメッセージ</value>
         [JsonPropertyName("text")]
-        public string Text { get; set; }
+        public string Text { get; set; } = string.Empty;
 
         /// <summary>
         /// エラー名  |name|description| |- --|- --| | UNKNOWN_TEXT | 判別できない読み仮名があります: {text} | | ACCENT_TOP | 句頭にアクセントは置けません: {text} |
@@ -32,14 +27,14 @@ namespace VoicevoxClientSharp.ApiClient.Models
         /// INFINITE_LOOP | 処理時に無限ループになってしまいました...バグ報告をお願いします。 |
         /// </value>
         [JsonPropertyName("error_name")]
-        public string ErrorName { get; set; }
+        public string ErrorName { get; set; } = string.Empty;
 
         /// <summary>
         /// エラーを起こした箇所
         /// </summary>
         /// <value>エラーを起こした箇所</value>
         [JsonPropertyName("error_args")]
-        public Dictionary<string, string> ErrorArgs { get; set; }
+        public Dictionary<string, string> ErrorArgs { get; set; } = new Dictionary<string, string>();
 
         public bool Equals(ParseKanaBadRequest? other)
         {

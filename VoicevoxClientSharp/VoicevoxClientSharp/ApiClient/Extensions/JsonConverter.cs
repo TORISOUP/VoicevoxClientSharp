@@ -43,7 +43,7 @@ namespace VoicevoxClientSharp.ApiClient.Extensions
         {
             var stringValue = reader.GetString();
 
-            if (_stringToEnum.TryGetValue(stringValue, out var enumValue))
+            if (stringValue != null && _stringToEnum.TryGetValue(stringValue, out var enumValue))
             {
                 return enumValue;
             }

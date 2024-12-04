@@ -16,7 +16,7 @@ namespace VoicevoxClientSharp.ApiClient.Models
         /// </summary>
         /// <value>文字</value>
         [JsonPropertyName("text")]
-        public string Text { get; set; }
+        public string Text { get; set; } = "";
 
         /// <summary>
         /// 子音の音素
@@ -37,7 +37,7 @@ namespace VoicevoxClientSharp.ApiClient.Models
         /// </summary>
         /// <value>母音の音素</value>
         [JsonPropertyName("vowel")]
-        public string Vowel { get; set; }
+        public string Vowel { get; set; } = "";
 
         /// <summary>
         /// 母音の音長

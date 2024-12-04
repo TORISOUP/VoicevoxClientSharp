@@ -10,11 +10,6 @@ namespace VoicevoxClientSharp.ApiClient.Models
     /// </summary>
     public sealed class EngineManifest : IEquatable<EngineManifest>
     {
-        [JsonConstructor]
-        public EngineManifest()
-        {
-        }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="EngineManifest" /> class.
         /// </summary>

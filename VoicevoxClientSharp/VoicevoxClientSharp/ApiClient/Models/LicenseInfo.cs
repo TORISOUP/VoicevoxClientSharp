@@ -10,11 +10,6 @@ namespace VoicevoxClientSharp.ApiClient.Models
     /// </summary>
     public sealed class LicenseInfo : IEquatable<LicenseInfo>
     {
-        [JsonConstructor]
-        public LicenseInfo()
-        {
-        }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="LicenseInfo" /> class.
         /// </summary>

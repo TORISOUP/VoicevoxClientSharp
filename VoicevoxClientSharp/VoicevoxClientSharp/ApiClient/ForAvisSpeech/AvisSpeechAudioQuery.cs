@@ -36,6 +36,6 @@ namespace VoicevoxClientSharp.ApiClient.ForAvisSpeech
 
         [JsonPropertyName("outputStereo")] public bool OutputStereo { get; set; }
 
-        [JsonPropertyName("kana")] public string Kana { get; set; }
+        [JsonPropertyName("kana")] public string? Kana { get; set; }
     }
 }

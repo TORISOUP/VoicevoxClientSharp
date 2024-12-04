@@ -9,11 +9,6 @@ namespace VoicevoxClientSharp.ApiClient.Models
     /// </summary>
     public sealed class SpeakerInfo : IEquatable<SpeakerInfo>
     {
-        [JsonConstructor]
-        public SpeakerInfo()
-        {
-        }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="SpeakerInfo" /> class.
         /// </summary>

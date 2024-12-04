@@ -12,11 +12,6 @@ namespace VoicevoxClientSharp.ApiClient.Models
     [DataContract(Name = "UpdateInfo")]
     public sealed class UpdateInfo : IEquatable<UpdateInfo>
     {
-        [JsonConstructor]
-        public UpdateInfo()
-        {
-        }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="UpdateInfo" /> class.
         /// </summary>

@@ -11,11 +11,6 @@ namespace VoicevoxClientSharp.ApiClient.Models
     [DataContract(Name = "Note")]
     public sealed class Note : IEquatable<Note>
     {
-        [JsonConstructor]
-        public Note()
-        {
-        }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="Note" /> class.
         /// </summary>

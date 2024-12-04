@@ -10,11 +10,6 @@ namespace VoicevoxClientSharp.ApiClient.Models
     /// </summary>
     public sealed class StyleInfo : IEquatable<StyleInfo>
     {
-        [JsonConstructor]
-        public StyleInfo()
-        {
-        }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="StyleInfo" /> class.
         /// </summary>

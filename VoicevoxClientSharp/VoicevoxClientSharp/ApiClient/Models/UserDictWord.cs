@@ -9,11 +9,6 @@ namespace VoicevoxClientSharp.ApiClient.Models
     /// </summary>
     public sealed class UserDictWord : IEquatable<UserDictWord>
     {
-        [JsonConstructor]
-        public UserDictWord()
-        {
-        }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="UserDictWord" /> class.
         /// </summary>

@@ -11,11 +11,6 @@ namespace VoicevoxClientSharp.ApiClient.Models
     /// </summary>
     public sealed class DownloadableLibraryInfo : IEquatable<DownloadableLibraryInfo>
     {
-        [JsonConstructor]
-        public DownloadableLibraryInfo()
-        {
-        }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="DownloadableLibraryInfo" /> class.
         /// </summary>

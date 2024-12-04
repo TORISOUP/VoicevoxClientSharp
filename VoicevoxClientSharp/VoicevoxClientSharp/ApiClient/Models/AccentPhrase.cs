@@ -17,7 +17,7 @@ namespace VoicevoxClientSharp.ApiClient.Models
         /// Moras
         /// </summary>
         [JsonPropertyName("moras")]
-        public List<Mora> Moras { get; set; }
+        public List<Mora> Moras { get; set; } = new List<Mora>();
 
         /// <summary>
         /// アクセント箇所

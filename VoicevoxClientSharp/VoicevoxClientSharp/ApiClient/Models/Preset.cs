@@ -9,11 +9,6 @@ namespace VoicevoxClientSharp.ApiClient.Models
     /// </summary>
     public sealed class Preset : IEquatable<Preset>
     {
-        [JsonConstructor]
-        public Preset()
-        {
-        }
-
         /// <summary>
         /// プリセット情報
         /// </summary>
