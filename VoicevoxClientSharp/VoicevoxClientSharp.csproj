@@ -7,16 +7,16 @@
         <Title>VoicevoxClientSharp</Title>
         <Description>This package is a client library designed for operating VOICEVOX.exe, voicevox_engine, and AvisSpeech. When using Unity, it is recommended to also install VoicevoxClientSharp.Unity for greater convenience. For more information, please refer to the repository's README.</Description>
         <Copyright>TORISOUP</Copyright>
-        <RepositoryUrl>https://github.com/TORISOUP/VoicevoxClientSharp
-            
-            
-</RepositoryUrl>
+        <RepositoryUrl>https://github.com/TORISOUP/VoicevoxClientSharp</RepositoryUrl>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="System.Text.Json" Version="8.0.5" />
-      <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
+        <PackageReference Include="System.Text.Json" Version="8.0.5"/>
+        <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4"/>
+        <None Include="..\README.md" Pack="true" PackagePath="\"/>
     </ItemGroup>
 
 </Project>
