@@ -94,7 +94,7 @@ Unityプロジェクトに`VoicevoxClientSharp`を導入してください。
 UPMより次のURLから`VoicevoxClientSharp.Unity`を導入してください。
 
 ```
-https://github.com/TORISOUP/VoicevoxClientSharp?path=VoicevoxClientSharp.Unity/Assets/VoicevoxClientSharp.Unity
+https://github.com/TORISOUP/VoicevoxClientSharp.git?path=VoicevoxClientSharp.Unity/Assets/VoicevoxClientSharp.Unity
 ```
 
 
