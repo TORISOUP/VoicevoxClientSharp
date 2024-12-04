@@ -7,6 +7,11 @@ namespace VoicevoxClientSharp.ApiClient.Models
 {
     public sealed class SingFrameVolumeRequest : IEquatable<SingFrameVolumeRequest>
     {
+        [JsonConstructor]
+        public SingFrameVolumeRequest()
+        {
+        }
+        
         public SingFrameVolumeRequest(Score score, FrameAudioQuery frameAudioQuery)
         {
             Score = score;
@@ -16,14 +21,12 @@ namespace VoicevoxClientSharp.ApiClient.Models
         /// <summary>
         /// Gets or Sets Score
         /// </summary>
-        [DataMember(Name = "score", IsRequired = true, EmitDefaultValue = false)]
         [JsonPropertyName("score")]
         public Score Score { get; set; }
 
         /// <summary>
         /// Gets or Sets FrameAudioQuery
         /// </summary>
-        [DataMember(Name = "frame_audio_query", IsRequired = true, EmitDefaultValue = false)]
         [JsonPropertyName("frame_audio_query")]
         public FrameAudioQuery FrameAudioQuery { get; set; }
 
