@@ -73,6 +73,7 @@ Unityプロジェクトに`VoicevoxClientSharp`を導入してください。
 UPMより次のURLから`VoicevoxClientSharp.Unity`を導入してください。
 
 ```
+https://github.com/TORISOUP/VoicevoxClientSharp?path=VoicevoxClientSharp.Unity/Assets/VoicevoxClientSharp.Unity
 ```
 
 
@@ -313,6 +314,11 @@ using var avisSpeechApiClient1 = new VoicevoxApiClient() as IAvisSpeechApiClient
 // VoicevoxApiClient.CreateForAvisSpeechを使用してもよい
 using var avisSpeechApiClient2 = VoicevoxApiClient.CreateForAvisSpeech();
 ```
+
+### 例外発生時
+
+例外発生時は`VoicevoxClientException`が発行されます。
+
 
 ## Unity向けの追加機能
 
