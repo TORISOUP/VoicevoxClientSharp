@@ -18,20 +18,39 @@
 * 対応VRMバージョン: `v0.128.0`
 
 
+- [VoicevoxClientSharp](#voicevoxclientsharp)
+  - [依存ライブラリ](#依存ライブラリ)
+  - [LICENSE](#license)
+  - [インストール方法](#インストール方法)
+  - [使い方](#使い方)
+    - [A.VoicevoxSynthesizer : 音声合成の簡易に行うためのクラス](#avoicevoxsynthesizer--音声合成の簡易に行うためのクラス)
+    - [B. VoicevoxApiClient : REST APIを実行するシンプルなクライアント実装](#b-voicevoxapiclient--rest-apiを実行するシンプルなクライアント実装)
+    - [例外発生時](#例外発生時)
+  - [Unity向けの追加機能](#unity向けの追加機能)
+    - [VoicevoxSpeakPlayer : Unity上での発話制御コンポーネント](#voicevoxspeakplayer--unity上での発話制御コンポーネント)
+    - [VoicevoxVrmLipSyncPlayer : VRMアバターをリップシンクするコンポーネント](#voicevoxvrmlipsyncplayer--vrmアバターをリップシンクするコンポーネント)
+    - [OptionalVoicevoxPlayer : VoicevoxSpeakPlayerと連携するためのベースクラス](#optionalvoicevoxplayer--voicevoxspeakplayerと連携するためのベースクラス)
+    - [エディタ拡張](#エディタ拡張)
+  - [構成](#構成)
+  - [依存ライブラリのライセンス表記](#依存ライブラリのライセンス表記)
+    
+
+
+
 ## 依存ライブラリ
 
-### VoicevoxClientSharp本体
+### VoicevoxClientSharp本体<!-- omit in toc -->
 
  * [System.Text.Json](https://www.nuget.org/packages/System.Text.Json)
  * [System.Threading.Tasks.Extensions](https://www.nuget.org/packages/system.threading.tasks.extensions/)
 
- ### VoicevoxClientSharp.Unity（Unity向けプラグイン）
+ ### VoicevoxClientSharp.Unity（Unity向けプラグイン）<!-- omit in toc -->
 
  * [System.Text.Json](https://www.nuget.org/packages/System.Text.Json)
  * [System.Threading.Tasks.Extensions](https://www.nuget.org/packages/system.threading.tasks.extensions/)
  * [UniTask](https://github.com/Cysharp/UniTask)
 
- ### VoicevoxClientSharpTest(テストプロジェクト)
+ ### VoicevoxClientSharpTest(テストプロジェクト)<!-- omit in toc -->
 
  * [System.Text.Json](https://www.nuget.org/packages/System.Text.Json)
  * [System.Threading.Tasks.Extensions](https://www.nuget.org/packages/system.threading.tasks.extensions/)
@@ -46,7 +65,7 @@ MIT
 
 ## インストール方法
 
-### .NET環境向けのインストール方法
+### .NET環境向けのインストール方法<!-- omit in toc -->
 
 NuGetパッケージマネージャーからインストールすることができます。
 
@@ -54,21 +73,21 @@ NuGetパッケージマネージャーからインストールすることがで
 Install-Package VoicevoxClientSharp
 ```
 
-### Unity向けのインストール方法
+### Unity向けのインストール方法<!-- omit in toc -->
 
-#### 1. UniTaskを導入する
+#### 1. UniTaskを導入する<!-- omit in toc -->
 
  [UniTaskのREADME](https://github.com/Cysharp/UniTask?tab=readme-ov-file#upm-package)を参考に、UnityプロジェクトにUniTaskを導入してください。
 
 
-#### 2. `VoicevoxClientSharp`をUnityプロジェクトに導入する
+#### 2. `VoicevoxClientSharp`をUnityプロジェクトに導入する<!-- omit in toc -->
 
 Unityプロジェクトに`VoicevoxClientSharp`を導入してください。
 
 [NuGetForUnity](https://github.com/GlitchEnzo/NuGetForUnity?tab=readme-ov-file#how-do-i-install-nugetforunity)をUnityに導入し、そちらから`VoicevoxClientSharp`をインストールする方法を推奨します。
 
 
-#### 3. `VoicevoxClientSharp.Unity`をUPMより参照してインストール
+#### 3. `VoicevoxClientSharp.Unity`をUPMより参照してインストール<!-- omit in toc -->
 
 UPMより次のURLから`VoicevoxClientSharp.Unity`を導入してください。
 
@@ -90,7 +109,7 @@ VOICEVOXが提供するREST APIを個別に実行したい → `VoicevoxApiClien
 
 ※ **VoicevoxSynthesizerはAvisSpeechには対応していません。VOICEVOX専用です。**
 
-#### A-1. 基本的な使い方
+#### A-1. 基本的な使い方<!-- omit in toc -->
 
 
 ```cs
@@ -136,7 +155,7 @@ public readonly struct SynthesisResult : IEquatable<SynthesisResult>
 }
 ```
 
-#### A-2. 音声合成のパラメータ指定
+#### A-2. 音声合成のパラメータ指定<!-- omit in toc -->
 
 ```csharp
 // 個別のパラメータを指定した音声合成も可能
@@ -155,7 +174,7 @@ var result = await synthesizer.SynthesizeSpeechAsync(styleId, "こんにちは�
 result = await synthesizer.SynthesizeSpeechWithPresetAsync(presetId: 1, "こんにちは、世界！");
 ```
 
-#### A-3. モーフィング
+#### A-3. モーフィング<!-- omit in toc -->
 
 ```cs
 // 2つのスタイルが合成可能であるか
@@ -167,7 +186,7 @@ if (isMorphable)
 }
 ```
 
-#### A-4. 接続先の変更
+#### A-4. 接続先の変更<!-- omit in toc -->
 
 コンストラクタ引数を何も指定しない場合は`http://localhost:50021`を接続先として初期化します。
 接続先を変更したい場合は`VoicevoxApiClient`を手動で生成し、`VoicevoxSynthesizer`のコンストラクタに渡してください。
@@ -183,7 +202,7 @@ using var synthesizer = new VoicevoxSynthesizer(apiClient);
 `VoicevoxApiClient`はVOICEVOX（およびAvisSpeech）が提供するREST APIと1:1に対応した"シンプル"なクライアントです。
 
 
-#### B-1. 使い方
+#### B-1. 使い方<!-- omit in toc -->
 
 [VOICEVOXのAPIドキュメント](https://voicevox.github.io/voicevox_engine/api/)を参考に、実行したいAPIに対応したメソッドを呼び出してください。
 
@@ -229,7 +248,7 @@ using var synthesizer = new VoicevoxSynthesizer(apiClient);
 | `/import_user_dict`                          | POST        | `ImportUserDictionaryWordsAsync`             | 他のユーザー辞書をインポートする                |
 
 
-##### 使用例：音声合成をVoicevoxApiClientで行う
+##### 使用例：音声合成をVoicevoxApiClientで行う<!-- omit in toc -->
 
 ```cs
 // APIクライアントを生成
@@ -253,7 +272,7 @@ byte[] wav = await apiClient.SynthesisAsync(styleId, audioQuery);
 ```
 
 
-#### B-2. 初期化:VOICEVOXにつなぐ
+#### B-2. 初期化:VOICEVOXにつなぐ<!-- omit in toc -->
 
 VOICEVOXと通信する場合は`VoicevoxApiClient`をそのまま使用してください。
 
@@ -303,7 +322,7 @@ using var apiClient = VoicevoxApiClient.Create(baseUri: "http://localhost:50021"
 ```
 
 
-#### B-3. 初期化:AviSpeechにつなぐ
+#### B-3. 初期化:AviSpeechにつなぐ<!-- omit in toc -->
 
 AviSpeechに接続する場合は、`VoicevoxApiClient`を`IAvisSpeechApiClient`インタフェースに明示的にキャストする必要があります。
 
@@ -337,7 +356,7 @@ GameObjectにアタッチし、AudioSourceをバインドしてから使用し�
 
 ![VoicevoxSpeakPlayer](img/VoicevoxSpeakPlayer.jpg)
 
-```cs:使用例
+```cs
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -389,7 +408,7 @@ namespace Sandbox
 ![シードさん](img/seedsan.gif)
 
 
-#### 使い方
+#### 使い方<!-- omit in toc -->
 
 1. `VoicevoxVrmLipSyncPlayer` を任意のGameObjectにアタッチする
 2. インスタンス化したVRMアバターの`Vrm10Instance`を`VoicevoxVrmLipSyncPlayer`にバインドする
@@ -495,7 +514,7 @@ namespace VoicevoxClientSharp.Unity
 
 ## 構成
 
-### 全体構成
+### 全体構成<!-- omit in toc -->
 
 ![class](img/class.jpg)
 
@@ -503,7 +522,7 @@ APIクライントは`IVoicevoxApiClient`インタフェースにより抽象化
 
 必要であれば`IVoicevoxApiClient`の実装を独自のものに差し替えて利用してください。
 
-### AvisSpeech対応
+### AvisSpeech対応<!-- omit in toc -->
 
 ![class2](img/class2.jpg)
 
@@ -545,7 +564,7 @@ public interface IAvisSpeechApiClient :
 
 ## 依存ライブラリのライセンス表記
 
-#### dotnet/runtime
+#### dotnet/runtime<!-- omit in toc -->
 
 The MIT License (MIT)
 
@@ -571,7 +590,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-#### dotnet/maintenance-packages
+#### dotnet/maintenance-packages<!-- omit in toc -->
 
 The MIT License (MIT)
 
@@ -597,7 +616,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-#### UniTask
+#### UniTask<!-- omit in toc -->
 
 The MIT License (MIT)
 
@@ -621,7 +640,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-#### NAudio
+#### NAudio<!-- omit in toc -->
 
 Copyright 2020 Mark Heath
 
@@ -632,7 +651,7 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-#### NUnit
+#### NUnit<!-- omit in toc -->
 
 Copyright (c) 2024 Charlie Poole, Rob Prouse
 
