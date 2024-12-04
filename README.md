@@ -18,6 +18,8 @@
 * 対応VRMバージョン: `v0.128.0`
 
 
+## 目次<!-- omit in toc -->
+
 - [VoicevoxClientSharp](#voicevoxclientsharp)
   - [依存ライブラリ](#依存ライブラリ)
   - [LICENSE](#license)
