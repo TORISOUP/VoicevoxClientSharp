@@ -101,6 +101,8 @@ https://github.com/TORISOUP/VoicevoxClientSharp.git?path=VoicevoxClientSharp.Uni
 
 ## 使い方
 
+本ライブラリは起動中の[VOIVEVOX.exe](https://voicevox.hiroshiba.jp/)/[voicevox_engine](https://github.com/VOICEVOX/voicevox_engine)/[AvisSpeech](https://aivis-project.com/)を制御するためのライブラリです。まずはこれらアプリケーションを事前に起動しネットワーク経由でアクセスできる状況にしてください。
+
 テキストから音声合成を簡単にやりたい → `VoicevoxSynthesizer`  
 VOICEVOXが提供するREST APIを個別に実行したい → `VoicevoxApiClient`
 
