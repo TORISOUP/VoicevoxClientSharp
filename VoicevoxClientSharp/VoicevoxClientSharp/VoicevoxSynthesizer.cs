@@ -17,6 +17,11 @@ namespace VoicevoxClientSharp
         private readonly IVoicevoxApiClient _apiClient;
         private readonly bool _handleRawApiClient = false;
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
+        
+        /// <summary>
+        /// このクラスが利用するIVoicevoxApiClient
+        /// </summary>
+        public IVoicevoxApiClient ApiClient => _apiClient;
 
         /// <summary>
         /// VOICEVOXで発話音声の合成を制御するクラス

@@ -77,7 +77,14 @@ namespace VoicevoxClientSharp.Unity
                 CurrentText = "";
                 CurrentMora = "";
                 IsPlaying = false;
-                _semaphoreSlim.Release();
+                try
+                {
+                    _semaphoreSlim.Release();
+                }
+                catch
+                {
+                    // ignored
+                }
             }
         }
 
@@ -106,26 +113,38 @@ namespace VoicevoxClientSharp.Unity
             _expectedTotalTime += audioQuery.PrePhonemeLength / audioQuery.SpeedScale;
             _accurateTotalTime += (decimal)(Time.time - waitStartTime);
 
-            foreach (var accentPhrase in audioQuery.AccentPhrases)
+            try
             {
-                foreach (var mora in accentPhrase.Moras)
+                foreach (var accentPhrase in audioQuery.AccentPhrases)
                 {
-                    // モーラを再生
-                    CurrentMora = mora.Text;
-                    await PlayMoraAsync(mora, audioQuery.SpeedScale, expression, ct);
-                }
+                    foreach (var mora in accentPhrase.Moras)
+                    {
+                        // モーラを再生
+                        CurrentMora = mora.Text;
+                        await PlayMoraAsync(mora, audioQuery.SpeedScale, expression, ct);
+                    }
 
-                if (accentPhrase.PauseMora != null)
-                {
-                    CurrentMora = "";
-                    // PauseMoraを再生
-                    await PlayPauseMoraAsync(
-                        accentPhrase.PauseMora,
-                        audioQuery.SpeedScale,
-                        audioQuery.PauseLength,
-                        audioQuery.PauseLengthScale,
-                        expression, ct);
+                    if (accentPhrase.PauseMora != null)
+                    {
+                        CurrentMora = "";
+                        // PauseMoraを再生
+                        await PlayPauseMoraAsync(
+                            accentPhrase.PauseMora,
+                            audioQuery.SpeedScale,
+                            audioQuery.PauseLength,
+                            audioQuery.PauseLengthScale,
+                            expression, ct);
+                    }
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                // 途中キャンセルされたら口を閉じる
+                SetFaceToNeutral();
+                expression.SetWeightsNonAlloc(_expressionWeights);
+                CurrentText = "";
+
+                throw;
             }
 
             // 最後までいったら閉じる
